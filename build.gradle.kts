@@ -26,10 +26,15 @@ repositories {
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.boot:spring-boot-starter-validation") // Jakarta Validation
 	compileOnly("org.projectlombok:lombok")
+	compileOnly("org.mapstruct:mapstruct:1.5.5.Final")  // MapStruct
+
+	annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")  // MapStruct processor
+	annotationProcessor("org.projectlombok:lombok")
+
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("com.mysql:mysql-connector-j")
-	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
