@@ -2,8 +2,9 @@ package com.labotec.traccar.domain.database.models;
 
 import lombok.*;
 
-@Getter
-@Setter
+import java.time.Instant;
+
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,4 +15,6 @@ public class Driver {
     private String documentNumber;
     private Byte status;
     private Company company;
+    private Instant lastModifiedDate;
+    private Instant createdDate;
 }

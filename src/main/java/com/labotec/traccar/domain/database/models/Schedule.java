@@ -4,8 +4,7 @@ import lombok.*;
 
 import java.time.Instant;
 
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,11 +15,13 @@ public class Schedule {
     private Instant arrivalTime;
     private Vehicle vehicle;
     private Driver driver;
-    private Integer locationId;
+    private Location location;
     private Route route;
     private String sheetNumber;
     private Byte status;
     private Instant estimatedDepartureTime;
     private Instant estimatedArrivalTime;
     private Company company;
+    private Instant lastModifiedDate;
+    private Instant createdDate;
 }

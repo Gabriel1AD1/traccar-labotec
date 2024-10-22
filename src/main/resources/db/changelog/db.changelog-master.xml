@@ -1,0 +1,50 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- ChangeSet para crear la tabla tbl_lab_tipo_vehiculo -->
+    <changeSet id="1-create-vehicle-type-entity" author="Gabriel Amanqui">
+        <createTable tableName="tbl_lab_tipo_vehiculo" schemaName="traccar_db">
+            <column name="lab_id_tipo_vehiculo" type="INT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="lab_nombre_tipo" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lab_fecha_creacion" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lab_fecha_actualizacion" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+
+    <!-- ChangeSet para modificar tbl_lab_unidades y agregar la clave foránea a tbl_lab_tipo_vehiculo -->
+    <changeSet id="2-add-vehicle-type-relationship" author="GabrielAmanqui">
+        <addColumn tableName="tbl_lab_unidades" schemaName="traccar_db">
+            <column name="lab_id_tipo_vehiculo" type="INT"/>
+        </addColumn>
+
+
+        <addForeignKeyConstraint baseColumnNames="lab_id_tipo_vehiculo"
+                                 baseTableName="tbl_lab_unidades"
+                                 constraintName="fk_tipo_vehiculo"
+                                 referencedColumnNames="lab_id_tipo_vehiculo"
+                                 referencedTableName="tbl_lab_tipo_vehiculo"
+                                 referencedSchemaName="traccar_db"/>
+    </changeSet>
+
+    <changeSet id="3-add-device-traccar-id-column" author="GabrielAmanqui">
+        <addColumn tableName="tbl_lab_unidades" schemaName="traccar_db">
+            <column name="lab_id_device_traccar" type="INT"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="5-add-unique-traccar-device-id" author="your_name">
+        <addUniqueConstraint columnNames="lab_id_device_traccar"
+                             constraintName="uk_traccar_device_id"
+                             tableName="tbl_lab_unidades"
+                             schemaName="traccar_db"/>
+    </changeSet>
+
+</databaseChangeLog>

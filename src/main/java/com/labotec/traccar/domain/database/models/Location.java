@@ -3,9 +3,9 @@ package com.labotec.traccar.domain.database.models;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,4 +16,6 @@ public class Location {
     private String longitude;
     private BigDecimal radius;
     private Company company;
+    private Instant lastModifiedDate;
+    private Instant createdDate;
 }
