@@ -1,9 +1,7 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.impl;
 
-import com.labotec.traccar.app.usecase.ports.input.VehicleRepository;
+import com.labotec.traccar.app.usecase.ports.input.repository.VehicleRepository;
 import com.labotec.traccar.domain.database.models.Vehicle;
-import com.labotec.traccar.domain.web.dto.VehicleDTO;
-import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.CompanyEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.VehicleEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.VehicleMapper;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.CompanyRepositoryJpa;
@@ -15,7 +13,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-import static com.labotec.traccar.infra.db.mysql.jpa.labotec.message.ComapanyMessage.COMPANY_NOT_FOUND_BY_ID;
 import static com.labotec.traccar.infra.db.mysql.jpa.labotec.message.VehicleMessage.VEHICLE_NOT_FOUND_BY_ID;
 
 @AllArgsConstructor
@@ -63,5 +60,11 @@ public class VehicleRepositoryImpl implements VehicleRepository {
     @Override
     public void deleteById(Integer id) {
         vehicleRepositoryJpa.deleteById(id);
+    }
+
+    @Override
+    public Vehicle findByDevice(Integer id) {
+        VehicleEntity vehicleEntity = vehicleRepositoryJpa.findByTraccarDeviceId(id);
+        return vehicleMapper.toModel(vehicleEntity);
     }
 }

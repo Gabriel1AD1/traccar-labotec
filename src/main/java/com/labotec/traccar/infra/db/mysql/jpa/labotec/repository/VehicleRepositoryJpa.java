@@ -11,7 +11,7 @@ import java.util.List;
 public interface VehicleRepositoryJpa extends JpaRepository<VehicleEntity, Integer> {
     // Consultas personalizadas si es necesario
     @Query("SELECT v.traccarDeviceId FROM VehicleEntity v")
-
     List<Integer> findTraccarDeviceIdBy();
 
+    VehicleEntity findByTraccarDeviceId(Integer traccarDeviceId);
 }

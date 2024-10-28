@@ -2,7 +2,8 @@ package com.labotec.traccar.infra.web.controller.rest.labotec;
 
 import com.labotec.traccar.app.usecase.ports.out.RouteService;
 import com.labotec.traccar.domain.database.models.Route;
-import com.labotec.traccar.domain.web.dto.RouteDTO;
+import com.labotec.traccar.domain.web.dto.create.RouteDTO;
+import com.labotec.traccar.domain.web.dto.update.RouteUpdateDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -24,6 +25,7 @@ public class RouteController {
     // Endpoint para crear una nueva ruta
     @PostMapping("")
     public ResponseEntity<Route> create(@RequestBody @Valid RouteDTO routeDTO) {
+        System.out.println(routeDTO.toString());
         Route createdRoute = routeService.create(routeDTO);
         return ResponseEntity.ok(createdRoute);
     }
@@ -45,7 +47,7 @@ public class RouteController {
 
     // Endpoint para actualizar una ruta existente
     @PutMapping("/{id}")
-    public ResponseEntity<Route> update(@RequestBody @Valid RouteDTO routeDTO, @PathVariable @NotNull Integer id) {
+    public ResponseEntity<Route> update(@RequestBody @Valid RouteUpdateDTO routeDTO, @PathVariable @NotNull Integer id) {
         Route updatedRoute = routeService.update(routeDTO, id);
         return ResponseEntity.ok(updatedRoute);
     }

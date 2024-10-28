@@ -2,7 +2,8 @@ package com.labotec.traccar.infra.web.controller.rest.labotec;
 
 import com.labotec.traccar.app.usecase.ports.out.CompanyService;
 import com.labotec.traccar.domain.database.models.Company;
-import com.labotec.traccar.domain.web.dto.CompanyDTO;
+import com.labotec.traccar.domain.web.dto.create.CompanyDTO;
+import com.labotec.traccar.domain.web.dto.update.CompanyUpdateDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -45,7 +46,7 @@ public class CompanyController {
 
     // Endpoint para actualizar una compañía existente
     @PutMapping("/{id}")
-    public ResponseEntity<Company> update(@RequestBody @Valid CompanyDTO companyDTO, @PathVariable @NotNull Integer id) {
+    public ResponseEntity<Company> update(@RequestBody @Valid CompanyUpdateDTO companyDTO, @PathVariable @NotNull Integer id) {
         Company updatedCompany = companyService.update(companyDTO, id);
         return ResponseEntity.ok(updatedCompany);
     }

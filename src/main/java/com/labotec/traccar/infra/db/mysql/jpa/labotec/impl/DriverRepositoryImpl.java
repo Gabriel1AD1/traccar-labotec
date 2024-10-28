@@ -1,6 +1,6 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.impl;
 
-import com.labotec.traccar.app.usecase.ports.input.DriverRepository;
+import com.labotec.traccar.app.usecase.ports.input.repository.DriverRepository;
 import com.labotec.traccar.domain.database.models.Driver;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.DriverEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.DriverMapper;

@@ -16,7 +16,7 @@ public class TraccarIntegration {
 
 
     @PostMapping
-    public void object (@RequestBody ){
+    public void object (@RequestBody Object o ){
 
     }
 

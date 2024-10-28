@@ -2,6 +2,7 @@ package com.labotec.traccar.infra.db.mysql.jpa.labotec.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.labotec.traccar.domain.database.models.BusStop;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,11 +33,17 @@ public class RouteBusStopEntity {
     private RouteEntity route;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "lab_id_paradero", nullable = false)
-    private BusStopEntity busStop;
+    @JoinColumn(name = "lab_id_primer_paradero", nullable = false)
+    private BusStopEntity firstBusStop;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "lab_id_segundo_paradero", nullable = false)
+    private BusStopEntity secondBusStop;
 
     @Column(name = "lab_orden", nullable = false)
     private Integer order;
+    @Column(name = "lab_completed")
+    private Boolean completed;
 
     @CreatedDate
     @Column(name = "lab_fecha_creacion", updatable = false)

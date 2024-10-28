@@ -1,14 +1,14 @@
     package com.labotec.traccar.app.utils.common.repository;
 
-    public interface GenericCrudService<MODELO, DTO,ID> {
+    public interface GenericCrudService<MODELO, CREATE_DTO, UPDATE_DTO> {
 
-        MODELO create(DTO entityDto);
+        MODELO create(CREATE_DTO createDto);
 
-        MODELO findById(ID id);
+        MODELO findById(Integer id);
 
         Iterable<MODELO> findAll();
 
-        MODELO update(DTO entityDto , ID id);
+        MODELO update(UPDATE_DTO updateDto, Integer id);
 
-        void deleteById(ID id);
+        void deleteById(Integer id);
     }

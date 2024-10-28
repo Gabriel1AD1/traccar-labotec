@@ -17,6 +17,7 @@ public class BusStop {
     private String longitude;
     private Byte status;
     private Company company;
+
     private Instant lastModifiedDate;
     private Instant createdDate;
 }

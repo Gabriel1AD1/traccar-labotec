@@ -1,12 +1,9 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.impl;
 
-import com.labotec.traccar.app.usecase.ports.input.LocationRepository;
+import com.labotec.traccar.app.usecase.ports.input.repository.LocationRepository;
 import com.labotec.traccar.domain.database.models.Location;
-import com.labotec.traccar.domain.web.dto.LocationDTO;
-import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.CompanyEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.LocationEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.LocationMapper;
-import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.CompanyRepositoryJpa;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.LocationRepositoryJpa;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
@@ -15,7 +12,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-import static com.labotec.traccar.infra.db.mysql.jpa.labotec.message.ComapanyMessage.COMPANY_NOT_FOUND_BY_ID;
 import static com.labotec.traccar.infra.db.mysql.jpa.labotec.message.LocationMessage.LOCATION_NOT_FOUND_BY_ID;
 
 @AllArgsConstructor

@@ -1,10 +1,8 @@
 package com.labotec.traccar.app.mapper;
 
-import com.labotec.traccar.domain.database.models.Company;
 import com.labotec.traccar.domain.database.models.Location;
-import com.labotec.traccar.domain.web.dto.LocationDTO;
+import com.labotec.traccar.domain.web.dto.create.LocationDTO;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring")
 public interface LocationModelMapper {

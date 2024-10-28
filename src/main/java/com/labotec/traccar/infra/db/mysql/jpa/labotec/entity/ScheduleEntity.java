@@ -60,6 +60,10 @@ public class ScheduleEntity {
     @JoinColumn(name = "lab_id_empresa", nullable = false)
     private CompanyEntity company;
 
+    @ManyToOne(fetch = FetchType.LAZY , optional = false)
+    @JoinColumn(name= "lab_id_geofence_poligonal" , nullable = false)
+    private CircularGeofenceEntity geofence;
+
     @CreatedDate
     @Column(name = "lab_fecha_creacion", updatable = false)
     private Instant createdDate;

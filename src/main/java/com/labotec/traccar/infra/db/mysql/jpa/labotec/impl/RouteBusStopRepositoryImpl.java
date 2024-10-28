@@ -1,10 +1,12 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.impl;
 
-import com.labotec.traccar.app.usecase.ports.input.RouteBusStopRepository;
+import com.labotec.traccar.app.usecase.ports.input.repository.RouteBusStopRepository;
+import com.labotec.traccar.domain.database.models.Route;
 import com.labotec.traccar.domain.database.models.RouteBusStop;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.RouteBusStopEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.RouteEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.RouteBusStopMapper;
+import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.RouteMapper;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.RouteBusStopRepositoryJpa;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.RouteRepositoryJpa;
 import com.labotec.traccar.infra.exception.EntityNotFoundException;
@@ -15,7 +17,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.labotec.traccar.infra.db.mysql.jpa.labotec.message.RouteBusStopMessage.ROUTE_BUS_STOP_NOT_FOUND_BY_ID;
-import static com.labotec.traccar.infra.db.mysql.jpa.labotec.message.RouteMessage.ROUTE_NOT_FOUND_BY_ID;
 
 @Repository
 @AllArgsConstructor
@@ -24,10 +25,23 @@ public class RouteBusStopRepositoryImpl implements RouteBusStopRepository {
     private final RouteBusStopRepositoryJpa routeBusStopRepositoryJpa;
     private final RouteRepositoryJpa routeRepositoryJpa;
     private final RouteBusStopMapper routeBusStopMapper;
-
+    private final RouteMapper routeMapper;
     @Override
     public RouteBusStop create(RouteBusStop entity) {
+        System.out.println("------------------------------------------------");
+        System.out.println("------------------------------------------------");
+        System.out.println("------------------------------------------------");
+        System.out.println("------------------------------------------------");
+        System.out.println("------------------------------------------------");
+        System.out.println("------------------------------------------------");
+        System.out.println("------------------------------------------------");
+
+
+        System.out.println(entity.getOrder());
         RouteBusStopEntity routeBusStopEntity = routeBusStopMapper.toEntity(entity);
+        System.out.println(routeBusStopEntity.toString());
+        System.out.println("------------------------------------------------");
+        System.out.println(routeBusStopEntity.getOrder());
         RouteBusStopEntity routeBusStopEntitySaved = routeBusStopRepositoryJpa.save(routeBusStopEntity);
         return routeBusStopMapper.toModel(routeBusStopEntitySaved);
     }
@@ -66,13 +80,19 @@ public class RouteBusStopRepositoryImpl implements RouteBusStopRepository {
     }
 
     @Override
-    public Iterable<RouteBusStop> findByRoute(Integer routeId) {
-        RouteEntity routeEntity = routeRepositoryJpa.findById(routeId).orElseThrow(
-                ()-> new EntityNotFoundException(ROUTE_NOT_FOUND_BY_ID + routeId )
-        );
+    public Iterable<RouteBusStop> findByRoute(Route routeId) {
+        RouteEntity routeEntity = routeMapper.toEntity(routeId);
         Iterable<RouteBusStopEntity> routeBusStopEntity = routeBusStopRepositoryJpa.findByRoute(routeEntity);
 
         return routeBusStopMapper.toModelIterable(routeBusStopEntity);
+    }
+
+    @Override
+    public List<RouteBusStop> findByRouteOrderByOrder(Route routeId) {
+        RouteEntity routeEntity = routeMapper.toEntity(routeId);
+        List<RouteBusStopEntity> routeBusStopEntities = routeBusStopRepositoryJpa.findByRouteOrderByOrder(routeEntity);
+
+        return routeBusStopMapper.toModelList(routeBusStopEntities);
     }
 
     @Override

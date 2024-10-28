@@ -2,7 +2,8 @@ package com.labotec.traccar.infra.web.controller.rest.labotec;
 
 import com.labotec.traccar.app.usecase.ports.out.VehicleService;
 import com.labotec.traccar.domain.database.models.Vehicle;
-import com.labotec.traccar.domain.web.dto.VehicleDTO;
+import com.labotec.traccar.domain.web.dto.create.VehicleDTO;
+import com.labotec.traccar.domain.web.dto.update.VehicleUpdateDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -44,7 +45,7 @@ public class VehicleController {
 
     // Endpoint para actualizar un vehículo existente
     @PutMapping("/{id}")
-    public ResponseEntity<Vehicle> update(@RequestBody @Valid VehicleDTO vehicleDTO, @PathVariable @NotNull Integer id) {
+    public ResponseEntity<Vehicle> update(@RequestBody @Valid VehicleUpdateDTO vehicleDTO, @PathVariable @NotNull Integer id) {
         Vehicle updatedVehicle = vehicleService.update(vehicleDTO, id);
         return ResponseEntity.ok(updatedVehicle);
     }

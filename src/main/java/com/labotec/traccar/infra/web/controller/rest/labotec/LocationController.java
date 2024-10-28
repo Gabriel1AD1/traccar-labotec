@@ -2,7 +2,8 @@ package com.labotec.traccar.infra.web.controller.rest.labotec;
 
 import com.labotec.traccar.app.usecase.ports.out.LocationService;
 import com.labotec.traccar.domain.database.models.Location;
-import com.labotec.traccar.domain.web.dto.LocationDTO;
+import com.labotec.traccar.domain.web.dto.create.LocationDTO;
+import com.labotec.traccar.domain.web.dto.update.LocationUpdateDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -45,7 +46,7 @@ public class LocationController {
 
     // Endpoint para actualizar una ubicación existente
     @PutMapping("/{id}")
-    public ResponseEntity<Location> update(@RequestBody @Valid LocationDTO locationDTO, @PathVariable @NotNull Integer id) {
+    public ResponseEntity<Location> update(@RequestBody @Valid LocationUpdateDTO locationDTO, @PathVariable @NotNull Integer id) {
         Location updatedLocation = locationService.update(locationDTO, id);
         return ResponseEntity.ok(updatedLocation);
     }

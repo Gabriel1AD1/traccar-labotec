@@ -1,15 +1,19 @@
     package com.labotec.traccar.infra.config;
 
-    import com.labotec.traccar.app.implemenatition.*;
+    import com.labotec.traccar.app.implementation.*;
+    import com.labotec.traccar.app.lib.GpsUtil;
     import com.labotec.traccar.app.mapper.*;
-    import com.labotec.traccar.app.usecase.ports.input.*;
+    import com.labotec.traccar.app.usecase.ports.input.email.GoogleEmail;
+    import com.labotec.traccar.app.usecase.ports.input.repository.*;
     import com.labotec.traccar.app.usecase.ports.out.*;
     import org.springframework.context.annotation.Bean;
     import org.springframework.context.annotation.Configuration;
     import lombok.AllArgsConstructor;
+    import org.springframework.transaction.annotation.Transactional;
 
     @Configuration
     @AllArgsConstructor
+    @Transactional
     public class AppConfig {
 
         private final BusStopRepository busStopRepository;
@@ -29,6 +33,10 @@
         private final VehicleModelMapper vehicleModelMapper;
         private final RouteBusStopModelMapper routeBusStopModelMapper;
         private final VehicleTypeRepository vehicleTypeRepository;
+        private final GeofenceCircularRepository geofenceCircularRepository;
+        private final GeofenceCircularModelMapper geofencePoligonalModelMapper;
+        private final GoogleEmail googleEmail;
+        private final OverviewPolylineRepository overviewPolylineRepository;
         @Bean(name = "busStopService")
         public BusStopService busStop() {
             return new BusStopImpl(busStopRepository,companyRepository,busStopModelMapper);
@@ -56,7 +64,10 @@
                     companyRepository,
                     busStopRepository,
                     routeBusStopRepository,
-                    routeModelMapper);
+                    routeModelMapper,
+                    overviewPolylineRepository,
+                    vehicleRepository,
+                    scheduleRepository);
         }
 
         @Bean(name = "scheduleService")
@@ -67,6 +78,7 @@
                 locationRepository,
                 routeRepository,
                 companyRepository,
+                geofenceCircularRepository,
                 scheduleModelMapper); }
 
         @Bean(name = "vehicleService")
@@ -84,5 +96,27 @@
                     routeBusStopRepository,
                     routeBusStopModelMapper);
         }
+
+        @Bean(name = "geofenceService")
+        public GeofencePoligonalService geofencePoligonalService(){
+            return new CircularGeofenceServiceImpl(
+                    geofenceCircularRepository,
+                    geofencePoligonalModelMapper
+            );
+        }
+        @Bean(name = "integrationTraccarService")
+        public IntegrationTraccarService traccarService(){
+            return new IntegrationTraccarImpl(
+                    routeRepository,
+                     companyRepository,
+                     busStopRepository,
+                     routeBusStopRepository,
+                     routeModelMapper,
+                     overviewPolylineRepository,
+                     vehicleRepository,
+                     scheduleRepository,
+                    googleEmail);
+        }
+
     }
 

@@ -2,7 +2,8 @@ package com.labotec.traccar.infra.web.controller.rest.labotec;
 
 import com.labotec.traccar.app.usecase.ports.out.BusStopService;
 import com.labotec.traccar.domain.database.models.BusStop;
-import com.labotec.traccar.domain.web.dto.BusStopDTO;
+import com.labotec.traccar.domain.web.dto.create.BusStopDTO;
+import com.labotec.traccar.domain.web.dto.update.BusStopUpdateDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -45,7 +46,7 @@ public class BusStopController {
 
     // Endpoint para actualizar una parada de autobús existente
     @PutMapping("/{id}")
-    public ResponseEntity<BusStop> update(@RequestBody @Valid BusStopDTO busStopDTO, @PathVariable @NotNull Integer id) {
+    public ResponseEntity<BusStop> update(@RequestBody @Valid BusStopUpdateDTO busStopDTO, @PathVariable @NotNull Integer id) {
         BusStop updatedBusStop = busStopService.update(busStopDTO, id);
         return ResponseEntity.ok(updatedBusStop);
     }

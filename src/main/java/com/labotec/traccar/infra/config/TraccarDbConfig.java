@@ -12,18 +12,19 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.sql.DataSource;
+import java.util.Map;
 
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(
-        basePackages = "com.labotec.traccar.infra.db.mysql.jpa.traccar",  // Repositorios para traccar
+        basePackages = "com.labotec.traccar.infra.db.mysql.jpa.traccar",
         entityManagerFactoryRef = "traccarDbEntityManagerFactory",
         transactionManagerRef = "traccarDbTransactionManager"
 )
 public class TraccarDbConfig {
 
     @Bean(name = "traccarDbDataSource")
-    @ConfigurationProperties(prefix = "spring.datasource.db2")  // Cambiado el prefijo aquí
+    @ConfigurationProperties(prefix = "spring.datasource.db2")
     public DataSource dataSource() {
         return DataSourceBuilder.create().build();
     }
@@ -33,7 +34,7 @@ public class TraccarDbConfig {
             EntityManagerFactoryBuilder builder, @Qualifier("traccarDbDataSource") DataSource dataSource) {
         return builder
                 .dataSource(dataSource)
-                .packages("com.labotec.traccar.infra.db.mysql.jpa.traccar.entity")  // Paquete de entidades de traccar
+                .packages("com.labotec.traccar.infra.db.mysql.jpa.traccar.entity")
                 .persistenceUnit("traccarDb")
                 .build();
     }

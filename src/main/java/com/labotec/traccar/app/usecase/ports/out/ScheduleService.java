@@ -2,12 +2,14 @@ package com.labotec.traccar.app.usecase.ports.out;
 
 import com.labotec.traccar.app.utils.common.repository.GenericCrudService;
 import com.labotec.traccar.domain.database.models.Schedule;
-import com.labotec.traccar.domain.web.dto.ScheduleDTO;
+import com.labotec.traccar.domain.database.models.Vehicle;
+import com.labotec.traccar.domain.web.dto.create.ScheduleDTO;
+import com.labotec.traccar.domain.web.dto.update.ScheduleUpdateDTO;
 
 import java.time.Instant;
 import java.util.List;
 
-public interface ScheduleService extends GenericCrudService<Schedule , ScheduleDTO , Integer> {
+public interface ScheduleService extends GenericCrudService<Schedule , ScheduleDTO , ScheduleUpdateDTO> {
 
     Schedule updateStatus(Integer id, Byte status);
 
@@ -17,7 +19,7 @@ public interface ScheduleService extends GenericCrudService<Schedule , ScheduleD
 
     Schedule updateEstimatedArrivalTime(Integer id, Instant estimatedDepartureTime);
 
-    List<Schedule> findTripsByVehicleId(Integer vehicleId);
+    List<Schedule> findScheduleByVehicle(Integer vehicle);
 
 
 }

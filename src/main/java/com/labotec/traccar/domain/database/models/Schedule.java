@@ -19,6 +19,7 @@ public class Schedule {
     private Route route;
     private String sheetNumber;
     private Byte status;
+    private CircularGeofence geofence;
     private Instant estimatedDepartureTime;
     private Instant estimatedArrivalTime;
     private Company company;

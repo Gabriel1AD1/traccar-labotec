@@ -2,7 +2,8 @@ package com.labotec.traccar.infra.web.controller.rest.labotec;
 
 import com.labotec.traccar.app.usecase.ports.out.DriverService;
 import com.labotec.traccar.domain.database.models.Driver;
-import com.labotec.traccar.domain.web.dto.DriverDTO;
+import com.labotec.traccar.domain.web.dto.create.DriverDTO;
+import com.labotec.traccar.domain.web.dto.update.DriverUpdateDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -45,7 +46,7 @@ public class DriverController {
 
     // Endpoint para actualizar un conductor existente
     @PutMapping("/{id}")
-    public ResponseEntity<Driver> update(@RequestBody @Valid DriverDTO driverDTO, @PathVariable @NotNull Integer id) {
+    public ResponseEntity<Driver> update(@RequestBody @Valid DriverUpdateDTO driverDTO, @PathVariable @NotNull Integer id) {
         Driver updatedDriver = driverService.update(driverDTO, id);
         return ResponseEntity.ok(updatedDriver);
     }

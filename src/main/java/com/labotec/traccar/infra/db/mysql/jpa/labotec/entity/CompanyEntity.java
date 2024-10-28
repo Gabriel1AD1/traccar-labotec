@@ -38,4 +38,9 @@ public class CompanyEntity {
     @Column(name = "lab_fecha_actualizacion")
     private Instant lastModifiedDate;
 
+    public CompanyEntity(String name, String ruc, Byte status) {
+        this.name = name;
+        this.ruc = ruc;
+        this.status = status;
+    }
 }

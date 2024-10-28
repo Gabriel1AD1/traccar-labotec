@@ -2,10 +2,11 @@ package com.labotec.traccar.infra.web.controller.rest.labotec;
 
 import com.labotec.traccar.app.usecase.ports.out.RouteBusStopService;
 import com.labotec.traccar.domain.database.models.RouteBusStop;
-import com.labotec.traccar.domain.web.dto.RouteBusStopDTO;
-import com.labotec.traccar.domain.web.dto.RouteBusUpdateStopDTO;
+import com.labotec.traccar.domain.web.dto.create.RouteBusStopDTO;
+import com.labotec.traccar.domain.web.dto.create.RouteBusStopIterableDTO;
+import com.labotec.traccar.domain.web.dto.update.RouteBusStopUpdateDTO;
+import com.labotec.traccar.domain.web.dto.update.RouteBusUpdateStopIterableDTO;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ public class RouteBusStopController {
 
     // Endpoint para crear una nueva route-bus-stop
     @PostMapping()
-    public ResponseEntity<Iterable<RouteBusStop>> create(@RequestBody @Valid RouteBusStopDTO locationDTO) {
+    public ResponseEntity<Iterable<RouteBusStop>> create(@RequestBody @Valid RouteBusStopIterableDTO locationDTO) {
         Iterable<RouteBusStop> createdLocation = routeBusStopService.createList(locationDTO);
         return ResponseEntity.ok(createdLocation);
     }
@@ -47,14 +48,12 @@ public class RouteBusStopController {
 
     // Endpoint para actualizar una route-bus-stop existente
     @PutMapping("/{id}")
-    //TODO AREGLAR ENDPOINT
-    //TODO Agregar create y areglar el update
-    public ResponseEntity<RouteBusStop> update(@RequestBody @Valid RouteBusStopDTO locationDTO, @PathVariable @NotNull Integer id) {
+    public ResponseEntity<RouteBusStop> update(@RequestBody @Valid RouteBusStopUpdateDTO locationDTO, @PathVariable @NotNull Integer id) {
         RouteBusStop updatedLocation = routeBusStopService.update(locationDTO, id);
         return ResponseEntity.ok(updatedLocation);
     }
     @PutMapping()
-    public ResponseEntity<Iterable<RouteBusStop>> update(@RequestBody @Valid RouteBusUpdateStopDTO locationDTO) {
+    public ResponseEntity<Iterable<RouteBusStop>> update(@RequestBody @Valid RouteBusUpdateStopIterableDTO locationDTO) {
         Iterable<RouteBusStop> updatedLocation = routeBusStopService.updateToList(locationDTO);
         return ResponseEntity.ok(updatedLocation);
     }

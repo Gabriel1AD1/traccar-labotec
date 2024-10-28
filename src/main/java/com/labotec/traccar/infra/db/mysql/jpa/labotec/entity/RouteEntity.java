@@ -7,6 +7,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
+import java.util.List;
 
 @Data
 @Builder
@@ -48,4 +49,11 @@ public class RouteEntity {
     @Column(name = "lab_fecha_actualizacion")
     private Instant lastModifiedDate;
 
+    public RouteEntity(String name, Byte status, BusStopEntity originBusStop, BusStopEntity destinationBusStop, CompanyEntity company) {
+        this.name = name;
+        this.status = status;
+        this.originBusStop = originBusStop;
+        this.destinationBusStop = destinationBusStop;
+        this.company = company;
+    }
 }

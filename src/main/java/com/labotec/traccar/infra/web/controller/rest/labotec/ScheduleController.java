@@ -2,7 +2,11 @@ package com.labotec.traccar.infra.web.controller.rest.labotec;
 
 import com.labotec.traccar.app.usecase.ports.out.ScheduleService;
 import com.labotec.traccar.domain.database.models.Schedule;
-import com.labotec.traccar.domain.web.dto.ScheduleDTO;
+import com.labotec.traccar.domain.web.dto.create.ScheduleDTO;
+import com.labotec.traccar.domain.web.dto.update.ScheduleUpdateDTO;
+import com.labotec.traccar.infra.web.controller.rest.constant.ApiDocumentationConstants;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -21,17 +25,31 @@ import static com.labotec.traccar.infra.web.controller.common.API_VERSION_MANAGE
 @AllArgsConstructor
 public class ScheduleController {
 
-    // Inyección del servicio específico de Schedule
     private final ScheduleService scheduleService;
 
-    // Endpoint para crear un nuevo horario
+    // Crear una nueva programación
+    @Operation(
+            summary = ApiDocumentationConstants.CREATE_SCHEDULE_SUMMARY,
+            description = ApiDocumentationConstants.CREATE_SCHEDULE_DESCRIPTION,
+            responses = {
+                    @ApiResponse(responseCode = "200", description = ApiDocumentationConstants.RESPONSE_200)
+            }
+    )
     @PostMapping("")
     public ResponseEntity<Schedule> create(@RequestBody @Valid ScheduleDTO scheduleDTO) {
         Schedule createdSchedule = scheduleService.create(scheduleDTO);
         return ResponseEntity.ok(createdSchedule);
     }
 
-    // Endpoint para obtener un horario por su ID
+    // Obtener programación por ID
+    @Operation(
+            summary = ApiDocumentationConstants.FIND_SCHEDULE_BY_ID_SUMMARY,
+            description = ApiDocumentationConstants.FIND_SCHEDULE_BY_ID_DESCRIPTION,
+            responses = {
+                    @ApiResponse(responseCode = "200", description = ApiDocumentationConstants.RESPONSE_200),
+                    @ApiResponse(responseCode = "404", description = ApiDocumentationConstants.RESPONSE_404)
+            }
+    )
     @GetMapping("/{id}")
     public ResponseEntity<Schedule> findById(@PathVariable @NotNull Integer id) {
         Optional<Schedule> result = Optional.ofNullable(scheduleService.findById(id));
@@ -39,27 +57,58 @@ public class ScheduleController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // Endpoint para obtener todos los horarios
+    // Obtener todas las programaciones
+    @Operation(
+            summary = ApiDocumentationConstants.FIND_ALL_SCHEDULES_SUMMARY,
+            description = ApiDocumentationConstants.FIND_ALL_SCHEDULES_DESCRIPTION,
+            responses = {
+                    @ApiResponse(responseCode = "200", description = ApiDocumentationConstants.RESPONSE_200)
+            }
+    )
     @GetMapping("")
     public ResponseEntity<Iterable<Schedule>> findAll() {
         Iterable<Schedule> allSchedules = scheduleService.findAll();
         return ResponseEntity.ok(allSchedules);
     }
 
-    // Endpoint para actualizar un horario existente
+    // Actualizar programación existente
+    @Operation(
+            summary = ApiDocumentationConstants.UPDATE_SCHEDULE_SUMMARY,
+            description = ApiDocumentationConstants.UPDATE_SCHEDULE_DESCRIPTION,
+            responses = {
+                    @ApiResponse(responseCode = "200", description = ApiDocumentationConstants.RESPONSE_200),
+                    @ApiResponse(responseCode = "404", description = ApiDocumentationConstants.RESPONSE_404)
+            }
+    )
     @PutMapping("/{id}")
-    public ResponseEntity<Schedule> update(@RequestBody @Valid ScheduleDTO scheduleDTO, @PathVariable @NotNull Integer id) {
+    public ResponseEntity<Schedule> update(@RequestBody @Valid ScheduleUpdateDTO scheduleDTO, @PathVariable @NotNull Integer id) {
         Schedule updatedSchedule = scheduleService.update(scheduleDTO, id);
         return ResponseEntity.ok(updatedSchedule);
     }
 
-    // Endpoint para eliminar un horario por su ID
+    // Eliminar programación por ID
+    @Operation(
+            summary = ApiDocumentationConstants.DELETE_SCHEDULE_SUMMARY,
+            description = ApiDocumentationConstants.DELETE_SCHEDULE_DESCRIPTION,
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Eliminación exitosa"),
+                    @ApiResponse(responseCode = "404", description = ApiDocumentationConstants.RESPONSE_404)
+            }
+    )
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable @NotNull Integer id) {
         scheduleService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
+    // Actualizar estado de programación
+    @Operation(
+            summary = ApiDocumentationConstants.UPDATE_STATUS_SUMMARY,
+            description = ApiDocumentationConstants.UPDATE_STATUS_DESCRIPTION,
+            responses = {
+                    @ApiResponse(responseCode = "200", description = ApiDocumentationConstants.RESPONSE_200)
+            }
+    )
     @PutMapping("/{id}/status/{status}")
     public ResponseEntity<Schedule> updateStatus(
             @PathVariable Integer id,
@@ -69,18 +118,30 @@ public class ScheduleController {
         return ResponseEntity.ok(updatedSchedule);
     }
 
+    // Obtener programaciones por rango de fechas
+    @Operation(
+            summary = ApiDocumentationConstants.GET_SCHEDULES_BY_DATE_RANGE_SUMMARY,
+            description = ApiDocumentationConstants.GET_SCHEDULES_BY_DATE_RANGE_DESCRIPTION,
+            responses = {
+                    @ApiResponse(responseCode = "200", description = ApiDocumentationConstants.RESPONSE_200)
+            }
+    )
     @GetMapping("/from/{from}/to/{to}")
     public ResponseEntity<List<Schedule>> getSchedulesByDateRange(
             @PathVariable("from") Instant from,
             @PathVariable("to") Instant to) {
-
-        // Llamada al servicio para filtrar las programaciones
         List<Schedule> schedules = scheduleService.findAllByDateRange(from, to);
-
         return ResponseEntity.ok(schedules);
     }
 
-
+    // Actualizar hora estimada de salida
+    @Operation(
+            summary = ApiDocumentationConstants.UPDATE_ESTIMATED_DEPARTURE_SUMMARY,
+            description = ApiDocumentationConstants.UPDATE_ESTIMATED_DEPARTURE_DESCRIPTION,
+            responses = {
+                    @ApiResponse(responseCode = "200", description = ApiDocumentationConstants.RESPONSE_200)
+            }
+    )
     @PutMapping("/{id}/estimated-departure")
     public ResponseEntity<Schedule> updateEstimatedDepartureTime(
             @PathVariable Integer id,
@@ -89,6 +150,14 @@ public class ScheduleController {
         return ResponseEntity.ok(updatedSchedule);
     }
 
+    // Actualizar hora estimada de llegada
+    @Operation(
+            summary = ApiDocumentationConstants.UPDATE_ESTIMATED_ARRIVAL_SUMMARY,
+            description = ApiDocumentationConstants.UPDATE_ESTIMATED_ARRIVAL_DESCRIPTION,
+            responses = {
+                    @ApiResponse(responseCode = "200", description = ApiDocumentationConstants.RESPONSE_200)
+            }
+    )
     @PutMapping("/{id}/estimated-arrival")
     public ResponseEntity<Schedule> updateEstimatedArrivalTime(
             @PathVariable Integer id,

@@ -10,8 +10,10 @@ import java.time.Instant;
 public class RouteBusStop {
     private Integer id;
     private Route route;
-    private BusStop busStop;
+    private BusStop firstBusStop;
+    private BusStop secondBusStop;
     private Integer order;
+    private Boolean completed;
     private Instant createdDate;
     private Instant lastModifiedDate;
 }

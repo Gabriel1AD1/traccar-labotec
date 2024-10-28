@@ -1,8 +1,7 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.impl;
 
-import com.labotec.traccar.app.usecase.ports.input.VehicleTypeRepository;
+import com.labotec.traccar.app.usecase.ports.input.repository.VehicleTypeRepository;
 import com.labotec.traccar.domain.database.models.VehicleType;
-import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.VehicleEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.VehicleTypeEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.VehicleTypeMapper;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.VehicleTypeRepositoryJpa;

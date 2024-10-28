@@ -1,10 +1,11 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.impl;
 
-import com.labotec.traccar.app.usecase.ports.input.ScheduleRepository;
+import com.labotec.traccar.app.usecase.ports.input.repository.ScheduleRepository;
 import com.labotec.traccar.domain.database.models.Schedule;
-import com.labotec.traccar.domain.web.dto.ScheduleDTO;
+import com.labotec.traccar.domain.database.models.Vehicle;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.*;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.ScheduleMapper;
+import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.VehicleMapper;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.*;
 import com.labotec.traccar.infra.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
@@ -14,12 +15,8 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
-import static com.labotec.traccar.infra.db.mysql.jpa.labotec.message.ComapanyMessage.COMPANY_NOT_FOUND_BY_ID;
-import static com.labotec.traccar.infra.db.mysql.jpa.labotec.message.LocationMessage.LOCATION_NOT_FOUND_BY_ID;
 import static com.labotec.traccar.infra.db.mysql.jpa.labotec.message.ScheduleMessage.SCHEDULE_NOT_FOUND_BY_ID;
-import static com.labotec.traccar.infra.db.mysql.jpa.labotec.message.DriverMessage.DRIVER_NOT_FOUND_BY_ID;
 import static com.labotec.traccar.infra.db.mysql.jpa.labotec.message.VehicleMessage.VEHICLE_NOT_FOUND_BY_ID;
-import static com.labotec.traccar.infra.db.mysql.jpa.labotec.message.RouteMessage.ROUTE_NOT_FOUND_BY_ID;
 
 @AllArgsConstructor
 @Repository
@@ -27,6 +24,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
 
     private final ScheduleRepositoryJpa scheduleRepositoryJpa;
     private final ScheduleMapper scheduleMapper;
+    private final VehicleMapper vehicleMapper;
 
     @Override
     public Schedule create(Schedule entity) {
@@ -113,10 +111,20 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     }
 
     @Override
-    public List<Schedule> findTripsByVehicleId(Integer vehicleId) {
+    public List<Schedule> findByVehicle(Vehicle vehicle) {
+
+        VehicleEntity vehicleFind = vehicleMapper.toEntity(vehicle);
         // Consulta JPA para obtener las programaciones por vehicleId
-        List<ScheduleEntity> scheduleEntities = scheduleRepositoryJpa.findByVehicleId(vehicleId);
+        List<ScheduleEntity> scheduleEntities = scheduleRepositoryJpa.findByVehicle(vehicleFind);
 
         // Mapeo de entidades a modelos de dominio
         return scheduleMapper.toModelList(scheduleEntities);    }
+
+    @Override
+    public Schedule findByVehicleLastedRegister(Vehicle vehicleId) {
+        VehicleEntity vehicleEntity = vehicleMapper.toEntity(vehicleId);
+        ScheduleEntity scheduleEntity = scheduleRepositoryJpa.findTopByVehicleOrderByDepartureTimeDesc(vehicleEntity).
+                orElseThrow(()-> new EntityNotFoundException(VEHICLE_NOT_FOUND_BY_ID));
+        return scheduleMapper.toModel(scheduleEntity);
+    }
 }

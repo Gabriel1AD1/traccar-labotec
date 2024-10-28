@@ -49,5 +49,25 @@
       "name": "spring.datasource.db2.jdbc-url",
       "type": "java.lang.String",
       "description": "Description for spring.datasource.db2.jdbc-url."
+    },
+    {
+      "name": "spring.datasource.db1.jpa.hibernate.ddl-auto",
+      "type": "java.lang.String",
+      "description": "Description for spring.datasource.db1.jpa.hibernate.ddl-auto."
+    },
+    {
+      "name": "spring.datasource.db2.jpa.hibernate.ddl-auto",
+      "type": "java.lang.String",
+      "description": "Description for spring.datasource.db2.jpa.hibernate.ddl-auto."
+    },
+    {
+      "name": "spring.jpa.hibernate.ddl.traccar.labotec",
+      "type": "java.lang.String",
+      "description": "Description for spring.jpa.hibernate.ddl.traccar.labotec."
+    },
+    {
+      "name": "key.labotec.api.email",
+      "type": "java.lang.String",
+      "description": "Description for key.labotec.api.email."
     }
   ] }
