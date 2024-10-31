@@ -1,19 +1,17 @@
 package com.labotec.traccar.app.implementation;
 
 import com.labotec.traccar.app.lib.GpsLibDecoded;
-import com.labotec.traccar.app.lib.GpsUtil;
 import com.labotec.traccar.app.mapper.RouteModelMapper;
 import com.labotec.traccar.app.usecase.ports.input.email.GoogleEmail;
 import com.labotec.traccar.app.usecase.ports.input.repository.*;
 import com.labotec.traccar.app.usecase.ports.out.IntegrationTraccarService;
 import com.labotec.traccar.domain.database.models.*;
-import com.labotec.traccar.domain.web.dto.LastedInformationVehicle;
+import com.labotec.traccar.domain.web.dto.traccar.DeviceRequestDTO;
+import com.labotec.traccar.domain.web.dto.traccar.LastedInformationVehicle;
 import lombok.AllArgsConstructor;
-import org.locationtech.jts.geom.GeometryFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static com.labotec.traccar.app.constants.IntegrationTraccarConstant.*;
 
@@ -86,5 +84,10 @@ public class IntegrationTraccarImpl implements IntegrationTraccarService {
         System.out.println("Porcentaje de ruta completado: " + gpsLib.getCompletionPercentage() + "%");
 
         return "GOOD";
+    }
+
+    @Override
+    public void processPositionDataStop(DeviceRequestDTO deviceRequestDTO) {
+
     }
 }

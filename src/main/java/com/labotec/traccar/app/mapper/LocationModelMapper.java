@@ -1,7 +1,7 @@
 package com.labotec.traccar.app.mapper;
 
 import com.labotec.traccar.domain.database.models.Location;
-import com.labotec.traccar.domain.web.dto.create.LocationDTO;
+import com.labotec.traccar.domain.web.dto.entel.create.LocationDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring")

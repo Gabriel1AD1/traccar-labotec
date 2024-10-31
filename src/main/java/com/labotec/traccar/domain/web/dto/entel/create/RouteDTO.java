@@ -1,12 +1,9 @@
-package com.labotec.traccar.domain.web.dto.update;
+package com.labotec.traccar.domain.web.dto.entel.create;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -14,7 +11,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RouteUpdateDTO {
+public class RouteDTO {
 
     @NotNull(message = "Company ID is required")
     @JsonProperty("company_id")
@@ -40,15 +37,12 @@ public class RouteUpdateDTO {
     @JsonProperty("bus_stops")
     private List<BusStopDTO> busStops;
 
-    // Clase interna BusStopOrderDTO
+    // Clase interna consolidada BusStopDTO
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class BusStopDTO {
-        @NotNull(message = "Company ID is required")
-        @JsonProperty("id")
-        private Integer id;
 
         @NotNull(message = "First Bus Stop ID is required")
         @Positive(message = "First Bus Stop ID must be a positive number")
@@ -64,5 +58,24 @@ public class RouteUpdateDTO {
         @Positive(message = "Order must be a positive number")
         @JsonProperty("orden")
         private Integer order;
+
+        @NotNull(message = "List of Polylines is required")
+        @JsonProperty("polylines")
+        private List<BusStopDTO.PolylineDTO> polylines; // Lista de polilíneas
+        // Clase interna consolidada PolylineDTO
+        @Data
+        @Builder
+        @NoArgsConstructor
+        @AllArgsConstructor
+        public static class PolylineDTO {
+            @NotNull(message = "Polyline string is required") // Validación para el poliline
+            @JsonProperty("polyline")
+            private String polyline;
+
+            @JsonProperty("is_primary") // Para identificar la polilínea principal
+            private Boolean isPrimary;
+        }
     }
+
+
 }

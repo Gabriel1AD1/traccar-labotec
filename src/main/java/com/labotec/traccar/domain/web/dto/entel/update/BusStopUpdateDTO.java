@@ -1,16 +1,13 @@
-package com.labotec.traccar.domain.web.dto.create;
+package com.labotec.traccar.domain.web.dto.entel.update;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
-public class BusStopDTO {
-
+@Data
+public class BusStopUpdateDTO {
     @NotEmpty(message = "Name is required")
     @Size(max = 200, message = "Name must not exceed 200 characters")
     @JsonProperty("name")
@@ -32,5 +29,5 @@ public class BusStopDTO {
 
     @NotNull(message = "Company is required")
     @JsonProperty("company_id")
-    private Integer companyId;  // Refers to the company id
+    private Integer companyId;
 }

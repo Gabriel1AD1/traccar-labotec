@@ -8,10 +8,10 @@ import com.labotec.traccar.app.usecase.ports.out.RouteBusStopService;
 import com.labotec.traccar.domain.database.models.BusStop;
 import com.labotec.traccar.domain.database.models.Route;
 import com.labotec.traccar.domain.database.models.RouteBusStop;
-import com.labotec.traccar.domain.web.dto.create.RouteBusStopDTO;
-import com.labotec.traccar.domain.web.dto.create.RouteBusStopIterableDTO;
-import com.labotec.traccar.domain.web.dto.update.RouteBusStopUpdateDTO;
-import com.labotec.traccar.domain.web.dto.update.RouteBusUpdateStopIterableDTO;
+import com.labotec.traccar.domain.web.dto.entel.create.RouteBusStopDTO;
+import com.labotec.traccar.domain.web.dto.entel.create.RouteBusStopIterableDTO;
+import com.labotec.traccar.domain.web.dto.entel.update.RouteBusStopUpdateDTO;
+import com.labotec.traccar.domain.web.dto.entel.update.RouteBusUpdateStopIterableDTO;
 import lombok.AllArgsConstructor;
 
 import java.util.ArrayList;

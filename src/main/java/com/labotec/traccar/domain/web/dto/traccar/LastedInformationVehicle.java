@@ -1,4 +1,4 @@
-package com.labotec.traccar.domain.web.dto;
+package com.labotec.traccar.domain.web.dto.traccar;
 
 import lombok.Data;
 

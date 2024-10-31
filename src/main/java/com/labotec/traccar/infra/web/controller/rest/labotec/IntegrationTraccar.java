@@ -1,8 +1,7 @@
 package com.labotec.traccar.infra.web.controller.rest.labotec;
 
 import com.labotec.traccar.app.usecase.ports.out.IntegrationTraccarService;
-import com.labotec.traccar.app.usecase.ports.out.RouteService;
-import com.labotec.traccar.domain.web.dto.LastedInformationVehicle;
+import com.labotec.traccar.domain.web.dto.traccar.LastedInformationVehicle;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

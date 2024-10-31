@@ -6,8 +6,8 @@ import com.labotec.traccar.app.usecase.ports.input.repository.DriverRepository;
 import com.labotec.traccar.app.usecase.ports.out.DriverService;
 import com.labotec.traccar.domain.database.models.Company;
 import com.labotec.traccar.domain.database.models.Driver;
-import com.labotec.traccar.domain.web.dto.create.DriverDTO;
-import com.labotec.traccar.domain.web.dto.update.DriverUpdateDTO;
+import com.labotec.traccar.domain.web.dto.entel.create.DriverDTO;
+import com.labotec.traccar.domain.web.dto.entel.update.DriverUpdateDTO;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor

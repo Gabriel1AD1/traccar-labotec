@@ -1,4 +1,4 @@
-package com.labotec.traccar.domain.web.dto.create;
+package com.labotec.traccar.domain.web.dto.entel.update;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CompanyDTO {
+public class CompanyUpdateDTO {
 
     @NotNull(message = "Name is required")
     @Size(max = 45, message = "Name must not exceed 45 characters")

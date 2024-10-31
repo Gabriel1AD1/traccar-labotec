@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -13,10 +14,7 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "tc_devices", schema = "traccar", indexes = {
-        @Index(name = "uniqueid", columnList = "uniqueid", unique = true),
-        @Index(name = "idx_devices_uniqueid", columnList = "uniqueid")
-})
+@Table(name = "tc_devices", schema = "traccar")
 public class TcDevice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -64,6 +62,7 @@ public class TcDevice {
     @Column(name = "category", length = 128)
     private String category;
 
+    @ColumnDefault("b'0'")
     @Column(name = "disabled")
     private Boolean disabled;
 
@@ -74,24 +73,29 @@ public class TcDevice {
     @Column(name = "expirationtime")
     private Instant expirationtime;
 
+    @ColumnDefault("b'0'")
     @Column(name = "motionstate")
     private Boolean motionstate;
 
     @Column(name = "motiontime")
     private Instant motiontime;
 
+    @ColumnDefault("0")
     @Column(name = "motiondistance")
     private Double motiondistance;
 
+    @ColumnDefault("b'0'")
     @Column(name = "overspeedstate")
     private Boolean overspeedstate;
 
     @Column(name = "overspeedtime")
     private Instant overspeedtime;
 
+    @ColumnDefault("0")
     @Column(name = "overspeedgeofenceid")
     private Integer overspeedgeofenceid;
 
+    @ColumnDefault("b'0'")
     @Column(name = "motionstreak")
     private Boolean motionstreak;
 
@@ -99,5 +103,18 @@ public class TcDevice {
     @OnDelete(action = OnDeleteAction.SET_NULL)
     @JoinColumn(name = "calendarid")
     private TcCalendar calendarid;
+
+    @NotNull
+    @ColumnDefault("b'0'")
+    @Column(name = "isStopped", nullable = false)
+    private Boolean isStopped = false;
+
+    @NotNull
+    @ColumnDefault("b'0'")
+    @Column(name = "alertSent", nullable = false)
+    private Boolean alertSent = false;
+
+    @Column(name = "lastStoppedTime")
+    private Instant lastStoppedTime;
 
 }

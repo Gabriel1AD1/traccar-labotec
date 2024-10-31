@@ -2,8 +2,8 @@ package com.labotec.traccar.infra.web.controller.rest.labotec;
 
 import com.labotec.traccar.app.usecase.ports.out.BusStopService;
 import com.labotec.traccar.domain.database.models.BusStop;
-import com.labotec.traccar.domain.web.dto.create.BusStopDTO;
-import com.labotec.traccar.domain.web.dto.update.BusStopUpdateDTO;
+import com.labotec.traccar.domain.web.dto.entel.create.BusStopDTO;
+import com.labotec.traccar.domain.web.dto.entel.update.BusStopUpdateDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

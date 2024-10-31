@@ -1,4 +1,4 @@
-package com.labotec.traccar.domain.web.dto.update;
+package com.labotec.traccar.domain.web.dto.entel.update;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.DecimalMax;

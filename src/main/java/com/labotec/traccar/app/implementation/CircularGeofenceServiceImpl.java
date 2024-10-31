@@ -4,8 +4,8 @@ import com.labotec.traccar.app.mapper.GeofenceCircularModelMapper;
 import com.labotec.traccar.app.usecase.ports.input.repository.GeofenceCircularRepository;
 import com.labotec.traccar.app.usecase.ports.out.GeofencePoligonalService;
 import com.labotec.traccar.domain.database.models.CircularGeofence;
-import com.labotec.traccar.domain.web.dto.create.CircularGeofenceDTO;
-import com.labotec.traccar.domain.web.dto.update.GeofencePoligonalUpdateDTO;
+import com.labotec.traccar.domain.web.dto.entel.create.CircularGeofenceDTO;
+import com.labotec.traccar.domain.web.dto.entel.update.GeofencePoligonalUpdateDTO;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor

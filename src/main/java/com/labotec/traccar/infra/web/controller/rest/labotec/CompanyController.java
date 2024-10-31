@@ -2,8 +2,8 @@ package com.labotec.traccar.infra.web.controller.rest.labotec;
 
 import com.labotec.traccar.app.usecase.ports.out.CompanyService;
 import com.labotec.traccar.domain.database.models.Company;
-import com.labotec.traccar.domain.web.dto.create.CompanyDTO;
-import com.labotec.traccar.domain.web.dto.update.CompanyUpdateDTO;
+import com.labotec.traccar.domain.web.dto.entel.create.CompanyDTO;
+import com.labotec.traccar.domain.web.dto.entel.update.CompanyUpdateDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

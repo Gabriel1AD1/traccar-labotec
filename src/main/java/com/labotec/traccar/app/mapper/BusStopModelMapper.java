@@ -1,8 +1,8 @@
 package com.labotec.traccar.app.mapper;
 
 import com.labotec.traccar.domain.database.models.BusStop;
-import com.labotec.traccar.domain.web.dto.create.BusStopDTO;
-import com.labotec.traccar.domain.web.dto.update.BusStopUpdateDTO;
+import com.labotec.traccar.domain.web.dto.entel.create.BusStopDTO;
+import com.labotec.traccar.domain.web.dto.entel.update.BusStopUpdateDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;

@@ -1,4 +1,4 @@
-package com.labotec.traccar.domain.web.dto.create;
+package com.labotec.traccar.domain.web.dto.entel.create;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;

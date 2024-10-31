@@ -8,8 +8,8 @@ import com.labotec.traccar.app.usecase.ports.out.VehicleService;
 import com.labotec.traccar.domain.database.models.Company;
 import com.labotec.traccar.domain.database.models.Vehicle;
 import com.labotec.traccar.domain.database.models.VehicleType;
-import com.labotec.traccar.domain.web.dto.create.VehicleDTO;
-import com.labotec.traccar.domain.web.dto.update.VehicleUpdateDTO;
+import com.labotec.traccar.domain.web.dto.entel.create.VehicleDTO;
+import com.labotec.traccar.domain.web.dto.entel.update.VehicleUpdateDTO;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor

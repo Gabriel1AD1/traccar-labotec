@@ -79,7 +79,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiError, HttpStatus.METHOD_NOT_ALLOWED);
     }
 
-    // Maneja cualquier otra excepción general
+    /*// Maneja cualquier otra excepción general
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleGlobalException(Exception ex) {
         // Mensaje de depuración opcional
@@ -91,9 +91,12 @@ public class GlobalExceptionHandler {
                 debugMessage,
                 Map.of("ERROR", ex.getMessage())
         );
-
+        System.out.println(ex.getMessage());
+        System.out.println(ex.getLocalizedMessage());
+        System.out.println(ex.getCause().toString());
         return new ResponseEntity<>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+    */
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ApiError> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {

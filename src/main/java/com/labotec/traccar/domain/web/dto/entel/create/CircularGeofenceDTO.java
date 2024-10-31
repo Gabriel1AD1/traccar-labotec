@@ -1,19 +1,10 @@
-package com.labotec.traccar.domain.web.dto.update;
+package com.labotec.traccar.domain.web.dto.entel.create;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.labotec.traccar.domain.database.models.CircularGeofence;
-import com.labotec.traccar.domain.web.dto.create.CircularGeofenceDTO;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
-import java.util.List;
-
-/**
- * DTO for {@link CircularGeofence}
- */
 @Data
-public class GeofencePoligonalUpdateDTO {
+public class CircularGeofenceDTO {
 
     @NotEmpty(message = "El nombre no puede estar vacío")
     @Size(max = 100, message = "El nombre no puede exceder los 100 caracteres")
@@ -33,4 +24,6 @@ public class GeofencePoligonalUpdateDTO {
     private Double longitude;
 
     private Double radius;
+
+
 }

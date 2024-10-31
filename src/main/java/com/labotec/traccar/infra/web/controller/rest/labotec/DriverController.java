@@ -2,8 +2,8 @@ package com.labotec.traccar.infra.web.controller.rest.labotec;
 
 import com.labotec.traccar.app.usecase.ports.out.DriverService;
 import com.labotec.traccar.domain.database.models.Driver;
-import com.labotec.traccar.domain.web.dto.create.DriverDTO;
-import com.labotec.traccar.domain.web.dto.update.DriverUpdateDTO;
+import com.labotec.traccar.domain.web.dto.entel.create.DriverDTO;
+import com.labotec.traccar.domain.web.dto.entel.update.DriverUpdateDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

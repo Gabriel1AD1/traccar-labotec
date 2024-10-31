@@ -1,6 +1,6 @@
 package com.labotec.traccar.app.Validations;
 
-import com.labotec.traccar.domain.web.dto.create.RouteDTO;
+import com.labotec.traccar.domain.web.dto.entel.create.RouteDTO;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import java.util.List;

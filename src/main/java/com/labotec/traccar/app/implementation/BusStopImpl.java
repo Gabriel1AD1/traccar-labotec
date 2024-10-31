@@ -6,8 +6,8 @@ import com.labotec.traccar.app.usecase.ports.input.repository.CompanyRepository;
 import com.labotec.traccar.app.usecase.ports.out.BusStopService;
 import com.labotec.traccar.domain.database.models.BusStop;
 import com.labotec.traccar.domain.database.models.Company;
-import com.labotec.traccar.domain.web.dto.create.BusStopDTO;
-import com.labotec.traccar.domain.web.dto.update.BusStopUpdateDTO;
+import com.labotec.traccar.domain.web.dto.entel.create.BusStopDTO;
+import com.labotec.traccar.domain.web.dto.entel.update.BusStopUpdateDTO;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor

@@ -4,8 +4,8 @@ import com.labotec.traccar.app.mapper.ScheduleModelMapper;
 import com.labotec.traccar.app.usecase.ports.input.repository.*;
 import com.labotec.traccar.app.usecase.ports.out.ScheduleService;
 import com.labotec.traccar.domain.database.models.*;
-import com.labotec.traccar.domain.web.dto.create.ScheduleDTO;
-import com.labotec.traccar.domain.web.dto.update.ScheduleUpdateDTO;
+import com.labotec.traccar.domain.web.dto.entel.create.ScheduleDTO;
+import com.labotec.traccar.domain.web.dto.entel.update.ScheduleUpdateDTO;
 import lombok.AllArgsConstructor;
 
 import java.time.Instant;

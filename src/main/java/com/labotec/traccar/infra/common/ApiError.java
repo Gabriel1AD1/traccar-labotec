@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
@@ -12,6 +13,7 @@ import java.util.Map;
 @Getter
 @Setter
 @AllArgsConstructor
+@ToString
 public class ApiError {
 
     private HttpStatus status;
