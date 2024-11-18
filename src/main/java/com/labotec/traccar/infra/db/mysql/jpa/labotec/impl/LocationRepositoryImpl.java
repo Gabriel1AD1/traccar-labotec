@@ -26,22 +26,23 @@ public class LocationRepositoryImpl implements LocationRepository {
         return locationMapper.toModel(locationSaved);    }
 
     @Override
-    public Location findById(Integer id) {
-        LocationEntity locationEntity = locationRepositoryJpa.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(LOCATION_NOT_FOUND_BY_ID + id));
+    public Location findById(Long resourceId, Long userId) {
+        LocationEntity locationEntity = locationRepositoryJpa.findByIdAndUserId(resourceId,userId).orElseThrow(
+                () -> new EntityNotFoundException("Local no encontrado")
+        );
         return locationMapper.toModel(locationEntity);
     }
 
     @Override
-    public Optional<Location> findByIdOptional(Integer id) {
-        return locationRepositoryJpa.findById(id)
-                .map(locationMapper::toModel); // Usar el mapper para convertir de entidad a modelo
+    public Optional<Location> findByIdOptional(Long resourceId, Long userId) {
+        LocationEntity locationEntity = locationRepositoryJpa.findByIdAndUserId(resourceId,userId).get();
+        return Optional.ofNullable(locationMapper.toModel(locationEntity));
     }
 
     @Override
-    public List<Location> findAll() {
-        List<LocationEntity> locationEntities = locationRepositoryJpa.findAll();
-        return locationMapper.toModelList(locationEntities); // Usar el mapper para convertir la lista de entidades
+    public Iterable<Location> findAll(Long userId) {
+        List<LocationEntity> locationEntityList = locationRepositoryJpa.findAllByUserId(userId);
+        return locationMapper.toModelList(locationEntityList);
     }
 
     @Override
@@ -52,7 +53,7 @@ public class LocationRepositoryImpl implements LocationRepository {
     }
 
     @Override
-    public void deleteById(Integer id) {
-        locationRepositoryJpa.deleteById(id);
+    public void deleteById(Long resourceId, Long userId) {
+        locationRepositoryJpa.deleteByIdAndUserId(resourceId, userId);
     }
 }

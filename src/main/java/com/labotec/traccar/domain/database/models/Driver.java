@@ -1,5 +1,6 @@
 package com.labotec.traccar.domain.database.models;
 
+import com.labotec.traccar.domain.enums.STATE;
 import lombok.*;
 
 import java.time.Instant;
@@ -9,12 +10,13 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Driver {
-    private Integer id;
+    private Long id;
+    private User userId;
+    private Company companyId;
     private String firstName;
-    private Integer documentType;
+    private String documentType;
     private String documentNumber;
-    private Byte status;
-    private Company company;
+    private STATE status;
     private Instant lastModifiedDate;
     private Instant createdDate;
 }

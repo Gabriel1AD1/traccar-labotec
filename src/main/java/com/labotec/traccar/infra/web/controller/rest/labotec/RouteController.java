@@ -24,38 +24,48 @@ public class RouteController {
 
     // Endpoint para crear una nueva ruta
     @PostMapping("")
-    public ResponseEntity<Route> create(@RequestBody @Valid RouteDTO routeDTO) {
+    public ResponseEntity<Route> create(
+            @Valid @RequestBody RouteDTO routeDTO,
+            @RequestHeader(name = "userId") Long userId) {
         System.out.println(routeDTO.toString());
-        Route createdRoute = routeService.create(routeDTO);
+        Route createdRoute = routeService.create(routeDTO,userId);
         return ResponseEntity.ok(createdRoute);
     }
 
     // Endpoint para obtener una ruta por su ID
     @GetMapping("/{id}")
-    public ResponseEntity<Route> findById(@PathVariable @NotNull Integer id) {
-        Optional<Route> result = Optional.ofNullable(routeService.findById(id));
+    public ResponseEntity<Route> findById(
+            @PathVariable("id") @NotNull Long resourceId,
+            @RequestHeader(name = "userId") Long userId
+    ) {
+        Optional<Route> result = Optional.ofNullable(routeService.findById(resourceId,userId));
         return result.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     // Endpoint para obtener todas las rutas
     @GetMapping("")
-    public ResponseEntity<Iterable<Route>> findAll() {
-        Iterable<Route> allRoutes = routeService.findAll();
+    public ResponseEntity<Iterable<Route>> findAll(
+            @RequestHeader(name = "userId") Long userId
+    ) {
+        Iterable<Route> allRoutes = routeService.findAll(userId);
         return ResponseEntity.ok(allRoutes);
     }
 
     // Endpoint para actualizar una ruta existente
     @PutMapping("/{id}")
-    public ResponseEntity<Route> update(@RequestBody @Valid RouteUpdateDTO routeDTO, @PathVariable @NotNull Integer id) {
-        Route updatedRoute = routeService.update(routeDTO, id);
+    public ResponseEntity<Route> update(@RequestBody @Valid RouteUpdateDTO routeDTO,
+                                        @PathVariable("id") @NotNull Long resourceId,
+                                        @RequestHeader(name = "userId") Long userId) {
+        Route updatedRoute = routeService.update(routeDTO, resourceId,userId);
         return ResponseEntity.ok(updatedRoute);
     }
 
     // Endpoint para eliminar una ruta por su ID
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable @NotNull Integer id) {
-        routeService.deleteById(id);
+    public ResponseEntity<Void> deleteById(@PathVariable("id") @NotNull Long resourceId,
+                                           @RequestHeader(name = "userId") Long userId) {
+        routeService.deleteById(resourceId,userId);
         return ResponseEntity.noContent().build();
     }
 }

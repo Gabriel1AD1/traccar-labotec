@@ -1,6 +1,7 @@
 package com.labotec.traccar.domain.web.dto.entel.update;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.labotec.traccar.domain.enums.STATE;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -17,7 +18,7 @@ public class VehicleUpdateDTO {
 
     @NotNull(message = "Status is required")
     @JsonProperty("status")  // Mapea con "status" en el JSON
-    private Byte status;
+    private STATE status;
 
     @NotNull(message = "Register number is required")
     @Size(max = 50, message = "Register number must not exceed 50 characters")
@@ -34,13 +35,9 @@ public class VehicleUpdateDTO {
     @JsonProperty("model")  // Mapea con "model" en el JSON
     private String model;
 
-    @NotNull(message = "Company is required")
-    @JsonProperty("company_id")  // Mapea con "company_id" en el JSON
-    private Integer companyId;  // Refers to the company id    @NotNull(message = "Company is required")
-
     @JsonProperty("device_traccar_id")  // Mapea con "company_id" en el JSON
-    private Integer traccarDeviceId;  // Refers to the company id    @NotNull(message = "Company is required")
+    private Long traccarDeviceId;  // Refers to the company id    @NotNull(message = "Company is required")
 
     @JsonProperty("type_vehicle_id")  // Mapea con "company_id" en el JSON
-    private Integer typeVehicleId;  // Refers to the company id
+    private Long typeVehicleId;  // Refers to the company id
 }

@@ -1,6 +1,7 @@
 package com.labotec.traccar.domain.web.dto.entel.update;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.labotec.traccar.domain.enums.STATE;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -25,9 +26,6 @@ public class BusStopUpdateDTO {
 
     @NotNull(message = "Status is required")
     @JsonProperty("status")
-    private Byte status;
+    private STATE status;
 
-    @NotNull(message = "Company is required")
-    @JsonProperty("company_id")
-    private Integer companyId;
 }

@@ -8,11 +8,9 @@
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    @ToString
     public class Company {
-        private Integer id;
-        private String name;
-        private String ruc;
-        private Byte status;
+        private Long companyId;
         private Instant lastModifiedDate;
         private Instant createdDate;
     }

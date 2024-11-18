@@ -13,6 +13,7 @@ import com.labotec.traccar.infra.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -44,28 +45,5 @@ public class OverviewPolylineRepositoryImpl implements OverviewPolylineRepositor
         return overviewPolylineMapper.toModel(overviewPolylineSave);
     }
 
-    @Override
-    public OverviewPolyline findById(Integer integer) {
-        return null;
-    }
 
-    @Override
-    public Optional<OverviewPolyline> findByIdOptional(Integer integer) {
-        return Optional.empty();
-    }
-
-    @Override
-    public Iterable<OverviewPolyline> findAll() {
-        return null;
-    }
-
-    @Override
-    public OverviewPolyline update(OverviewPolyline entity) {
-        return null;
-    }
-
-    @Override
-    public void deleteById(Integer integer) {
-
-    }
 }

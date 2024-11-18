@@ -3,6 +3,7 @@ package com.labotec.traccar.infra.db.mysql.jpa.labotec.impl;
 import com.labotec.traccar.app.usecase.ports.input.repository.ScheduleRepository;
 import com.labotec.traccar.domain.database.models.Schedule;
 import com.labotec.traccar.domain.database.models.Vehicle;
+import com.labotec.traccar.domain.enums.STATE;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.*;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.ScheduleMapper;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.VehicleMapper;
@@ -34,22 +35,23 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     }
 
     @Override
-    public Schedule findById(Integer id) {
-        ScheduleEntity scheduleEntity = scheduleRepositoryJpa.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(SCHEDULE_NOT_FOUND_BY_ID + id));
+    public Schedule findById(Long resourceId, Long userId) {
+        ScheduleEntity scheduleEntity = scheduleRepositoryJpa.findByIdAndUserId_UserId(resourceId,userId).orElseThrow(
+                () -> new EntityNotFoundException("La programación buscada no existe")
+        );
         return scheduleMapper.toModel(scheduleEntity);
     }
 
     @Override
-    public Optional<Schedule> findByIdOptional(Integer id) {
-        return scheduleRepositoryJpa.findById(id)
-                .map(scheduleMapper::toModel); // Usar el mapper para convertir de entidad a modelo
+    public Optional<Schedule> findByIdOptional(Long resourceId, Long userId) {
+        ScheduleEntity scheduleEntity = scheduleRepositoryJpa.findByIdAndUserId_UserId(resourceId,userId).get();
+        Schedule schedule = scheduleMapper.toModel(scheduleEntity);
+        return Optional.ofNullable(schedule);
     }
 
     @Override
-    public List<Schedule> findAll() {
-        List<ScheduleEntity> scheduleEntities = scheduleRepositoryJpa.findAll();
-        return scheduleMapper.toModelList(scheduleEntities); // Usar el mapper para convertir la lista de entidades
+    public Iterable<Schedule> findAll(Long userId) {
+        return scheduleMapper.toModelList(scheduleRepositoryJpa.findAllByUserId_UserId(userId));
     }
 
     @Override
@@ -58,73 +60,45 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
         ScheduleEntity scheduleEntitySaved = scheduleRepositoryJpa.save(schedule);
         return scheduleMapper.toModel(scheduleEntitySaved);    }
 
-
-
     @Override
-    public void deleteById(Integer id) {
-        scheduleRepositoryJpa.deleteById(id);
+    public void deleteById(Long resourceId, Long userId) {
+        scheduleRepositoryJpa.deleteByIdAndUserId_UserId(resourceId,userId);
     }
 
     @Override
-    public Schedule updateStatus(Integer id, Byte status) {
-        ScheduleEntity scheduleEntity = scheduleRepositoryJpa.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(SCHEDULE_NOT_FOUND_BY_ID + id)
+    public void updateStatus(Long resourceId, STATE status, Long userId) {
+        scheduleRepositoryJpa.updateStatusByUserIdAndId(status,resourceId,userId);
+    }
+
+    @Override
+    public List<Schedule> findAllByDateRange(Instant from, Instant to, Long userId) {
+        List<ScheduleEntity> findAll = scheduleRepositoryJpa.findAllByDepartureTimeBetweenAndUserId(from, to, userId);
+        return scheduleMapper.toModelList(findAll);
+    }
+
+    @Override
+    public void updateEstimatedDepartureTime(Long resourceId, Instant estimatedDepartureTime, Long userId) {
+        scheduleRepositoryJpa.updateEstimatedDepartureTime(resourceId, estimatedDepartureTime, userId);
+    }
+
+
+    @Override
+    public void updateEstimatedArrivalTime(Long resourceId, Instant estimatedArrivalTime, Long userId) {
+        scheduleRepositoryJpa.updateEstimatedArrivalTime(resourceId, estimatedArrivalTime, userId);
+    }
+
+    @Override
+    public List<Schedule> findByVehicle(Long vehicleId, Long userId) {
+        List<ScheduleEntity> findAll = scheduleRepositoryJpa.findByUserIdAndVehicleId(vehicleId,userId);
+        return scheduleMapper.toModelList(findAll);
+    }
+
+    @Override
+    public Schedule findByVehicleLastedRegister(Long vehicleId, Long userId) {
+        ScheduleEntity scheduleEntity = scheduleRepositoryJpa.findTopByVehicleAndUserOrderByDepartureTimeDesc(vehicleId,userId).orElseThrow(
+                () -> new jakarta.persistence.EntityNotFoundException("La ultima programación no existe")
         );
-        ScheduleEntity scheduleSaved = scheduleRepositoryJpa.save(scheduleEntity);
-        return scheduleMapper.toModel(scheduleSaved);
-    }
-
-    @Override
-    public List<Schedule> findAllByDateRange(Instant from, Instant to) {
-        List<ScheduleEntity> list = scheduleRepositoryJpa.findAllByDepartureTimeBetween(from , to);
-        return scheduleMapper.toModelList(list);
-    }
-
-    @Override
-    public Schedule updateEstimatedDepartureTime(Integer id, Instant estimatedDepartureTime) {
-        ScheduleEntity scheduleEntity = scheduleRepositoryJpa.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(SCHEDULE_NOT_FOUND_BY_ID + id));
-
-        // Actualizar el campo de estimatedDepartureTime
-        scheduleEntity.setEstimatedDepartureTime(estimatedDepartureTime);
-
-        // Guardar la entidad actualizada en la base de datos
-        ScheduleEntity updatedSchedule = scheduleRepositoryJpa.save(scheduleEntity);
-
-        // Devolver el modelo de dominio actualizado usando el mapper
-        return scheduleMapper.toModel(updatedSchedule);
-    }
-
-    @Override
-    public Schedule updateEstimatedArrivalTime(Integer id, Instant estimatedArrivalTime) {
-        ScheduleEntity scheduleEntity = scheduleRepositoryJpa.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(SCHEDULE_NOT_FOUND_BY_ID + id));
-
-        // Actualizar el campo de estimatedDepartureTime
-        scheduleEntity.setArrivalTime(estimatedArrivalTime);
-
-        // Guardar la entidad actualizada en la base de datos
-        ScheduleEntity updatedSchedule = scheduleRepositoryJpa.save(scheduleEntity);
-
-        // Devolver el modelo de dominio actualizado usando el mapper
-        return scheduleMapper.toModel(updatedSchedule);
-    }
-
-    @Override
-    public List<Schedule> findByVehicle(Vehicle vehicle) {
-
-        VehicleEntity vehicleFind = vehicleMapper.toEntity(vehicle);
-        // Consulta JPA para obtener las programaciones por vehicleId
-        List<ScheduleEntity> scheduleEntities = scheduleRepositoryJpa.findByVehicle(vehicleFind);
-
-        // Mapeo de entidades a modelos de dominio
-        return scheduleMapper.toModelList(scheduleEntities);    }
-
-    @Override
-    public Schedule findByVehicleLastedRegister(Vehicle vehicleId) {
-        VehicleEntity vehicleEntity = vehicleMapper.toEntity(vehicleId);
-        ScheduleEntity scheduleEntity = scheduleRepositoryJpa.findTopByVehicleOrderByDepartureTimeDesc(vehicleEntity).
-                orElseThrow(()-> new EntityNotFoundException(VEHICLE_NOT_FOUND_BY_ID));
         return scheduleMapper.toModel(scheduleEntity);
     }
+
 }

@@ -29,11 +29,11 @@ public class IntegrationTraccarImpl implements IntegrationTraccarService {
     private final GoogleEmail googleEmail;
     public String processPosition(LastedInformationVehicle informationVehicle) {
         // 1. Buscar el vehículo usando el deviceId
-        Vehicle vehicle = vehicleRepository.findByDevice(informationVehicle.getDeviceId());
+        Vehicle vehicle = vehicleRepository.findByDevice(Long.valueOf(informationVehicle.getDeviceId()));
         System.out.println(vehicle.toString());
 
         // 2. Obtener el último registro de la programación
-        Schedule schedule = scheduleRepository.findByVehicleLastedRegister(vehicle);
+        Schedule schedule = scheduleRepository.findByVehicleLastedRegister(Long.valueOf(informationVehicle.getDeviceId()),1L);
         System.out.println(schedule.toString());
 
         // 3. Obtener la ruta de la programación

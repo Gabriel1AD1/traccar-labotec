@@ -12,8 +12,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-import static com.labotec.traccar.infra.db.mysql.jpa.labotec.message.ComapanyMessage.COMPANY_NOT_FOUND_BY_ID;
-
 @AllArgsConstructor
 @Repository
 public class CompanyRepositoryImpl implements CompanyRepository {
@@ -29,20 +27,21 @@ public class CompanyRepositoryImpl implements CompanyRepository {
     }
 
     @Override
-    public Company findById(Integer id) {
-        CompanyEntity companyEntity = companyRepositoryJpa.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(COMPANY_NOT_FOUND_BY_ID + id));
+    public Company findById(Long resourceId) {
+        CompanyEntity companyEntity = companyRepositoryJpa.findById(resourceId).orElseThrow(
+                ()-> new EntityNotFoundException("Empresa no encontrada")
+        );
         return companyMapper.toModel(companyEntity);
     }
 
     @Override
-    public Optional<Company> findByIdOptional(Integer id) {
-        return companyRepositoryJpa.findById(id)
-                .map(companyMapper::toModel);
+    public Optional<Company> findByIdOptional(Long resourceId) {
+        CompanyEntity companyEntity = companyRepositoryJpa.findById(resourceId).get();
+        return Optional.ofNullable(companyMapper.toModel(companyEntity));
     }
 
     @Override
-    public List<Company> findAll() {
+    public Iterable<Company> findAll() {
         List<CompanyEntity> companyEntities = companyRepositoryJpa.findAll();
         return companyMapper.toModelList(companyEntities);
     }
@@ -54,9 +53,9 @@ public class CompanyRepositoryImpl implements CompanyRepository {
         return companyMapper.toModel(companyEntitySaved);
     }
 
-
     @Override
-    public void deleteById(Integer id) {
-        companyRepositoryJpa.deleteById(id);
+    public void deleteById(Long resourceId) {
+        companyRepositoryJpa.deleteById(resourceId);
     }
+
 }

@@ -23,37 +23,50 @@ public class VehicleController {
 
     // Endpoint para crear un nuevo vehículo
     @PostMapping("")
-    public ResponseEntity<Vehicle> create(@RequestBody @Valid VehicleDTO vehicleDTO) {
-        Vehicle createdVehicle = vehicleService.create(vehicleDTO);
+    public ResponseEntity<Vehicle> create(
+            @RequestBody @Valid VehicleDTO vehicleDTO,
+            @RequestHeader(name = "userId") Long userId
+    ) {
+        Vehicle createdVehicle = vehicleService.create(vehicleDTO,userId);
         return ResponseEntity.ok(createdVehicle);
     }
 
     // Endpoint para obtener un vehículo por su ID
     @GetMapping("/{id}")
-    public ResponseEntity<Vehicle> findById(@PathVariable @NotNull Integer id) {
-        Optional<Vehicle> result = Optional.ofNullable(vehicleService.findById(id));
+    public ResponseEntity<Vehicle> findById(
+            @PathVariable("id") @NotNull Long resourceId,
+            @RequestHeader(name = "userId") Long userId
+    ) {
+        Optional<Vehicle> result = Optional.ofNullable(vehicleService.findById(resourceId,userId));
         return result.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     // Endpoint para obtener todos los vehículos
     @GetMapping("")
-    public ResponseEntity<Iterable<Vehicle>> findAll() {
-        Iterable<Vehicle> allVehicles = vehicleService.findAll();
+    public ResponseEntity<Iterable<Vehicle>> findAll(
+            @RequestHeader(name = "userId") Long userId
+    ) {
+        Iterable<Vehicle> allVehicles = vehicleService.findAll(userId);
         return ResponseEntity.ok(allVehicles);
     }
 
     // Endpoint para actualizar un vehículo existente
     @PutMapping("/{id}")
-    public ResponseEntity<Vehicle> update(@RequestBody @Valid VehicleUpdateDTO vehicleDTO, @PathVariable @NotNull Integer id) {
-        Vehicle updatedVehicle = vehicleService.update(vehicleDTO, id);
+    public ResponseEntity<Vehicle> update(
+            @RequestBody @Valid VehicleUpdateDTO vehicleDTO,
+            @PathVariable("id") @NotNull Long resourceId,
+            @RequestHeader(name = "userId") Long userId
+    ) {
+        Vehicle updatedVehicle = vehicleService.update(vehicleDTO, resourceId,userId);
         return ResponseEntity.ok(updatedVehicle);
     }
 
     // Endpoint para eliminar un vehículo por su ID
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable @NotNull Integer id) {
-        vehicleService.deleteById(id);
+    public ResponseEntity<Void> deleteById(@PathVariable("id") @NotNull Long resourceId,
+                                           @RequestHeader(name = "userId") Long userId) {
+        vehicleService.deleteById(resourceId,userId);
         return ResponseEntity.noContent().build();
     }
 }

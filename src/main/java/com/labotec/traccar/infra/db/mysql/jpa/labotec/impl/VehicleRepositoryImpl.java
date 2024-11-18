@@ -31,22 +31,18 @@ public class VehicleRepositoryImpl implements VehicleRepository {
     }
 
     @Override
-    public Vehicle findById(Integer id) {
-        VehicleEntity vehicleEntity = vehicleRepositoryJpa.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(VEHICLE_NOT_FOUND_BY_ID + id));
-        return vehicleMapper.toModel(vehicleEntity);
+    public Vehicle findById(Long resourceId, Long userId) {
+        return null;
     }
 
     @Override
-    public Optional<Vehicle> findByIdOptional(Integer id) {
-        return vehicleRepositoryJpa.findById(id)
-                .map(vehicleMapper::toModel); // Usar el mapper para convertir de entidad a modelo
+    public Optional<Vehicle> findByIdOptional(Long resourceId, Long userId) {
+        return Optional.empty();
     }
 
     @Override
-    public List<Vehicle> findAll() {
-        List<VehicleEntity> vehicleEntities = vehicleRepositoryJpa.findAll();
-        return vehicleMapper.toModelList(vehicleEntities); // Usar el mapper para convertir la lista de entidades
+    public Iterable<Vehicle> findAll(Long userId) {
+        return null;
     }
 
     @Override
@@ -56,15 +52,15 @@ public class VehicleRepositoryImpl implements VehicleRepository {
         return vehicleMapper.toModel(vehicleSaved);
     }
 
-
     @Override
-    public void deleteById(Integer id) {
-        vehicleRepositoryJpa.deleteById(id);
+    public void deleteById(Long resourceId, Long userId) {
+
     }
 
+
+
     @Override
-    public Vehicle findByDevice(Integer id) {
-        VehicleEntity vehicleEntity = vehicleRepositoryJpa.findByTraccarDeviceId(id);
-        return vehicleMapper.toModel(vehicleEntity);
+    public Vehicle findByDevice(Long id) {
+        return null;
     }
 }

@@ -9,7 +9,6 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
 public interface VehicleModelMapper {
-    VehicleModelMapper INSTANCE = Mappers.getMapper(VehicleModelMapper.class);
 
     Vehicle toVehicleModel(VehicleDTO vehicleDTO);
     Vehicle toVehicleModel(VehicleUpdateDTO vehicleDTO);

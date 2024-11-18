@@ -5,5 +5,5 @@ import com.labotec.traccar.domain.database.models.Route;
 import com.labotec.traccar.domain.web.dto.entel.create.RouteDTO;
 import com.labotec.traccar.domain.web.dto.entel.update.RouteUpdateDTO;
 
-public interface RouteService extends GenericCrudService<Route, RouteDTO , RouteUpdateDTO> {
+public interface RouteService extends GenericCrudService<Route, RouteDTO , RouteUpdateDTO,Long> {
 }

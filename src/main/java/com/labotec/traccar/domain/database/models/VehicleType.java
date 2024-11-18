@@ -9,12 +9,11 @@ import java.time.Instant;
 @Getter
 @Setter
 public class VehicleType {
-
-    private Integer id;
-
+    private Long id;
+    private User userId;
+    private Company companyId;
     private String name;
-
     private Instant createdDate;
-
+    private String description;
     private Instant lastModifiedDate;
 }

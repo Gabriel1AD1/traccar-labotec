@@ -36,7 +36,7 @@ public class TraccarDbLabotecConfig {
         return DataSourceBuilder.create().build();
     }
 
-    @Value("${spring.jpa.hibernate.ddl.traccar.labotec}")
+    @Value("${spring.datasource.db1.jpa.hibernate.ddl-auto}")
     public String UpdateOrCreate ;
     @Primary
     @Bean(name = "traccarDbLabotecEntityManagerFactory")
@@ -46,7 +46,7 @@ public class TraccarDbLabotecConfig {
                 .dataSource(dataSource)
                 .packages("com.labotec.traccar.infra.db.mysql.jpa.labotec.entity")
                 .persistenceUnit("traccarDbLabotec")
-                .properties(Map.of("hibernate.hbm2ddl.auto", UpdateOrCreate)) // Esto ya no será necesario
+                .properties(Map.of("hibernate.hbm2ddl.auto", "update")) // Esto ya no será necesario
                 .build();
     }
 

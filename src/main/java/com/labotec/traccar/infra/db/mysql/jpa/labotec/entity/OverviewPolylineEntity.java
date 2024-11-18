@@ -17,31 +17,30 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "tbl_lab_overview_polyline", schema = "traccar_db")
+@Table(
+        name = "tbl_overview_polyline",
+        schema = "traccar_db",
+        indexes = {
+                @Index(name = "idx_route_bus_stop", columnList = "route_bus_stop_id"),
+        }
+
+
+)
 public class OverviewPolylineEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
+    private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tbl_route_id")
-    private RouteEntity route;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tbl_route_bus_stop_id")
+    @JoinColumn(name = "route_bus_stop_id")
     private RouteBusStopEntity routeBusStop;
-
-    @Column(name = "tbl_lab_polyline", length = 5000)
+    @Column(name = "polyline", length = 5000)
     private String polyline;
-
-    @Column(name = "tbl_lab_is_primary")
+    @Column(name = "is_primary")
     private Boolean isPrimary;
-
     @CreatedDate
     @Column(name = "lab_fecha_creacion", updatable = false)
     private Instant createdDate;
-
     @LastModifiedDate
     @Column(name = "lab_fecha_actualizacion")
     private Instant lastModifiedDate;

@@ -2,6 +2,7 @@ package com.labotec.traccar.infra.web.controller.rest.labotec;
 
 import com.labotec.traccar.app.usecase.ports.out.ScheduleService;
 import com.labotec.traccar.domain.database.models.Schedule;
+import com.labotec.traccar.domain.enums.STATE;
 import com.labotec.traccar.domain.web.dto.entel.create.ScheduleDTO;
 import com.labotec.traccar.domain.web.dto.entel.update.ScheduleUpdateDTO;
 import com.labotec.traccar.infra.web.controller.rest.constant.ApiDocumentationConstants;
@@ -36,8 +37,11 @@ public class ScheduleController {
             }
     )
     @PostMapping("")
-    public ResponseEntity<Schedule> create(@RequestBody @Valid ScheduleDTO scheduleDTO) {
-        Schedule createdSchedule = scheduleService.create(scheduleDTO);
+    public ResponseEntity<Schedule> create(
+            @RequestBody @Valid ScheduleDTO scheduleDTO,
+            @RequestHeader(name = "userId") Long userId
+    ) {
+        Schedule createdSchedule = scheduleService.create(scheduleDTO,userId);
         return ResponseEntity.ok(createdSchedule);
     }
 
@@ -51,8 +55,11 @@ public class ScheduleController {
             }
     )
     @GetMapping("/{id}")
-    public ResponseEntity<Schedule> findById(@PathVariable @NotNull Integer id) {
-        Optional<Schedule> result = Optional.ofNullable(scheduleService.findById(id));
+    public ResponseEntity<Schedule> findById(
+            @PathVariable("id") @NotNull Long resourceId,
+            @RequestHeader(name = "userId") Long userId
+    ) {
+        Optional<Schedule> result = Optional.ofNullable(scheduleService.findById(resourceId,userId));
         return result.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -66,8 +73,8 @@ public class ScheduleController {
             }
     )
     @GetMapping("")
-    public ResponseEntity<Iterable<Schedule>> findAll() {
-        Iterable<Schedule> allSchedules = scheduleService.findAll();
+    public ResponseEntity<Iterable<Schedule>> findAll(@RequestHeader(name = "userId") Long userId) {
+        Iterable<Schedule> allSchedules = scheduleService.findAll(userId);
         return ResponseEntity.ok(allSchedules);
     }
 
@@ -81,8 +88,12 @@ public class ScheduleController {
             }
     )
     @PutMapping("/{id}")
-    public ResponseEntity<Schedule> update(@RequestBody @Valid ScheduleUpdateDTO scheduleDTO, @PathVariable @NotNull Integer id) {
-        Schedule updatedSchedule = scheduleService.update(scheduleDTO, id);
+    public ResponseEntity<Schedule> update(
+            @RequestBody @Valid ScheduleUpdateDTO scheduleDTO,
+            @PathVariable("id") @NotNull Long resourceId,
+            @RequestHeader(name = "userId") Long userId
+    ) {
+        Schedule updatedSchedule = scheduleService.update(scheduleDTO, resourceId,userId);
         return ResponseEntity.ok(updatedSchedule);
     }
 
@@ -96,8 +107,9 @@ public class ScheduleController {
             }
     )
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable @NotNull Integer id) {
-        scheduleService.deleteById(id);
+    public ResponseEntity<Void> deleteById(@PathVariable("id") @NotNull Long resourceId,
+                                           @RequestHeader(name = "userId") Long userId) {
+        scheduleService.deleteById(resourceId,userId);
         return ResponseEntity.noContent().build();
     }
 
@@ -111,11 +123,12 @@ public class ScheduleController {
     )
     @PutMapping("/{id}/status/{status}")
     public ResponseEntity<Schedule> updateStatus(
-            @PathVariable Integer id,
-            @PathVariable Byte status
+            @PathVariable("id") Long resourceId,
+            @PathVariable("status") STATE status,
+            @RequestHeader(name = "userId") Long userId
     ) {
-        Schedule updatedSchedule = scheduleService.updateStatus(id, status);
-        return ResponseEntity.ok(updatedSchedule);
+        scheduleService.updateStatus(resourceId, status,userId);
+        return ResponseEntity.noContent().build();
     }
 
     // Obtener programaciones por rango de fechas
@@ -129,8 +142,10 @@ public class ScheduleController {
     @GetMapping("/from/{from}/to/{to}")
     public ResponseEntity<List<Schedule>> getSchedulesByDateRange(
             @PathVariable("from") Instant from,
-            @PathVariable("to") Instant to) {
-        List<Schedule> schedules = scheduleService.findAllByDateRange(from, to);
+            @PathVariable("to") Instant to,
+            @RequestHeader(name = "userId") Long userId
+    ) {
+        List<Schedule> schedules = scheduleService.findAllByDateRange(from, to,userId);
         return ResponseEntity.ok(schedules);
     }
 
@@ -144,10 +159,11 @@ public class ScheduleController {
     )
     @PutMapping("/{id}/estimated-departure")
     public ResponseEntity<Schedule> updateEstimatedDepartureTime(
-            @PathVariable Integer id,
+            @PathVariable("id") Long resourceId,
+            @RequestHeader(name = "userId") Long userId,
             @RequestParam("estimatedDepartureTime") @NotEmpty Instant estimatedDepartureTime) {
-        Schedule updatedSchedule = scheduleService.updateEstimatedDepartureTime(id, estimatedDepartureTime);
-        return ResponseEntity.ok(updatedSchedule);
+        scheduleService.updateEstimatedDepartureTime(resourceId, userId,estimatedDepartureTime);
+        return ResponseEntity.noContent().build();
     }
 
     // Actualizar hora estimada de llegada
@@ -160,9 +176,10 @@ public class ScheduleController {
     )
     @PutMapping("/{id}/estimated-arrival")
     public ResponseEntity<Schedule> updateEstimatedArrivalTime(
-            @PathVariable Integer id,
+            @PathVariable("id") Long resourceId,
+            @RequestHeader(name = "userId") Long userId,
             @RequestParam("estimated-arrival") @NotEmpty Instant estimatedDepartureTime) {
-        Schedule updatedSchedule = scheduleService.updateEstimatedArrivalTime(id, estimatedDepartureTime);
-        return ResponseEntity.ok(updatedSchedule);
+        scheduleService.updateEstimatedArrivalTime(resourceId, userId,estimatedDepartureTime);
+        return ResponseEntity.noContent().build();
     }
 }

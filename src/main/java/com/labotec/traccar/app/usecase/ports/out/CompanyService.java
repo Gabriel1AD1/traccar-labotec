@@ -5,5 +5,8 @@ import com.labotec.traccar.domain.database.models.Company;
 import com.labotec.traccar.domain.web.dto.entel.create.CompanyDTO;
 import com.labotec.traccar.domain.web.dto.entel.update.CompanyUpdateDTO;
 
-public interface CompanyService extends GenericCrudService<Company , CompanyDTO, CompanyUpdateDTO> {
+public interface CompanyService {
+    Company create(CompanyDTO companyDTO);
+
+    void deleteCompanyById(Long companyId);
 }

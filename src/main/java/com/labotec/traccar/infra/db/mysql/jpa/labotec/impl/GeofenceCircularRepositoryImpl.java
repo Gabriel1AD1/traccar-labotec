@@ -9,6 +9,7 @@ import com.labotec.traccar.infra.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -18,35 +19,42 @@ public class GeofenceCircularRepositoryImpl implements GeofenceCircularRepositor
     private final GeofenceCircularMapper geofenceCircularMapper;
     @Override
     public CircularGeofence create(CircularGeofence entity) {
-        return null;
+        CircularGeofenceEntity circularGeofenceEntityMap = geofenceCircularMapper.toEntity(entity);
+        CircularGeofenceEntity circularGeofenceSaved = geofenceCircularRepositoryJpa.save(circularGeofenceEntityMap);
+        return geofenceCircularMapper.toModel(circularGeofenceSaved);
     }
 
     @Override
-    public CircularGeofence findById(Integer integer) {
-        CircularGeofenceEntity circularGeofenceEntity = geofenceCircularRepositoryJpa.findById(Long.valueOf(integer)).orElseThrow(
-                () -> new EntityNotFoundException("Geo cerca no encontrada by id " + integer)
+    public CircularGeofence findById(Long resourceId, Long userId) {
+        CircularGeofenceEntity circularGeofence = geofenceCircularRepositoryJpa.findByIdAndUserId(resourceId,userId).orElseThrow(
+                ()-> new EntityNotFoundException("Geo cerca no encontrada")
         );
-
-        return geofenceCircularMapper.toModel(circularGeofenceEntity);
+        return geofenceCircularMapper.toModel(circularGeofence);
     }
 
     @Override
-    public Optional<CircularGeofence> findByIdOptional(Integer integer) {
-        return Optional.empty();
+    public Optional<CircularGeofence> findByIdOptional(Long resourceId, Long userId) {
+        CircularGeofenceEntity circularGeofence = geofenceCircularRepositoryJpa.findByIdAndUserId(resourceId,userId).get();
+        CircularGeofence circularGeofenceMap = geofenceCircularMapper.toModel(circularGeofence);
+        return Optional.ofNullable(circularGeofenceMap);
     }
 
     @Override
-    public Iterable<CircularGeofence> findAll() {
-        return null;
+    public Iterable<CircularGeofence> findAll(Long userId) {
+        List<CircularGeofenceEntity> circularGeofenceEntityList = geofenceCircularRepositoryJpa.findAllByUserId(userId);
+        return geofenceCircularMapper.toModelList(circularGeofenceEntityList);
     }
+
 
     @Override
     public CircularGeofence update(CircularGeofence entity) {
-        return null;
+        CircularGeofenceEntity circularGeofenceEntityMap = geofenceCircularMapper.toEntity(entity);
+        CircularGeofenceEntity circularGeofenceSaved = geofenceCircularRepositoryJpa.save(circularGeofenceEntityMap);
+        return geofenceCircularMapper.toModel(circularGeofenceSaved);
     }
 
     @Override
-    public void deleteById(Integer integer) {
-
+    public void deleteById(Long resourceId, Long userId) {
+        geofenceCircularRepositoryJpa.deleteByIdAndUserId(resourceId,userId);
     }
 }

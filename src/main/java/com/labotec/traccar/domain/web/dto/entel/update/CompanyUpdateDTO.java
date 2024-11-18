@@ -10,17 +10,9 @@ import lombok.Setter;
 @Setter
 public class CompanyUpdateDTO {
 
-    @NotNull(message = "Name is required")
-    @Size(max = 45, message = "Name must not exceed 45 characters")
-    @JsonProperty("name")
-    private String name;
-
     @NotNull(message = "RUC is required")
     @Size(max = 45, message = "RUC must not exceed 45 characters")
     @JsonProperty("ruc")
     private String ruc;
 
-    @NotNull(message = "Status is required")
-    @JsonProperty("status")
-    private Byte status;
 }

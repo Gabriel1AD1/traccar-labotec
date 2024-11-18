@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WebSocket Chat</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.2/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+</head>
+<body>
+
+<h1>WebSocket Chat</h1>
+
+<form id="message-form">
+    <label for="message-input">Message:</label>
+    <input type="text" id="message-input" placeholder="Enter a message">
+    <button type="submit">Send</button>
+</form>
+
+<ul id="messages">
+    <!-- Messages will be inserted here -->
+</ul>
+
+<script>
+    var stompClient = null;
+
+    function connect() {
+        var socket = new SockJS('/websocket');
+        stompClient = Stomp.over(socket);
+
+        stompClient.connect({}, function (frame) {
+            console.log('Connected: ' + frame);
+            stompClient.subscribe('/topic/messages', function (message) {
+                showMessage(JSON.parse(message.body).message);
+            });
+        });
+    }
+
+    function disconnect() {
+        if (stompClient !== null) {
+            stompClient.disconnect();
+        }
+        console.log("Disconnected");
+    }
+
+    function sendMessage() {
+        var message = document.getElementById('message-input').value;
+        stompClient.send("/app/send/message", {}, JSON.stringify({'message': message}));
+    }
+
+    function showMessage(message) {
+        var messages = document.getElementById('messages');
+        var li = document.createElement('li');
+        li.appendChild(document.createTextNode(message));
+        messages.appendChild(li);
+    }
+
+    connect();
+</script>
+
+</body>
+</html>

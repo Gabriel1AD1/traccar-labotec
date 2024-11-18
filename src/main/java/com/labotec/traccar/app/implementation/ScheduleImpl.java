@@ -4,6 +4,7 @@ import com.labotec.traccar.app.mapper.ScheduleModelMapper;
 import com.labotec.traccar.app.usecase.ports.input.repository.*;
 import com.labotec.traccar.app.usecase.ports.out.ScheduleService;
 import com.labotec.traccar.domain.database.models.*;
+import com.labotec.traccar.domain.enums.STATE;
 import com.labotec.traccar.domain.web.dto.entel.create.ScheduleDTO;
 import com.labotec.traccar.domain.web.dto.entel.update.ScheduleUpdateDTO;
 import lombok.AllArgsConstructor;
@@ -22,82 +23,86 @@ public class ScheduleImpl implements ScheduleService {
     private final CompanyRepository companyRepository;
     private final GeofenceCircularRepository overviewPolylineRepository;
     private final ScheduleModelMapper scheduleModelMapper;
+    private final UserRepository userRepository;
+
+
 
     @Override
-    public Schedule create(ScheduleDTO entityDto) {
-        Vehicle vehicle =  vehicleRepository.findById(entityDto.getVehicleId());
-        Driver driver = driverRepository.findById(entityDto.getDriverId());
-        Location location = locationRepository.findById(entityDto.getLocationId());
-        Route route = routeRepository.findById(entityDto.getRouteId());
-        Company company = companyRepository.findById(entityDto.getCompanyId());
-        Schedule scheduleMap  = scheduleModelMapper.toScheduleDomain(entityDto);
-        CircularGeofence circularGeofence = overviewPolylineRepository.findById(entityDto.getGeofencePoligonalId());
+    public Schedule create(ScheduleDTO scheduleDTO, Long userId) {
+        User user = userRepository.findByUserId(userId);
+        Vehicle vehicle =  vehicleRepository.findById(scheduleDTO.getVehicleId(),userId);
+        Driver driver = driverRepository.findById(scheduleDTO.getDriverId(),userId);
+        Location location = locationRepository.findById(scheduleDTO.getLocationId(),userId);
+        Route route = routeRepository.findById(scheduleDTO.getRouteId(),userId);
+        Schedule scheduleMap  = scheduleModelMapper.toScheduleDomain(scheduleDTO);
+        CircularGeofence circularGeofence = overviewPolylineRepository.findById(scheduleDTO.getGeofencePoligonalId(),userId);
+        scheduleMap.setCompanyId(user.getCompanyId());
         scheduleMap.setGeofence(circularGeofence);
         scheduleMap.setVehicle(vehicle);
         scheduleMap.setDriver(driver);
         scheduleMap.setLocation(location);
         scheduleMap.setRoute(route);
-        scheduleMap.setCompany(company);
+        scheduleMap.setUserId(user);
         return scheduleRepository.create(scheduleMap);
     }
 
     @Override
-    public Schedule findById(Integer integer) {
-        return scheduleRepository.findById(integer);
+    public Schedule findById(Long resourceId, Long userId) {
+        return scheduleRepository.findById(resourceId,userId);
     }
 
     @Override
-    public Iterable<Schedule> findAll() {
-        return scheduleRepository.findAll();
+    public Iterable<Schedule> findAll(Long userId) {
+        return scheduleRepository.findAll(userId);
     }
 
     @Override
-    public Schedule update(ScheduleUpdateDTO entityDto, Integer integer) {
-        Vehicle vehicleFind = vehicleRepository.findById(integer);
-        Vehicle vehicle =  vehicleRepository.findById(entityDto.getVehicleId());
-        Driver driver = driverRepository.findById(entityDto.getDriverId());
-        Location location = locationRepository.findById(entityDto.getLocationId());
-        Route route = routeRepository.findById(entityDto.getRouteId());
-        Company company = companyRepository.findById(entityDto.getCompanyId());
-        Schedule scheduleMap  = scheduleModelMapper.INSTANCE.toScheduleDomain(entityDto);
-        scheduleMap.setId(vehicleFind.getId());
+    public Schedule update(ScheduleUpdateDTO scheduleUpdateDTO, Long resourceId, Long userId) {
+        User user = userRepository.findByUserId(userId);
+        Vehicle vehicle =  vehicleRepository.findById(scheduleUpdateDTO.getVehicleId(),userId);
+        Driver driver = driverRepository.findById(scheduleUpdateDTO.getDriverId(),userId);
+        Location location = locationRepository.findById(scheduleUpdateDTO.getLocationId(),userId);
+        Route route = routeRepository.findById(scheduleUpdateDTO.getRouteId(),userId);
+        Schedule scheduleMap  = scheduleModelMapper.toScheduleDomain(scheduleUpdateDTO);
+        CircularGeofence circularGeofence = overviewPolylineRepository.findById(scheduleUpdateDTO.getGeofencePoligonalId(),userId);
+        scheduleMap.setCompanyId(user.getCompanyId());
+        scheduleMap.setGeofence(circularGeofence);
         scheduleMap.setVehicle(vehicle);
         scheduleMap.setDriver(driver);
         scheduleMap.setLocation(location);
         scheduleMap.setRoute(route);
-        scheduleMap.setCompany(company);
-        return scheduleRepository.update(scheduleMap);
+        scheduleMap.setUserId(user);
+        return scheduleRepository.create(scheduleMap);
     }
 
     @Override
-    public void deleteById(Integer integer) {
-        scheduleRepository.deleteById(integer);
+    public void deleteById(Long resourceId, Long userId) {
+        scheduleRepository.deleteById(resourceId,userId);
     }
 
     @Override
-    public Schedule updateStatus(Integer id, Byte status) {
-        return scheduleRepository.updateStatus(id,status);
+    public void updateStatus(Long id, STATE status, Long userId) {
+        scheduleRepository.updateStatus(id,status,userId);
+    }
+
+
+    @Override
+    public List<Schedule> findAllByDateRange(Instant from, Instant to, Long userId) {
+        return scheduleRepository.findAllByDateRange(from, to, userId);
     }
 
     @Override
-    public List<Schedule> findAllByDateRange(Instant from, Instant to) {
-        return scheduleRepository.findAllByDateRange(from , to);
+    public void updateEstimatedDepartureTime(Long resourceId, Long userId, Instant estimatedDepartureTime) {
+        scheduleRepository.updateEstimatedDepartureTime(resourceId, estimatedDepartureTime, userId);
     }
 
     @Override
-    public Schedule updateEstimatedDepartureTime(Integer id, Instant estimatedDepartureTime) {
-        return scheduleRepository.updateEstimatedDepartureTime(id,estimatedDepartureTime);
+    public void updateEstimatedArrivalTime(Long id, Long userId, Instant estimatedDepartureTime) {
+        scheduleRepository.updateEstimatedArrivalTime(id,estimatedDepartureTime,userId);
     }
 
     @Override
-    public Schedule updateEstimatedArrivalTime(Integer id, Instant estimatedArrivalTime) {
-        return scheduleRepository.updateEstimatedArrivalTime(id , estimatedArrivalTime);
+    public List<Schedule> findScheduleByVehicle(Long vehicle, Long userId) {
+        return scheduleRepository.findByVehicle(vehicle,userId);
     }
-
-    @Override
-    public List<Schedule> findScheduleByVehicle(Integer vehicleId) {
-        Vehicle vehicleFindBYId = vehicleRepository.findById(vehicleId);
-        return scheduleRepository.findByVehicle(vehicleFindBYId);
-    }
-
 }

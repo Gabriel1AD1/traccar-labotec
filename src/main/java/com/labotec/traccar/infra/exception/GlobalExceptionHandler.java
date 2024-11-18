@@ -1,16 +1,19 @@
 package com.labotec.traccar.infra.exception;
 
 import com.labotec.traccar.infra.common.ApiError;
+import com.labotec.traccar.infra.web.controller.rest.traccar.exception.Unauthorised;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -79,7 +82,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiError, HttpStatus.METHOD_NOT_ALLOWED);
     }
 
-    /*// Maneja cualquier otra excepción general
+    // Maneja cualquier otra excepción general
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleGlobalException(Exception ex) {
         // Mensaje de depuración opcional
@@ -96,8 +99,23 @@ public class GlobalExceptionHandler {
         System.out.println(ex.getCause().toString());
         return new ResponseEntity<>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-    */
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiError> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex, WebRequest request) {
+        // Extraer mensaje de depuración si está habilitado
+        String debugMessage = debugEnabled ? ex.getLocalizedMessage() : null;
 
+        // Mensaje amigable para el usuario
+        String userMessage = "Invalid JSON format or invalid data provided.";
+
+        ApiError apiError = new ApiError(
+                HttpStatus.BAD_REQUEST,
+                userMessage,
+                debugMessage,
+                Map.of("error", "Malformed JSON or invalid value provided.") // Suberror detallado
+        );
+
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+    }
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ApiError> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
         // Extraer el mensaje relevante de la excepción
@@ -117,6 +135,42 @@ public class GlobalExceptionHandler {
         );
 
         return new ResponseEntity<>(apiError, HttpStatus.CONFLICT);
+    }
+    @ExceptionHandler(Unauthorised.class)
+    public ResponseEntity<ApiError> handleNoAuthorized(Unauthorised ex, WebRequest request){
+        // Mensaje de depuración opcional
+        String debugMessage = debugEnabled ? ex.getLocalizedMessage() : null;
+
+        // Mensaje amigable para el usuario
+        String userMessage = "The requested no authorized";
+
+        // Crear un ApiError con los detalles del error
+        ApiError apiError = new ApiError(
+                HttpStatus.UNAUTHORIZED,
+                userMessage,
+                debugMessage,
+                Map.of("error", "Resource bad request: " + request.getDescription(false)) // Información adicional si es necesario
+        );
+
+        return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
+    }
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ApiError> handleNoResourceFoundException(NoResourceFoundException ex, WebRequest request) {
+        // Mensaje de depuración opcional
+        String debugMessage = debugEnabled ? ex.getLocalizedMessage() : null;
+
+        // Mensaje amigable para el usuario
+        String userMessage = "The requested resource could not be found.";
+
+        // Crear un ApiError con los detalles del error
+        ApiError apiError = new ApiError(
+                HttpStatus.NOT_FOUND,
+                userMessage,
+                debugMessage,
+                Map.of("error", "Resource not found: " + request.getDescription(false)) // Información adicional si es necesario
+        );
+
+        return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
     }
 
     // Método auxiliar para extraer la causa raíz de la excepción

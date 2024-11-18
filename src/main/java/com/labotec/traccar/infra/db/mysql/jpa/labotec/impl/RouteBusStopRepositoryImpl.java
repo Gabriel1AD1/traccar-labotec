@@ -28,55 +28,34 @@ public class RouteBusStopRepositoryImpl implements RouteBusStopRepository {
     private final RouteMapper routeMapper;
     @Override
     public RouteBusStop create(RouteBusStop entity) {
-        System.out.println("------------------------------------------------");
-        System.out.println("------------------------------------------------");
-        System.out.println("------------------------------------------------");
-        System.out.println("------------------------------------------------");
-        System.out.println("------------------------------------------------");
-        System.out.println("------------------------------------------------");
-        System.out.println("------------------------------------------------");
-
-
-        System.out.println(entity.getOrder());
         RouteBusStopEntity routeBusStopEntity = routeBusStopMapper.toEntity(entity);
-        System.out.println(routeBusStopEntity.toString());
-        System.out.println("------------------------------------------------");
-        System.out.println(routeBusStopEntity.getOrder());
         RouteBusStopEntity routeBusStopEntitySaved = routeBusStopRepositoryJpa.save(routeBusStopEntity);
         return routeBusStopMapper.toModel(routeBusStopEntitySaved);
     }
 
     @Override
-    public RouteBusStop findById(Integer id) {
-        RouteBusStopEntity routeBusStopEntity = routeBusStopRepositoryJpa.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(ROUTE_BUS_STOP_NOT_FOUND_BY_ID + id));
-
-        System.out.println(routeBusStopEntity.toString());
-        return routeBusStopMapper.toModel(routeBusStopEntity);
+    public RouteBusStop findById(Long resourceId, Long userId) {
+        return null;
     }
 
     @Override
-    public Optional<RouteBusStop> findByIdOptional(Integer id) {
-        return routeBusStopRepositoryJpa.findById(id)
-                .map(routeBusStopMapper::toModel);
+    public Optional<RouteBusStop> findByIdOptional(Long resourceId, Long userId) {
+        return Optional.empty();
     }
 
     @Override
-    public Iterable<RouteBusStop> findAll() {
-        List<RouteBusStopEntity> routeBusStopEntities = routeBusStopRepositoryJpa.findAll();
-        return routeBusStopMapper.toModelList(routeBusStopEntities);
+    public Iterable<RouteBusStop> findAll(Long userId) {
+        return null;
     }
 
     @Override
     public RouteBusStop update(RouteBusStop entity) {
-        RouteBusStopEntity routeBusStopEntity = routeBusStopMapper.toEntity(entity);
-        RouteBusStopEntity routeBusStopEntitySaved = routeBusStopRepositoryJpa.save(routeBusStopEntity);
-        return routeBusStopMapper.toModel(routeBusStopEntitySaved);
+        return null;
     }
 
     @Override
-    public void deleteById(Integer id) {
-        routeBusStopRepositoryJpa.deleteById(id);
+    public void deleteById(Long resourceId, Long userId) {
+
     }
 
     @Override

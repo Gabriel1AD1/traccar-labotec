@@ -1,5 +1,6 @@
     package com.labotec.traccar.infra.db.mysql.jpa.labotec.entity;
 
+    import com.labotec.traccar.domain.enums.STATE;
     import jakarta.persistence.*;
     import lombok.*;
     import org.springframework.data.annotation.CreatedDate;
@@ -7,41 +8,53 @@
     import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
     import java.time.Instant;
-
     @Data
     @Builder
     @Entity
-    @Table(name = "tbl_lab_chofer", schema = "traccar_db")
+    @Table(
+            name = "tbl_chofer",
+            schema = "traccar_db",
+            indexes = {
+                    @Index(name = "idx_id_company", columnList = "id, empresa_id"),
+                    @Index(name = "idx_id_user", columnList = "id, usuario_id"),
+                    @Index(name = "idx_company", columnList = "empresa_id"),
+                    @Index(name = "idx_user", columnList = "usuario_id")
+            }
+    )
     @NoArgsConstructor
     @AllArgsConstructor
     @EntityListeners(AuditingEntityListener.class)
     public class DriverEntity {
+
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        @Column(name = "lab_id_chofer", nullable = false)
-        private Integer id;
+        private Long id;
 
-        @Column(name = "lab_nombres", length = 250)
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "usuario_id")
+        private UserEntity userId;
+
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "empresa_id")
+        private CompanyEntity companyId;
+
+        @Column(name = "nombres", length = 250)
         private String firstName;
 
-        @Column(name = "lab_doc_identidad")
-        private Integer documentType;
+        @Column(name = "identidad")
+        private String documentType;
 
-        @Column(name = "lab_num_identidad", nullable = false, length = 50)
+        @Column(name = "numero_identidad", nullable = false, length = 50)
         private String documentNumber;
 
-        @Column(name = "lab_estado", nullable = false)
-        private Byte status;
-
-        @ManyToOne(fetch = FetchType.LAZY, optional = false)
-        @JoinColumn(name = "lab_id_empresa", nullable = false)
-        private CompanyEntity company;
+        @Column(name = "estado", nullable = false)
+        private STATE status;
 
         @CreatedDate
-        @Column(name = "lab_fecha_creacion", updatable = false)
+        @Column(name = "fecha_creacion", updatable = false)
         private Instant createdDate;
 
         @LastModifiedDate
-        @Column(name = "lab_fecha_actualizacion")
+        @Column(name = "fecha_actualizacion")
         private Instant lastModifiedDate;
     }

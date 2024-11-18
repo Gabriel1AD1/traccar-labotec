@@ -1,5 +1,16 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.seeder;
 
+import com.labotec.traccar.app.usecase.ports.input.repository.CompanyRepository;
+import com.labotec.traccar.app.usecase.ports.out.BusStopService;
+import com.labotec.traccar.app.usecase.ports.out.CompanyService;
+import com.labotec.traccar.app.usecase.ports.out.UserService;
+import com.labotec.traccar.domain.database.models.BusStop;
+import com.labotec.traccar.domain.database.models.Company;
+import com.labotec.traccar.domain.database.models.User;
+import com.labotec.traccar.domain.enums.STATE;
+import com.labotec.traccar.domain.web.dto.entel.create.BusStopDTO;
+import com.labotec.traccar.domain.web.dto.entel.create.CompanyDTO;
+import com.labotec.traccar.domain.web.dto.entel.create.UserDTO;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.CompanyEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.VehicleTypeEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.BusStopEntity;
@@ -12,64 +23,35 @@ import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
 import java.util.Arrays;
 
 @Component
 @AllArgsConstructor
 public class DatabaseSeeder implements CommandLineRunner {
-
-    private final VehicleTypeRepositoryJpa vehicleTypeRepository; // Repositorio de la entidad Vehicle
-    private final CompanyRepositoryJpa companyRepository; // Repositorio de la entidad Company
-    private final BusStopRepositoryJpa busStopRepository; // Repositorio de la entidad BusStop
-    private final RouteRepositoryJpa routeRepository; // Repositorio de la entidad Route
-
+    private final CompanyService companyService;
+    private final BusStopService busStopService;
+    private final UserService userService;
     @Override
     public void run(String... args) throws Exception {
-        // Insertar tipos de vehículos si no existen
-        if (vehicleTypeRepository.count() == 0) {
-            vehicleTypeRepository.saveAll(Arrays.asList(
-                    new VehicleTypeEntity("Triciclo"),
-                    new VehicleTypeEntity("Furgoneta"),
-                    new VehicleTypeEntity("Motos"),
-                    new VehicleTypeEntity("Camión"),
-                    new VehicleTypeEntity("Automóvil")
-            ));
+        CompanyDTO companyDTO = new CompanyDTO();
+        companyDTO.setCompanyId(10000L);
+        Company company = companyService.create(companyDTO);
+        System.out.println(company.toString());
+        UserDTO userDTO = new UserDTO();
+        userDTO.setCompanyId(10000L);
+        userDTO.setUserId(10000L);
+        User user = userService.createUser(userDTO);
+        System.out.println(user.toString());
+        BusStopDTO busStop = new BusStopDTO();
+        busStop.setName("Paradero 01 ");
+        busStop.setLatitude("11.02021");
+        busStop.setLatitude("-11.02021");
+        busStopService.create(busStop,10000L);
 
-            System.out.println("Base de datos inicializada con tipos de vehículos.");
-        }
-        if (false) {
-
-
-            // Insertar compañías si no existen
-            if (companyRepository.count() == 0) {
-                companyRepository.saveAll(Arrays.asList(
-                        new CompanyEntity("Compañía A", "123456789", (byte) 1),
-                        new CompanyEntity("Compañía B", "987654321", (byte) 1)
-                ));
-
-                System.out.println("Base de datos inicializada con compañías.");
-            }
-
-            // Insertar paraderos (Bus Stops) si no existen
-            if (busStopRepository.count() == 0) {
-                busStopRepository.saveAll(Arrays.asList(
-                        new BusStopEntity("Paradero 1", "12.3456", "-76.5678", (byte) 1, null),
-                        new BusStopEntity("Paradero 2", "12.1234", "-76.1234", (byte) 1, null)
-                ));
-
-                System.out.println("Base de datos inicializada con paraderos.");
-            }
-
-            // Insertar rutas si no existen
-            if (routeRepository.count() == 0) {
-                routeRepository.saveAll(Arrays.asList(
-                        new RouteEntity("Ruta 1", (byte) 1, null, null, companyRepository.findAll().iterator().next()), // Asignando a una compañía
-                        new RouteEntity("Ruta 2", (byte) 1, null, null, companyRepository.findAll().iterator().next())  // Asignando a una compañía
-                ));
-
-                System.out.println("Base de datos inicializada con rutas.");
-            }
-        }
+        userService.deleteUserById(10000L);
+        companyService.deleteCompanyById(10000L);
+        busStopService.deleteById(10000L , 10000L);
 
     }
 }

@@ -29,7 +29,7 @@ public class DeviceController {
     @PostMapping()
     public String getList(@RequestBody DeviceRequestDTO deviceRequestDTO) {
         vehicleMonitor.processPositionData(deviceRequestDTO);
-
+        vehicleMonitor.processDoorStatus(deviceRequestDTO);
         System.out.println(deviceRequestDTO.toString());
 
         return "Ok";

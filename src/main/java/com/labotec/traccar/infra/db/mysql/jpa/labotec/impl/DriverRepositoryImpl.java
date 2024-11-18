@@ -12,8 +12,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-import static com.labotec.traccar.infra.db.mysql.jpa.labotec.message.DriverMessage.DRIVER_NOT_FOUND_BY_ID;
-
 @AllArgsConstructor
 @Repository
 public class DriverRepositoryImpl implements DriverRepository {
@@ -30,23 +28,26 @@ public class DriverRepositoryImpl implements DriverRepository {
     }
 
     @Override
-    public Driver findById(Integer id) {
-        DriverEntity driverEntity = driverRepositoryJpa.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(DRIVER_NOT_FOUND_BY_ID + id));
-        return driverMapper.toModel(driverEntity);
+    public Driver findById(Long resourceId, Long userId) {
+        DriverEntity findByResourceIdAndUserId = driverRepositoryJpa.findByIdAndUserId(resourceId,userId).orElseThrow(
+                () -> new EntityNotFoundException("Conductor no encontrado")
+        );
+        return driverMapper.toModel(findByResourceIdAndUserId);
     }
 
     @Override
-    public Optional<Driver> findByIdOptional(Integer id) {
-        return driverRepositoryJpa.findById(id)
-                .map(driverMapper::toModel); // Usar el mapper para convertir de entidad a modelo
+    public Optional<Driver> findByIdOptional(Long resourceId, Long userId) {
+        DriverEntity findByResourceIdAndUserId = driverRepositoryJpa.findByIdAndUserId(resourceId,userId).get();
+        Driver driver = driverMapper.toModel(findByResourceIdAndUserId);
+        return Optional.ofNullable(driver);
     }
 
     @Override
-    public List<Driver> findAll() {
-        List<DriverEntity> driverEntities = driverRepositoryJpa.findAll();
-        return driverMapper.toModelList(driverEntities); // Usar el mapper para convertir la lista de entidades
+    public Iterable<Driver> findAll(Long userId) {
+        List<DriverEntity> driverEntityList = driverRepositoryJpa.findAllByUserId(userId);
+        return driverMapper.toModelList(driverEntityList);
     }
+
 
     @Override
     public Driver update(Driver entity) {
@@ -57,7 +58,8 @@ public class DriverRepositoryImpl implements DriverRepository {
     }
 
     @Override
-    public void deleteById(Integer id) {
-        driverRepositoryJpa.deleteById(id);
+    public void deleteById(Long resourceId, Long userId) {
+        driverRepositoryJpa.deleteByIdAndUserId(resourceId,userId);
     }
+
 }

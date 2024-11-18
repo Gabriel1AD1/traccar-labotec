@@ -5,9 +5,11 @@ import com.labotec.traccar.domain.database.models.BusStop;
 import com.labotec.traccar.domain.database.models.OverviewPolyline;
 import com.labotec.traccar.domain.database.models.RouteBusStop;
 
-public interface OverviewPolylineRepository extends GenericRepository<OverviewPolyline , Integer> {
+public interface OverviewPolylineRepository  {
 
     Iterable<OverviewPolyline> findAllByBusStop(BusStop busStop);
 
     OverviewPolyline findByRouteBusStopAndPrimary(RouteBusStop routeBusStopIterable);
+
+    OverviewPolyline create(OverviewPolyline entity);
 }

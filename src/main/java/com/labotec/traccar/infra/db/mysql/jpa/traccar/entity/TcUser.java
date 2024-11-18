@@ -1,21 +1,21 @@
 package com.labotec.traccar.infra.db.mysql.jpa.traccar.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.labotec.traccar.infra.web.controller.rest.traccar.helper.Hashing;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.time.Instant;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "tc_users", schema = "traccar", indexes = {
-        @Index(name = "email", columnList = "email", unique = true),
-        @Index(name = "idx_users_email", columnList = "email"),
-        @Index(name = "idx_users_login", columnList = "login")
-})
+@Table(name = "tc_users", schema = "traccar")
 public class TcUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,6 +41,7 @@ public class TcUser {
     private String salt;
 
     @NotNull
+    @ColumnDefault("b'0'")
     @Column(name = "readonly", nullable = false)
     private Boolean readonly = false;
 
@@ -52,14 +53,17 @@ public class TcUser {
     private String map;
 
     @NotNull
+    @ColumnDefault("0")
     @Column(name = "latitude", nullable = false)
     private Double latitude;
 
     @NotNull
+    @ColumnDefault("0")
     @Column(name = "longitude", nullable = false)
     private Double longitude;
 
     @NotNull
+    @ColumnDefault("0")
     @Column(name = "zoom", nullable = false)
     private Integer zoom;
 
@@ -71,18 +75,22 @@ public class TcUser {
     @Column(name = "coordinateformat", length = 128)
     private String coordinateformat;
 
+    @ColumnDefault("b'0'")
     @Column(name = "disabled")
     private Boolean disabled;
 
     @Column(name = "expirationtime")
     private Instant expirationtime;
 
+    @ColumnDefault("-1")
     @Column(name = "devicelimit")
     private Integer devicelimit;
 
+    @ColumnDefault("0")
     @Column(name = "userlimit")
     private Integer userlimit;
 
+    @ColumnDefault("b'0'")
     @Column(name = "devicereadonly")
     private Boolean devicereadonly;
 
@@ -90,6 +98,7 @@ public class TcUser {
     @Column(name = "phone", length = 128)
     private String phone;
 
+    @ColumnDefault("b'0'")
     @Column(name = "limitcommands")
     private Boolean limitcommands;
 
@@ -101,9 +110,11 @@ public class TcUser {
     @Column(name = "poilayer", length = 512)
     private String poilayer;
 
+    @ColumnDefault("b'0'")
     @Column(name = "disablereports")
     private Boolean disablereports;
 
+    @ColumnDefault("b'0'")
     @Column(name = "fixedemail")
     private Boolean fixedemail;
 
@@ -111,7 +122,18 @@ public class TcUser {
     @Column(name = "totpkey", length = 64)
     private String totpkey;
 
+    @Column(name = "isAdministratorCompany")
+    private Boolean isAdministratorCompany;
+    @ColumnDefault("b'0'")
     @Column(name = "temporary")
     private Boolean temporary;
-
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tc_company_id")
+    private TcCompany tcCompany;
+    public void setPassword(String password) {
+        Hashing.HashingResult hashingResult = Hashing.createHash(password);
+        this.hashedpassword = hashingResult.getHash();
+        this.salt = hashingResult.getSalt();
+    }
 }

@@ -9,7 +9,9 @@ import java.util.List;
 @Data
 public class CircularGeofence {
 
-    private Integer id;
+    private Long id;
+    private User userId;
+    private Company companyId;
     private String name;
     private String description;
     private Double latitude;

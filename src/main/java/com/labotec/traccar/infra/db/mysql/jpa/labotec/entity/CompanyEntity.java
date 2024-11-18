@@ -11,36 +11,26 @@ import java.time.Instant;
 @Data
 @Builder
 @Entity
-@Table(name = "tbl_lab_empresa", schema = "traccar_db")
-@NoArgsConstructor
-@AllArgsConstructor
+@Table(
+        name = "tbl_empresa",
+        schema = "traccar_db",
+        indexes = {
+                @Index(name = "idx_id", columnList = "empresa_id"),
+        }
+)
 @EntityListeners(AuditingEntityListener.class)
+@AllArgsConstructor
+@NoArgsConstructor
 public class CompanyEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "lab_id_empresa", nullable = false)
-    private Integer id;
-
-    @Column(name = "lab_nombre", length = 45)
-    private String name;
-
-    @Column(name = "lab_ruc", nullable = false, length = 45)
-    private String ruc;
-
-    @Column(name = "lab_estado")
-    private Byte status;
+    @Column(name = "empresa_id")
+    private Long companyId;
 
     @CreatedDate
-    @Column(name = "lab_fecha_creacion", updatable = false)
+    @Column(name = "fecha_creacion", updatable = false)
     private Instant createdDate;
 
     @LastModifiedDate
-    @Column(name = "lab_fecha_actualizacion")
+    @Column(name = "fecha_actualizacion")
     private Instant lastModifiedDate;
-
-    public CompanyEntity(String name, String ruc, Byte status) {
-        this.name = name;
-        this.ruc = ruc;
-        this.status = status;
-    }
 }

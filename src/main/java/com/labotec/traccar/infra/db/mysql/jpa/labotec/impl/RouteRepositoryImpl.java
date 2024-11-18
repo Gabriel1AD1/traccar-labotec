@@ -27,35 +27,31 @@ public class RouteRepositoryImpl implements RouteRepository {
         RouteEntity routeSaved = routeRepositoryJpa.save(routeEntity);
         return routeMapper.toModel(routeSaved);
     }
-
-    @Override
-    public Route findById(Integer id) {
-        RouteEntity routeEntity = routeRepositoryJpa.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(ROUTE_NOT_FOUND_BY_ID + id));
-        return routeMapper.toModel(routeEntity);
-    }
-
-    @Override
-    public Optional<Route> findByIdOptional(Integer id) {
-        return routeRepositoryJpa.findById(id)
-                .map(routeMapper::toModel); // Usar el mapper para convertir de entidad a modelo
-    }
-
-    @Override
-    public List<Route> findAll() {
-        List<RouteEntity> routeEntities = routeRepositoryJpa.findAll();
-        return routeMapper.toModelList(routeEntities); // Usar el mapper para convertir la lista de entidades
-    }
-
     @Override
     public Route update(Route entity) {
         RouteEntity routeEntity = routeMapper.toEntity(entity);
         RouteEntity routeSaved = routeRepositoryJpa.save(routeEntity);
         return routeMapper.toModel(routeSaved);
     }
+    @Override
+    public Route findById(Long resourceId, Long userId) {
+        return null;
+    }
 
     @Override
-    public void deleteById(Integer id) {
-        routeRepositoryJpa.deleteById(id);
+    public Optional<Route> findByIdOptional(Long resourceId, Long userId) {
+        return Optional.empty();
     }
+
+    @Override
+    public Iterable<Route> findAll(Long userId) {
+        return null;
+    }
+
+
+    @Override
+    public void deleteById(Long resourceId, Long userId) {
+
+    }
+
 }

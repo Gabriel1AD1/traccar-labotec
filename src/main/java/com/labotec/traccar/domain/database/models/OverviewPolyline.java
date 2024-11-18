@@ -13,9 +13,8 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OverviewPolyline {
-    private Integer id;
-    private Route route;
-    private RouteBusStop routeBusStop;
+    private Long id;
+    private RouteBusStop routeBusStop; // Referencia a tabla intermedia
     private String polyline;
     private Boolean isPrimary;
     private Instant lastModifiedDate;

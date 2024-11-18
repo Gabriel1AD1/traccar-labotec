@@ -4,8 +4,10 @@ import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.OverviewPolylineEnt
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.RouteBusStopEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.RouteEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,5 +16,6 @@ public interface OverviewPolylineRepositoryJpa extends JpaRepository<OverviewPol
 
     @Query("SELECT op FROM OverviewPolylineEntity op WHERE op.routeBusStop = :routeBusStop AND op.isPrimary = true")
     Optional<OverviewPolylineEntity> findByRouteBusStopAndIsPrimary(@Param("routeBusStop") RouteBusStopEntity routeBusStop);
+
 
 }

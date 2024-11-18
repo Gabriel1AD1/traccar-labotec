@@ -12,38 +12,49 @@ import java.time.Instant;
 @Data
 @Builder
 @Entity
-@Table(name = "tbl_lab_local", schema = "traccar_db")
+@Table(
+        name = "tbl_local",
+        schema = "traccar_db",
+        indexes = {
+                @Index(name = "idx_id_company", columnList = "id, empresa_id"),
+                @Index(name = "idx_id_user", columnList = "id, usuario_id"),
+                @Index(name = "idx_company", columnList = "empresa_id"),
+                @Index(name = "idx_user", columnList = "usuario_id"),
+        }
+)
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-
 public class LocationEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "lab_id_local", nullable = false)
-    private Integer id;
+    private Long id;
 
-    @Column(name = "lab_nombre", nullable = false, length = 200)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usuario_id")
+    private UserEntity userId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "empresa_id")
+    private CompanyEntity companyId;
+
+    @Column(name = "nombre", nullable = false, length = 200)
     private String name;
 
-    @Column(name = "lab_dat_latitud", length = 100)
+    @Column(name = "latitud", length = 100)
     private String latitude;
 
-    @Column(name = "lab_dat_longitud", length = 100)
+    @Column(name = "longitud", length = 100)
     private String longitude;
 
-    @Column(name = "lab_dat_radio", precision = 10, scale = 2)
+    @Column(name = "radio", precision = 10, scale = 2)
     private BigDecimal radius;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "lab_id_empresa", nullable = false)
-    private CompanyEntity company;
-
     @CreatedDate
-    @Column(name = "lab_fecha_creacion", updatable = false)
+    @Column(name = "fecha_creacion", updatable = false)
     private Instant createdDate;
 
     @LastModifiedDate
-    @Column(name = "lab_fecha_actualizacion")
+    @Column(name = "actualizacion")
     private Instant lastModifiedDate;
 }

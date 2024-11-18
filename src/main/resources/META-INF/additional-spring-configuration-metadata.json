@@ -69,5 +69,20 @@
       "name": "key.labotec.api.email",
       "type": "java.lang.String",
       "description": "Description for key.labotec.api.email."
+    },
+    {
+      "name": "application.title",
+      "type": "java.lang.String",
+      "description": "Description for application.title."
+    },
+    {
+      "name": "application.version",
+      "type": "java.lang.String",
+      "description": "Description for application.version."
+    },
+    {
+      "name": "api.key.token",
+      "type": "java.lang.String",
+      "description": "Description for api.key.token."
     }
   ] }

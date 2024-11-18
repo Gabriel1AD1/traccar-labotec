@@ -24,37 +24,44 @@ public class LocationController {
 
     // Endpoint para crear una nueva ubicación
     @PostMapping("")
-    public ResponseEntity<Location> create(@RequestBody @Valid LocationDTO locationDTO) {
-        Location createdLocation = locationService.create(locationDTO);
+    public ResponseEntity<Location> create(
+            @RequestBody @Valid LocationDTO locationDTO,
+            @RequestHeader(name = "userId") Long userId) {
+        Location createdLocation = locationService.create(locationDTO,userId);
         return ResponseEntity.ok(createdLocation);
     }
 
     // Endpoint para obtener una ubicación por su ID
     @GetMapping("/{id}")
-    public ResponseEntity<Location> findById(@PathVariable @NotNull Integer id) {
-        Optional<Location> result = Optional.ofNullable(locationService.findById(id));
+    public ResponseEntity<Location> findById(
+            @PathVariable("id") @NotNull Long resourceId,
+            @RequestHeader(name = "userId") Long userId) {
+        Optional<Location> result = Optional.ofNullable(locationService.findById(resourceId,userId));
         return result.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     // Endpoint para obtener todas las ubicaciones
     @GetMapping("")
-    public ResponseEntity<Iterable<Location>> findAll() {
-        Iterable<Location> allLocations = locationService.findAll();
+    public ResponseEntity<Iterable<Location>> findAll(@RequestHeader(name = "userId") Long userId) {
+        Iterable<Location> allLocations = locationService.findAll(userId);
         return ResponseEntity.ok(allLocations);
     }
 
     // Endpoint para actualizar una ubicación existente
     @PutMapping("/{id}")
-    public ResponseEntity<Location> update(@RequestBody @Valid LocationUpdateDTO locationDTO, @PathVariable @NotNull Integer id) {
-        Location updatedLocation = locationService.update(locationDTO, id);
+    public ResponseEntity<Location> update(@RequestBody @Valid LocationUpdateDTO locationDTO,
+                                           @PathVariable("id") @NotNull Long resourceId,
+                                           @RequestHeader(name = "userId") Long userId) {
+        Location updatedLocation = locationService.update(locationDTO, resourceId,userId);
         return ResponseEntity.ok(updatedLocation);
     }
 
     // Endpoint para eliminar una ubicación por su ID
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable @NotNull Integer id) {
-        locationService.deleteById(id);
+    public ResponseEntity<Void> deleteById(@PathVariable("id") @NotNull Long resourceId,
+                                           @RequestHeader(name = "userId") Long userId) {
+        locationService.deleteById(resourceId,userId);
         return ResponseEntity.noContent().build();
     }
 }

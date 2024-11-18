@@ -1,5 +1,7 @@
 package com.labotec.traccar.domain.web.dto.entel.create;
 
+import com.labotec.traccar.domain.database.models.Company;
+import com.labotec.traccar.domain.database.models.User;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 

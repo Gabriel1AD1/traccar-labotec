@@ -10,10 +10,7 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = "spring")
 public interface BusStopModelMapper {
 
-    BusStopModelMapper INSTANCE = Mappers.getMapper(BusStopModelMapper.class);
-
     // Mapeo de BusStop a BusStopDTO
-    @Mapping(source = "company.id", target = "companyId")
     BusStopDTO toBusStopDTO(BusStop busStop);
 
     // Mapeo inverso de BusStopDTO a BusStop, pasando el Company como parámetro

@@ -16,25 +16,17 @@ import java.util.List;
 @AllArgsConstructor
 public class RouteUpdateDTO {
 
-    @NotNull(message = "Company ID is required")
-    @JsonProperty("company_id")
-    private Integer companyId;
-
     @NotNull(message = "Route name is required")
     @JsonProperty("name")
     private String name;
 
-    @NotNull(message = "Route status is required")
-    @JsonProperty("status")
-    private Byte status;
-
     @NotNull(message = "Origin Bus Stop ID is required")
     @JsonProperty("origin_bus_stop_id")
-    private Integer originBusStopId;
+    private Long originBusStopId;
 
     @NotNull(message = "Destination Bus Stop ID is required")
     @JsonProperty("destination_bus_stop_id")
-    private Integer destinationBusStopId;
+    private Long destinationBusStopId;
 
     @NotNull(message = "List of Bus Stops is required")
     @JsonProperty("bus_stops")
@@ -48,21 +40,21 @@ public class RouteUpdateDTO {
     public static class BusStopDTO {
         @NotNull(message = "Company ID is required")
         @JsonProperty("id")
-        private Integer id;
+        private Long id;
 
         @NotNull(message = "First Bus Stop ID is required")
         @Positive(message = "First Bus Stop ID must be a positive number")
         @JsonProperty("first_bus_stop_id")
-        private Integer firstBusStopId;
+        private Long firstBusStopId;
 
         @NotNull(message = "Second Bus Stop ID is required")
         @Positive(message = "Second Bus Stop ID must be a positive number")
         @JsonProperty("second_bus_stop_id")
-        private Integer secondBusStopId;
+        private Long secondBusStopId;
 
         @NotNull(message = "Order is required")
         @Positive(message = "Order must be a positive number")
         @JsonProperty("orden")
-        private Integer order;
+        private Long order;
     }
 }

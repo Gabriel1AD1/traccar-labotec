@@ -2,18 +2,19 @@ package com.labotec.traccar.domain.database.models;
 import lombok.*;
 
 import java.time.Instant;
+import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class RouteBusStop {
-    private Integer id;
+    private Long id;
     private Route route;
     private BusStop firstBusStop;
     private BusStop secondBusStop;
-    private Integer order;
-    private Boolean completed;
+    private List<OverviewPolyline> overviewPolylines;
+    private Long order;
     private Instant createdDate;
     private Instant lastModifiedDate;
 }

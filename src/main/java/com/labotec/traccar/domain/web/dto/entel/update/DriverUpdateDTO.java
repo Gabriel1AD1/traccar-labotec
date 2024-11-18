@@ -1,6 +1,7 @@
 package com.labotec.traccar.domain.web.dto.entel.update;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.labotec.traccar.domain.enums.STATE;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -17,7 +18,7 @@ public class DriverUpdateDTO {
 
     @NotNull(message = "Document type is required")
     @JsonProperty("document_type")
-    private Integer documentType;
+    private String documentType;
 
     @NotNull(message = "Document number is required")
     @Size(max = 50, message = "Document number must not exceed 50 characters")
@@ -26,9 +27,5 @@ public class DriverUpdateDTO {
 
     @NotNull(message = "Status is required")
     @JsonProperty("status")
-    private Byte status;
-
-    @NotNull(message = "Company is required")
-    @JsonProperty("company_id")
-    private Integer companyId;  // Refers to the company id
+    private STATE status;
 }

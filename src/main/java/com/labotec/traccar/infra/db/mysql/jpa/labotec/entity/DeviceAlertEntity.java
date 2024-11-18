@@ -1,51 +1,89 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.entity;
+
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
 
 @Data
+@Builder
 @Entity
-@Table(name = "tc_device_alerts")
+@Table(
+        name = "tc_device_alerts",
+        schema = "traccar_db",
+        indexes = {
+                @Index(name = "idx_id", columnList = "id"),
+                @Index(name = "idx_id_company", columnList = "id, empresa_id"),
+                @Index(name = "idx_id_user", columnList = "id, usuario_id"),
+                @Index(name = "idx_company", columnList = "empresa_id"),
+                @Index(name = "idx_user", columnList = "usuario_id")
+        }
+)
+@AllArgsConstructor
+@NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class DeviceAlertEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usuario_id")
+    private UserEntity userId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "empresa_id")
+    private CompanyEntity companyId;
+
     @Column(name = "device_id", nullable = false)
-    private long deviceId; // ID del dispositivo que genera la alerta
+    private long deviceId;
 
     @Column(name = "alert_time", nullable = false)
-    private Instant alertTime; // Momento en que se generó la alerta
+    private Instant alertTime;
 
     @Column(name = "alert_type", nullable = false)
-    private String alertType; // Tipo de alerta, por ejemplo, "Detención prolongada"
+    private String alertType;
 
     @Column(name = "duration", nullable = true)
-    private Integer duration; // Duración en minutos (opcional, si aplica)
+    private Integer duration;
 
     @Column(name = "latitude")
-    private double latitude; // Latitud del dispositivo al momento de la alerta
+    private double latitude;
 
     @Column(name = "longitude")
-    private double longitude; // Longitud del dispositivo al momento de la alerta
+    private double longitude;
 
     @Column(name = "speed")
-    private double speed; // Velocidad al momento de la alerta
+    private double speed;
 
     @Column(name = "course")
-    private double course; // Curso o dirección del dispositivo en el momento de la alerta
+    private double course;
 
     @Column(name = "altitude")
-    private double altitude; // Altitud al momento de la alerta
+    private double altitude;
 
     @Column(name = "address", length = 512)
-    private String address; // Dirección si se necesita para mejorar la ubicación
+    private String address;
 
     @Column(name = "accuracy")
-    private double accuracy; // Precisión de la ubicación
+    private double accuracy;
 
     @Column(name = "description", length = 1024)
-    private String description; // Descripción detallada del motivo de la alerta
+    private String description;
+
+    @CreatedDate
+    @Column(name = "fecha_creacion", updatable = false)
+    private Instant createdDate;
+
+    @LastModifiedDate
+    @Column(name = "fecha_actualizacion")
+    private Instant lastModifiedDate;
 }
+

@@ -3,6 +3,8 @@ package com.labotec.traccar.domain.web.dto.traccar;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @Data
 public class DeviceRequestDTO {
@@ -15,9 +17,11 @@ public class DeviceRequestDTO {
     private boolean valid;
     private double latitude;
     private double longitude;
-    private double altitude; // value in meters
-    private double speed; // value in knots
+    private double altitude;
+    private double speed;
     private double course;
     private String address;
     private double accuracy;
+    private Map<String, Object> attributes = new LinkedHashMap<>();
+
 }

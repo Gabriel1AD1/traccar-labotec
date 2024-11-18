@@ -30,31 +30,11 @@ public class CompanyController {
     }
 
     // Endpoint para obtener una compañía por su ID
-    @GetMapping("/{id}")
-    public ResponseEntity<Company> findById(@PathVariable @NotNull Integer id) {
-        Optional<Company> result = Optional.ofNullable(companyService.findById(id));
-        return result.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    // Endpoint para obtener todas las compañías
-    @GetMapping("")
-    public ResponseEntity<Iterable<Company>> findAll() {
-        Iterable<Company> allCompanies = companyService.findAll();
-        return ResponseEntity.ok(allCompanies);
-    }
-
-    // Endpoint para actualizar una compañía existente
     @PutMapping("/{id}")
-    public ResponseEntity<Company> update(@RequestBody @Valid CompanyUpdateDTO companyDTO, @PathVariable @NotNull Integer id) {
-        Company updatedCompany = companyService.update(companyDTO, id);
-        return ResponseEntity.ok(updatedCompany);
+    public ResponseEntity<Company> findById(@PathVariable("id") @NotNull Long resourceId) {
+        companyService.deleteCompanyById(resourceId);
+        return ResponseEntity.ok().build();
     }
 
-    // Endpoint para eliminar una compañía por su ID
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable @NotNull Integer id) {
-        companyService.deleteById(id);
-        return ResponseEntity.noContent().build();
-    }
+
 }

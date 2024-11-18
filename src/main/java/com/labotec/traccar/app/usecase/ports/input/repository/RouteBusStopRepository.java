@@ -6,7 +6,7 @@ import com.labotec.traccar.domain.database.models.RouteBusStop;
 
 import java.util.List;
 
-public interface RouteBusStopRepository extends GenericRepository<RouteBusStop, Integer> {
+public interface RouteBusStopRepository extends GenericRepository<RouteBusStop , Long>  {
 
     Iterable<RouteBusStop> findByRoute(Route routeId);
     List<RouteBusStop> findByRouteOrderByOrder(Route routeId);

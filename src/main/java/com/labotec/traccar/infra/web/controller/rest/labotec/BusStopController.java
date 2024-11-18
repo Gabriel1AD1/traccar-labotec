@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 import static com.labotec.traccar.infra.web.controller.common.API_VERSION_MANAGER.API_VERSION_V1;
+import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
 @RequestMapping(value = API_VERSION_V1 + "bus-stop")
@@ -24,37 +25,47 @@ public class BusStopController {
 
     // Endpoint para crear una nueva parada de autobús
     @PostMapping("")
-    public ResponseEntity<BusStop> create(@RequestBody @Valid BusStopDTO busStopDTO) {
-        BusStop createdBusStop = busStopService.create(busStopDTO);
-        return ResponseEntity.ok(createdBusStop);
+    public ResponseEntity<BusStop> create(
+            @RequestHeader(name = "userId") Long userId,
+            @RequestBody @Valid BusStopDTO busStopDTO) {
+
+        BusStop createdBusStop = busStopService.create(busStopDTO,userId);
+        return ResponseEntity.status(CREATED).body(createdBusStop);
     }
 
     // Endpoint para obtener una parada de autobús por su ID
     @GetMapping("/{id}")
-    public ResponseEntity<BusStop> findById(@PathVariable @NotNull Integer id) {
-        Optional<BusStop> result = Optional.ofNullable(busStopService.findById(id));
+    public ResponseEntity<BusStop> findById(@PathVariable("id") @NotNull Long resourceId,
+                                            @RequestHeader(name = "userId") Long userId) {
+        Optional<BusStop> result = Optional.ofNullable(busStopService.findById(resourceId,userId));
         return result.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     // Endpoint para obtener todas las paradas de autobús
     @GetMapping("")
-    public ResponseEntity<Iterable<BusStop>> findAll() {
-        Iterable<BusStop> allBusStops = busStopService.findAll();
+    public ResponseEntity<Iterable<BusStop>> findAll(@RequestHeader(name = "userId") Long userId) {
+        Iterable<BusStop> allBusStops = busStopService.findAll(userId);
         return ResponseEntity.ok(allBusStops);
     }
 
     // Endpoint para actualizar una parada de autobús existente
     @PutMapping("/{id}")
-    public ResponseEntity<BusStop> update(@RequestBody @Valid BusStopUpdateDTO busStopDTO, @PathVariable @NotNull Integer id) {
-        BusStop updatedBusStop = busStopService.update(busStopDTO, id);
+    public ResponseEntity<BusStop> update(
+            @RequestBody @Valid BusStopUpdateDTO busStopDTO,
+            @PathVariable("id") @NotNull Long resourceId,
+            @RequestHeader(name = "userId") Long userId) {
+        BusStop updatedBusStop = busStopService.update(busStopDTO, resourceId ,userId);
         return ResponseEntity.ok(updatedBusStop);
     }
 
     // Endpoint para eliminar una parada de autobús por su ID
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable @NotNull Integer id) {
-        busStopService.deleteById(id);
+    public ResponseEntity<Void> deleteById(
+            @PathVariable("id") @NotNull Long resourceId,
+             @RequestHeader(name = "userId") Long userId)
+    {
+        busStopService.deleteById(resourceId,userId);
         return ResponseEntity.noContent().build();
     }
 }

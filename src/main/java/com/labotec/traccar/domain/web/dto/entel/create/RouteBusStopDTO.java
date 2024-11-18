@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RouteBusStopDTO {
-
+    private Long userId;
 
     @NotNull(message = "Route ID is required")
     @Positive(message = "Route ID must be a positive number")

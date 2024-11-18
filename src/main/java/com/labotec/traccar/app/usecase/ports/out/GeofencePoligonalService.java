@@ -5,6 +5,5 @@ import com.labotec.traccar.domain.database.models.CircularGeofence;
 import com.labotec.traccar.domain.web.dto.entel.create.CircularGeofenceDTO;
 import com.labotec.traccar.domain.web.dto.entel.update.GeofencePoligonalUpdateDTO;
 
-public interface GeofencePoligonalService extends GenericCrudService<CircularGeofence, CircularGeofenceDTO, GeofencePoligonalUpdateDTO> {
-    CircularGeofence update(GeofencePoligonalUpdateDTO updateDTO , Integer id);
+public interface GeofencePoligonalService extends GenericCrudService<CircularGeofence, CircularGeofenceDTO, GeofencePoligonalUpdateDTO, Long> {
 }

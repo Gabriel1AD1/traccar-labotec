@@ -27,21 +27,17 @@ public class VehicleTypeRepositoryImpl implements VehicleTypeRepository {
     }
 
     @Override
-    public VehicleType findById(Integer integer) {
-        VehicleTypeEntity vehicleTypeEntity = vehicleTypeRepositoryJpa.findById(integer).orElseThrow(
-                () -> new EntityNotFoundException(VEHICLE_TYPE_NOT_FOUND)
-        );
-        return vehicleTypeMapper.toDomain(vehicleTypeEntity);
+    public VehicleType findById(Long resourceId, Long userId) {
+        return null;
     }
 
     @Override
-    public Optional<VehicleType> findByIdOptional(Integer integer) {
-        return vehicleTypeRepositoryJpa.findById(integer)
-                .map(vehicleTypeMapper::toDomain);
+    public Optional<VehicleType> findByIdOptional(Long resourceId, Long userId) {
+        return Optional.empty();
     }
 
     @Override
-    public Iterable<VehicleType> findAll() {
+    public Iterable<VehicleType> findAll(Long userId) {
         return null;
     }
 
@@ -51,7 +47,8 @@ public class VehicleTypeRepositoryImpl implements VehicleTypeRepository {
     }
 
     @Override
-    public void deleteById(Integer integer) {
+    public void deleteById(Long resourceId, Long userId) {
 
     }
+
 }

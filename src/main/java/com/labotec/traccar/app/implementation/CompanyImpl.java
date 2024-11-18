@@ -13,32 +13,34 @@ public class CompanyImpl implements CompanyService {
 
     private final CompanyRepository companyRepository;
     private final CompanyModelMapper companyModelMapper;
-    @Override
-    public Company create(CompanyDTO entityDto) {
-        Company company = companyModelMapper.INSTANCE.toDomain(entityDto);
+
+
+    public Company create(CompanyDTO companyDTO) {
+        Company company = companyModelMapper.toDomain(companyDTO);
         return companyRepository.create(company);
     }
 
     @Override
-    public Company findById(Integer integer) {
-        return companyRepository.findById(integer);
+    public void deleteCompanyById(Long companyId) {
+        companyRepository.deleteById(companyId);
     }
 
-    @Override
+    public Company findById(Long resourceId) {
+        return companyRepository.findById(resourceId);
+    }
+
+
     public Iterable<Company> findAll() {
         return companyRepository.findAll();
     }
 
-    @Override
-    public Company update(CompanyUpdateDTO entityDto, Integer integer) {
-        Company companyFind  = companyRepository.findById(integer);
-        Company company = companyModelMapper.INSTANCE.toDomain(entityDto);
-        company.setId(company.getId());
-        return companyRepository.update(companyFind);
+    public Company update(CompanyUpdateDTO companyUpdateDTO, Long resourceId) {
+        Company company = companyRepository.findById(resourceId);
+        company.setCompanyId(company.getCompanyId());
+        return company;
     }
 
-    @Override
-    public void deleteById(Integer integer) {
-        companyRepository.deleteById(integer);
+    public void deleteById(Long resourceId) {
+        companyRepository.deleteById(resourceId);
     }
 }

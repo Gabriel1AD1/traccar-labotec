@@ -28,27 +28,23 @@ public class BusStopRepositoryImpl implements BusStopRepository {
     }
 
     @Override
-    public BusStop findById(Integer aLong) {
-        BusStopEntity busStopEntity = busStopRepositoryJpa.findById(aLong).orElseThrow(
-                () -> new EntityNotFoundException(BUS_STOP_NOT_FOUND_BY_ID + aLong)
+    public BusStop findById(Long resourceId, Long userId) {
+        BusStopEntity busStopEntity = busStopRepositoryJpa.findByIdAndUserId(resourceId,userId).orElseThrow(
+                () -> new EntityNotFoundException(BUS_STOP_NOT_FOUND_BY_ID + userId)
         );
         return busStopMapper.toModel(busStopEntity);
     }
 
     @Override
-    public Optional<BusStop> findByIdOptional(Integer aLong) {
-        BusStopEntity busStopEntity = busStopRepositoryJpa.findById(aLong).orElseThrow(
-                () -> new EntityNotFoundException(BUS_STOP_NOT_FOUND_BY_ID + aLong)
-        );
-        BusStop busStop = busStopMapper.toModel(busStopEntity);
-        return Optional.of(busStop) ;
+    public Optional<BusStop> findByIdOptional(Long resourceId, Long userId) {
+        BusStopEntity busStopEntity = busStopRepositoryJpa.findByIdAndUserId(resourceId,userId).get();
+        return Optional.of(busStopMapper.toModel(busStopEntity));
     }
 
     @Override
-    public Iterable<BusStop> findAll() {
-        List<BusStopEntity> busStopEntityList = busStopRepositoryJpa.findAll();
-
-        return busStopMapper.toModelList(busStopEntityList) ;
+    public Iterable<BusStop> findAll(Long userId) {
+        List<BusStopEntity> entityList = busStopRepositoryJpa.findAllByUserId(userId);
+        return busStopMapper.toModelList(entityList);
     }
 
     @Override
@@ -59,7 +55,8 @@ public class BusStopRepositoryImpl implements BusStopRepository {
     }
 
     @Override
-    public void deleteById(Integer aLong) {
-        busStopRepositoryJpa.deleteById(aLong);
+    public void deleteById(Long resourceId, Long userId) {
+        busStopRepositoryJpa.deleteByUserIdAndCompanyId(resourceId,userId);
     }
+
 }

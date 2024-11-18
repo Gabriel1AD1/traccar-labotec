@@ -11,28 +11,43 @@ import java.time.Instant;
 @Data
 @Builder
 @Entity
-@Table(name = "tbl_lab_tipo_vehiculo", schema = "traccar_db")
+@Table(
+        name = "tbl_tipo_vehiculo",
+        schema = "traccar_db",
+        indexes = {
+                @Index(name = "idx_id_company", columnList = "id, empresa_id"),
+                @Index(name = "idx_id_user", columnList = "id, usuario_id"),
+                @Index(name = "idx_company", columnList = "empresa_id"),
+                @Index(name = "idx_user", columnList = "usuario_id"),
+        }
+
+)
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor
 @AllArgsConstructor
 public class VehicleTypeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "lab_id_tipo_vehiculo", nullable = false)
-    private Integer id;
+    private Long id;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usuario_id")
+    private UserEntity userId;
 
-    @Column(name = "lab_nombre_tipo", nullable = false, length = 50)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "empresa_id")
+    private CompanyEntity companyId;
+
+    @Column(name = "nombre_tipo", nullable = false, length = 50)
     private String name;
 
+    @Column(name = "descripcion", nullable = false, length = 400)
+    private String description;
     @CreatedDate
-    @Column(name = "lab_fecha_creacion", updatable = false)
+    @Column(name = "fecha_creacion", updatable = false)
     private Instant createdDate;
 
     @LastModifiedDate
-    @Column(name = "lab_fecha_actualizacion")
+    @Column(name = "fecha_actualizacion")
     private Instant lastModifiedDate;
 
-    public VehicleTypeEntity(String name) {
-        this.name = name;
-    }
 }

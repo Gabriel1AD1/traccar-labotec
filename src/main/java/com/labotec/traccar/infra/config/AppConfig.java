@@ -1,7 +1,6 @@
     package com.labotec.traccar.infra.config;
 
     import com.labotec.traccar.app.implementation.*;
-    import com.labotec.traccar.app.lib.GpsUtil;
     import com.labotec.traccar.app.mapper.*;
     import com.labotec.traccar.app.usecase.ports.input.email.GoogleEmail;
     import com.labotec.traccar.app.usecase.ports.input.repository.*;
@@ -35,11 +34,12 @@
         private final VehicleTypeRepository vehicleTypeRepository;
         private final GeofenceCircularRepository geofenceCircularRepository;
         private final GeofenceCircularModelMapper geofencePoligonalModelMapper;
+        private final UserRepository userRepository;
         private final GoogleEmail googleEmail;
         private final OverviewPolylineRepository overviewPolylineRepository;
         @Bean(name = "busStopService")
         public BusStopService busStop() {
-            return new BusStopImpl(busStopRepository,companyRepository,busStopModelMapper);
+            return new BusStopImpl(busStopRepository,companyRepository,busStopModelMapper,userRepository);
         }
 
         @Bean(name = "companyService")
@@ -49,17 +49,27 @@
 
         @Bean(name = "driverService")
         public DriverService driver() {
-            return new DriverImpl(driverRepository,companyRepository,driverModelMapper);
+            return new DriverImpl(
+                    driverRepository,
+                    companyRepository,
+                    driverModelMapper,
+                    userRepository
+            );
         }
 
         @Bean(name = "locationService")
         public LocationService location() {
-            return new LocationImpl(locationRepository,companyRepository,locationModelMapper);
+            return new LocationImpl(
+                    locationRepository,
+                    companyRepository,
+                    locationModelMapper,
+                    userRepository
+            );
         }
 
         @Bean(name = "routeService")
         public RouteService route() {
-            return new RouteImpl(
+            return new RouteServiceImpl(
                     routeRepository,
                     companyRepository,
                     busStopRepository,
@@ -67,41 +77,43 @@
                     routeModelMapper,
                     overviewPolylineRepository,
                     vehicleRepository,
-                    scheduleRepository);
+                    scheduleRepository,
+                    userRepository
+            );
         }
 
         @Bean(name = "scheduleService")
-        public ScheduleService schedule() { return new ScheduleImpl(
-                scheduleRepository,
-                vehicleRepository,
-                driverRepository,
-                locationRepository,
-                routeRepository,
-                companyRepository,
-                geofenceCircularRepository,
-                scheduleModelMapper); }
+        public ScheduleService schedule() {
+            return new ScheduleImpl(
+                    scheduleRepository,
+                    vehicleRepository,
+                    driverRepository,
+                    locationRepository,
+                    routeRepository,
+                    companyRepository,
+                    geofenceCircularRepository,
+                    scheduleModelMapper,
+                    userRepository
+            );
+        }
 
         @Bean(name = "vehicleService")
-        public VehicleService vehicle() {return new VehicleImpl(
+        public VehicleService vehicle() {
+            return new VehicleImpl(
                 vehicleRepository,
                 vehicleModelMapper,
                 companyRepository,
-                vehicleTypeRepository);}
+                vehicleTypeRepository,
+                    userRepository
+            );}
 
-        @Bean(name = "routeBusStopService")
-        public RouteBusStopService routeBusStopService(){
-            return new RouteBusStopImpl(
-                    busStopRepository,
-                    routeRepository,
-                    routeBusStopRepository,
-                    routeBusStopModelMapper);
-        }
 
         @Bean(name = "geofenceService")
         public GeofencePoligonalService geofencePoligonalService(){
             return new CircularGeofenceServiceImpl(
                     geofenceCircularRepository,
-                    geofencePoligonalModelMapper
+                    geofencePoligonalModelMapper,
+                    userRepository
             );
         }
         @Bean(name = "integrationTraccarService")
@@ -116,6 +128,13 @@
                      vehicleRepository,
                      scheduleRepository,
                     googleEmail);
+        }
+        @Bean(name = "userService")
+        public UserService userService(){
+            return  new UserServiceImpl(
+                    userRepository,
+                    companyRepository
+            );
         }
 
     }

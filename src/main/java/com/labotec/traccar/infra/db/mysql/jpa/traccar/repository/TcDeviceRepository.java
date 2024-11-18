@@ -15,6 +15,8 @@ public interface TcDeviceRepository extends JpaRepository<TcDevice, Integer> {
 
     @Query("SELECT d.isStopped FROM TcDevice d WHERE d.id = :deviceId")
     boolean isVehicleStopped(Integer deviceId);
+    @Query("SELECT d.alertSent FROM TcDevice d WHERE d.id = :deviceId")
+    boolean isAlertSent(Integer deviceId);
 
     @Modifying
     @Transactional
@@ -24,6 +26,10 @@ public interface TcDeviceRepository extends JpaRepository<TcDevice, Integer> {
     @Query("SELECT CASE WHEN (d.lastStoppedTime IS NOT NULL AND TIMESTAMPDIFF(MINUTE, d.lastStoppedTime, CURRENT_TIMESTAMP) >= 10) THEN TRUE ELSE FALSE END FROM TcDevice d WHERE d.id = :deviceId AND d.isStopped = TRUE AND d.alertSent = FALSE")
     boolean shouldSendAlert(Integer deviceId);
 
+    @Modifying
+    @Transactional
+    @Query("UPDATE TcDevice d SET d.alertSent = TRUE WHERE d.id = :deviceId")
+    void setAlertSentTrue(Integer deviceId);
 
     @Modifying
     @Transactional

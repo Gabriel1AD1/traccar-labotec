@@ -1,6 +1,8 @@
 package com.labotec.traccar.domain.web.dto.entel.create;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.labotec.traccar.domain.database.models.Company;
+import com.labotec.traccar.domain.database.models.User;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.DecimalMin;
@@ -13,6 +15,9 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 public class LocationDTO {
+    private User user;
+
+    private Company company;
 
     @NotNull(message = "Name is required")
     @Size(max = 200, message = "Name must not exceed 200 characters")
@@ -32,7 +37,4 @@ public class LocationDTO {
     @JsonProperty("radius")  // Mapea con "radius" en el JSON
     private BigDecimal radius;
 
-    @NotNull(message = "Company is required")
-    @JsonProperty("company_id")  // Mapea con "company_id" en el JSON
-    private Integer companyId;  // Refers to the company id
 }

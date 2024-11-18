@@ -10,12 +10,13 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Location {
-    private Integer id;
+    private Long id;
+    private User userId;
+    private Company companyId;
     private String name;
     private String latitude;
     private String longitude;
     private BigDecimal radius;
-    private Company company;
     private Instant lastModifiedDate;
     private Instant createdDate;
 }

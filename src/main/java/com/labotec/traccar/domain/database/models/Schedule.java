@@ -1,5 +1,6 @@
 package com.labotec.traccar.domain.database.models;
 
+import com.labotec.traccar.domain.enums.STATE;
 import lombok.*;
 
 import java.time.Instant;
@@ -8,9 +9,10 @@ import java.time.Instant;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class Schedule {
-    private Integer id;
+    private Long id;
+    private User userId;
+    private Company companyId;
     private Instant departureTime;
     private Instant arrivalTime;
     private Vehicle vehicle;
@@ -18,11 +20,10 @@ public class Schedule {
     private Location location;
     private Route route;
     private String sheetNumber;
-    private Byte status;
+    private STATE status;
     private CircularGeofence geofence;
     private Instant estimatedDepartureTime;
     private Instant estimatedArrivalTime;
-    private Company company;
     private Instant lastModifiedDate;
     private Instant createdDate;
 }

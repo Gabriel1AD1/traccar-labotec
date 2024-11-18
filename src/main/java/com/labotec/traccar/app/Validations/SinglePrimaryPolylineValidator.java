@@ -1,20 +1,26 @@
 package com.labotec.traccar.app.Validations;
 
+import com.labotec.traccar.domain.web.dto.entel.create.PolylineDTO;
 import com.labotec.traccar.domain.web.dto.entel.create.RouteDTO;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import org.springframework.stereotype.Component;
+
 import java.util.List;
 
-public class SinglePrimaryPolylineValidator implements ConstraintValidator<SinglePrimaryPolyline, List<RouteDTO.BusStopDTO.PolylineDTO>> {
+@Component
+public class SinglePrimaryPolylineValidator implements ConstraintValidator<SinglePrimaryPolyline, List<PolylineDTO>> {
 
     @Override
-    public boolean isValid(List<RouteDTO.BusStopDTO.PolylineDTO> polylineList, ConstraintValidatorContext context) {
+    public boolean isValid(List<PolylineDTO> polylineList, ConstraintValidatorContext context) {
+        System.out.println(polylineList);
+        System.out.println("Entrando al validador XD ");
         if (polylineList == null || polylineList.isEmpty()) {
             return true; // Permitir nulo o lista vacía
         }
 
         long primaryCount = polylineList.stream()
-                .filter(RouteDTO.BusStopDTO.PolylineDTO::getIsPrimary)
+                .filter(PolylineDTO::getIsPrimary)
                 .count();
 
         // Si hay más de una polilínea primaria, se construye un mensaje de error

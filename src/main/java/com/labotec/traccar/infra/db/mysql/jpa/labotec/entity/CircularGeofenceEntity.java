@@ -11,7 +11,16 @@ import java.time.Instant;
 @Data
 @Builder
 @Entity
-@Table(name = "tbl_geo_cerca_circular", schema = "traccar_db")
+@Table(
+        name = "tbl_geo_cerca_circular",
+        schema = "traccar_db",
+        indexes = {
+                @Index(name = "idx_id_company", columnList = "id, empresa_id"),
+                @Index(name = "idx_id_user", columnList = "id, usuario_id"),
+                @Index(name = "idx_company", columnList = "empresa_id"),
+                @Index(name = "idx_user", columnList = "usuario_id")
+        }
+)
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
@@ -19,22 +28,37 @@ public class CircularGeofenceEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "lab_id_geofence", nullable = false)
     private Long id;
-    @Column(name = "lab_name", nullable = false, length = 100)
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usuario_id")
+    private UserEntity userId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "empresa_id")
+    private CompanyEntity companyId;
+
+    @Column(name = "name", nullable = false, length = 100)
     private String name;
-    @Column(name = "lab_description", length = 255)
+
+    @Column(name = "description", length = 255)
     private String description;
-    @Column(name = "lab_latitude")
+
+    @Column(name = "latitude")
     private Double latitude;
-    @Column(name = "lab_longitude")
+
+    @Column(name = "longitude")
     private Double longitude;
-    @Column(name = "lab_radius")
+
+    @Column(name = "radius")
     private Double radius;
+
     @CreatedDate
-    @Column(name = "lab_fecha_creacion", updatable = false, nullable = false)
+    @Column(name = "fecha_creacion", updatable = false, nullable = false)
     private Instant createdDate;
+
     @LastModifiedDate
-    @Column(name = "lab_fecha_actualizacion", nullable = false)
+    @Column(name = "fecha_actualizacion", nullable = false)
     private Instant lastModifiedDate;
 }
+
