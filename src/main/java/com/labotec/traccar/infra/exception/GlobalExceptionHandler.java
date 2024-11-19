@@ -1,6 +1,7 @@
 package com.labotec.traccar.infra.exception;
 
 import com.labotec.traccar.infra.common.ApiError;
+import com.labotec.traccar.infra.web.controller.rest.traccar.exception.EntityAllReadyException;
 import com.labotec.traccar.infra.web.controller.rest.traccar.exception.Unauthorised;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -17,6 +18,8 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static com.labotec.traccar.infra.exception.constant.ERROR_DUPLICATE.UNIQUE_CONSTRAINT_MESSAGES;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -36,7 +39,7 @@ public class GlobalExceptionHandler {
                 HttpStatus.NOT_FOUND,
                 "Resource not found",
                 debugMessage,
-                Map.of("error", ex.getMessage())  // Error único
+                Map.of("ERROR", ex.getMessage())  // Error único
         );
 
         return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
@@ -111,30 +114,10 @@ public class GlobalExceptionHandler {
                 HttpStatus.BAD_REQUEST,
                 userMessage,
                 debugMessage,
-                Map.of("error", "Malformed JSON or invalid value provided.") // Suberror detallado
+                Map.of("ERROR", "Malformed JSON or invalid value provided.") // Suberror detallado
         );
 
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
-    }
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ApiError> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
-        // Extraer el mensaje relevante de la excepción
-        String rootCauseMessage = getRootCause(ex).getMessage();
-
-        // Verificar si es una violación de unicidad y proporcionar un mensaje claro
-        String userMessage = "A record with the same value already exists.";
-        if (rootCauseMessage.contains("Duplicate entry")) {
-            userMessage = "Duplicate entry detected: " + extractDuplicateEntryInfo(rootCauseMessage);
-        }
-
-        ApiError apiError = new ApiError(
-                HttpStatus.CONFLICT,
-                userMessage,
-                rootCauseMessage,
-                Map.of("error", rootCauseMessage) // Proporciona el error completo si es necesario para depuración
-        );
-
-        return new ResponseEntity<>(apiError, HttpStatus.CONFLICT);
     }
     @ExceptionHandler(Unauthorised.class)
     public ResponseEntity<ApiError> handleNoAuthorized(Unauthorised ex, WebRequest request){
@@ -149,7 +132,7 @@ public class GlobalExceptionHandler {
                 HttpStatus.UNAUTHORIZED,
                 userMessage,
                 debugMessage,
-                Map.of("error", "Resource bad request: " + request.getDescription(false)) // Información adicional si es necesario
+                Map.of("ERROR", "Resource bad request: " + request.getDescription(false)) // Información adicional si es necesario
         );
 
         return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
@@ -167,11 +150,41 @@ public class GlobalExceptionHandler {
                 HttpStatus.NOT_FOUND,
                 userMessage,
                 debugMessage,
-                Map.of("error", "Resource not found: " + request.getDescription(false)) // Información adicional si es necesario
+                Map.of("ERROR", "Resource not found: " + request.getDescription(false)) // Información adicional si es necesario
         );
 
         return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
     }
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiError> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+        String rootCauseMessage = getRootCause(ex).getMessage();
+
+        // Intentar extraer un mensaje específico desde el diccionario
+        String userMessage = UNIQUE_CONSTRAINT_MESSAGES.entrySet().stream()
+                .filter(entry -> rootCauseMessage.contains(entry.getKey())) // Verificar si el mensaje contiene la clave
+                .map(Map.Entry::getValue) // Obtener el mensaje asociado
+                .findFirst() // Tomar el primero encontrado
+                .orElse(null); // Si no se encuentra, dejar como null
+
+        // Si no se encuentra un mensaje específico, usar un mensaje genérico
+        if (userMessage == null) {
+            if (rootCauseMessage.contains("Duplicate entry")) {
+                userMessage = "Duplicate entry detected: " + extractDuplicateEntryInfo(rootCauseMessage);
+            } else {
+                userMessage = "A database integrity violation occurred.";
+            }
+        }
+
+        ApiError apiError = new ApiError(
+                HttpStatus.CONFLICT,
+                userMessage,
+                debugEnabled ? rootCauseMessage : null,
+                Map.of("ERROR", rootCauseMessage)
+        );
+
+        return new ResponseEntity<>(apiError, HttpStatus.CONFLICT);
+    }
+
 
     // Método auxiliar para extraer la causa raíz de la excepción
     private Throwable getRootCause(Throwable throwable) {

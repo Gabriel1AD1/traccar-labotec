@@ -129,7 +129,7 @@ public class TcUser {
     private Boolean temporary;
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tc_company_id")
+    @JoinColumn(name = "companyId")
     private TcCompany tcCompany;
     public void setPassword(String password) {
         Hashing.HashingResult hashingResult = Hashing.createHash(password);

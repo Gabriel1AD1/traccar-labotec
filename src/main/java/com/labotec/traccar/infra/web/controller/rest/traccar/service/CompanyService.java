@@ -39,13 +39,19 @@ public class CompanyService {
         tcUser.setEmail(userAdminCompanyDTO.getAdminEmail());
         tcUser.setName(userAdminCompanyDTO.getAdminUserName());
         tcUser.setPassword(userAdminCompanyDTO.getAdminPassword());
+        tcUser.setZoom(0);
         tcUser.setLongitude(0.0);
         tcUser.setLatitude(0.0);
-        tcUser.setZoom(0);
+        tcUser.setDevicereadonly(false);
+        tcUser.setLimitcommands(false);
         tcUser.setIsAdministratorCompany(true);
         tcUser.setTcCompany(tcCompanySaved);
         tcUser.setAdministrator(false);
         tcUser.setReadonly(false);
+        tcUser.setFixedemail(false);
+        tcUser.setTemporary(false);
+        tcUser.setDisabled(false);
+        tcUser.setAttributes("{}");
         TcUser tcUserSaved = tcUserRepository.save(tcUser);
 
         Company company = new Company();

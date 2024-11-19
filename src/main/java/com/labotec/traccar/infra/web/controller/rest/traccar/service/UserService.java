@@ -6,7 +6,6 @@ import com.labotec.traccar.infra.exception.EntityNotFoundException;
 import com.labotec.traccar.infra.web.controller.rest.traccar.dto.UserCreateNotAdministratorDTO;
 import com.labotec.traccar.infra.web.controller.rest.traccar.exception.Unauthorised;
 import lombok.AllArgsConstructor;
-import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final TcUserRepository tcUserRepository;
-    public TcUser createUserForByAdministrator(UserCreateNotAdministratorDTO createNotAdministratorDTO , Long idUser){
+    public TcUser createUserForByAdministrator(UserCreateNotAdministratorDTO createNotAdministratorDTO , Long idUser) {
         TcUser tcUser = tcUserRepository.findById(Math.toIntExact(idUser)).orElseThrow(
                 () -> new EntityNotFoundException("Usuario no encontrado")
         );
@@ -30,9 +29,17 @@ public class UserService {
         tcUserNotAdmin.setZoom(0);
         tcUserNotAdmin.setLongitude(0.0);
         tcUserNotAdmin.setLatitude(0.0);
-        tcUserNotAdmin.setAdministrator(false);
-        tcUserNotAdmin.setTcCompany(tcUser.getTcCompany());
+        tcUserNotAdmin.setDevicereadonly(false);
+        tcUserNotAdmin.setLimitcommands(false);
         tcUserNotAdmin.setIsAdministratorCompany(false);
+        tcUserNotAdmin.setTcCompany(tcUser.getTcCompany());
+        tcUserNotAdmin.setAdministrator(false);
+        tcUserNotAdmin.setDisabled(false);
+        tcUserNotAdmin.setReadonly(false);
+        tcUserNotAdmin.setFixedemail(false);
+        tcUserNotAdmin.setTemporary(false);
+        tcUserNotAdmin.setAttributes("{}");
+
         return tcUserRepository.save(tcUserNotAdmin);
-    }
+        }
 }
