@@ -1,6 +1,7 @@
 package com.labotec.traccar.infra.web.controller.rest.traccar.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
@@ -11,6 +12,7 @@ public class UserCreateNotAdministratorDTO {
     private String username;
     @NotEmpty
     @JsonProperty("email")
+    @Email
     private String email;
     @NotEmpty
     @JsonProperty("password")

@@ -37,7 +37,7 @@ public class TcCompany {
     private String domain;
 
     @Size(max = 255)
-    @Column(name = "email")
+    @Column(name = "email" ,unique = true)
     private String email;
 
     @Size(max = 255)
