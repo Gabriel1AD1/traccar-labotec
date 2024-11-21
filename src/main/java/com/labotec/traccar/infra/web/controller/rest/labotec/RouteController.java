@@ -35,9 +35,10 @@ public class RouteController {
     // Endpoint para obtener una ruta por su ID
     @GetMapping("/{id}")
     public ResponseEntity<Route> findById(
-            @PathVariable("id") @NotNull Long resourceId,
-            @RequestHeader(name = "userId") Long userId
+            @RequestHeader(name = "userId") Long userId,
+            @PathVariable("id") @NotNull Long resourceId
     ) {
+        System.out.println(userId);
         return ResponseEntity.ok(routeService.findById(resourceId,userId));
     }
 

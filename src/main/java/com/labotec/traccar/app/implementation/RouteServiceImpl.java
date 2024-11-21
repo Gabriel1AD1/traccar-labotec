@@ -57,8 +57,7 @@ public class RouteServiceImpl implements RouteService
             routeBusStopCreate.setOrder(routeIterable.getOrder());
             routeBusStopCreate.setRoute(routeSave);
             RouteBusStop routeBusStopSaved = routeBusStopRepository.create(routeBusStopCreate);
-            for (CustomRouteBusStopDTO  busStopDTO: routeDTO.getBusStops()) {
-                for(PolylineDTO polylineDTO : busStopDTO.getPolylines()){
+                for(PolylineDTO polylineDTO : routeIterable.getPolylines()){
                     OverviewPolyline overviewPolyline = new OverviewPolyline();
                     overviewPolyline.setPolyline(polylineDTO.getPolyline());
                     overviewPolyline.setRouteBusStop(routeBusStopSaved);
@@ -67,7 +66,6 @@ public class RouteServiceImpl implements RouteService
 
                 }
 
-            }
         }
         return routeSave;
     }

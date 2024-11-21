@@ -10,5 +10,5 @@ import java.util.Optional;
 
 @Repository
 public interface RouteRepositoryJpa extends JpaRepository<RouteEntity, Integer> {
-    @Query("SELECT r FROM RouteEntity r WHERE r.userId.id = :userId AND r.id = :routeId")
+    @Query("SELECT r FROM RouteEntity r WHERE r.userId.userId = :userId AND r.id = :routeId")
     Optional<RouteEntity> findRouteByUserIdAndRouteId(@Param("userId") Long userId, @Param("routeId") Long routeId);}

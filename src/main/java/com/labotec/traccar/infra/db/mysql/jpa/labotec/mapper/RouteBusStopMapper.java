@@ -3,15 +3,20 @@ package com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper;
 import com.labotec.traccar.domain.database.models.RouteBusStop;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.RouteBusStopEntity;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@Mapper(componentModel = "spring", uses = {RouteMapper.class, BusStopMapper.class})
+@Mapper(componentModel = "spring", uses = {
+        BusStopMapper.class,
+        OverviewPolylineMapper.class
+})
 public interface RouteBusStopMapper {
 
     // De entidad a modelo
+    @Mapping(target = "route", ignore = true)
     RouteBusStop toModel(RouteBusStopEntity entity);
 
     // De modelo a entidad

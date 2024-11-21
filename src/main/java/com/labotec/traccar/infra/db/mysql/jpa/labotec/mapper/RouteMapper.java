@@ -8,10 +8,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@Mapper(componentModel = "spring", uses = {BusStopMapper.class, CompanyMapper.class ,ProgressRouteMapper.class})
+@Mapper(componentModel = "spring", uses = {
+        BusStopMapper.class,
+        CompanyMapper.class ,
+        ProgressRouteMapper.class,
+        RouteBusStopMapper.class
+
+}
+)
 public interface RouteMapper {
 
     // De entidad a modelo
+
     Route toModel(RouteEntity entity);
 
     // De modelo a entidad
