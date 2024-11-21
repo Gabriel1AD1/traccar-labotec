@@ -7,6 +7,7 @@ import com.labotec.traccar.domain.web.dto.entel.update.BusStopUpdateDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +31,14 @@ public class BusStopController {
             @RequestBody @Valid BusStopDTO busStopDTO) {
 
         BusStop createdBusStop = busStopService.create(busStopDTO,userId);
-        return ResponseEntity.status(CREATED).body(createdBusStop);
+        // Crear la URI del recurso recién creado
+        String uriLocation = "/api/v1/user/" + createdBusStop.getId();
+
+        // Crear encabezados
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Location", uriLocation);
+
+        return ResponseEntity.status(CREATED).headers(headers).build();
     }
 
     // Endpoint para obtener una parada de autobús por su ID

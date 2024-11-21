@@ -50,6 +50,10 @@ public class LocationEntity {
     @Column(name = "radio", precision = 10, scale = 2)
     private BigDecimal radius;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "paradero_id")
+    private BusStopEntity busStopId;
+
     @CreatedDate
     @Column(name = "fecha_creacion", updatable = false)
     private Instant createdDate;
