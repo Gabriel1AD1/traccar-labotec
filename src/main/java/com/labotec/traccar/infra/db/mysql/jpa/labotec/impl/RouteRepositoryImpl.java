@@ -35,7 +35,10 @@ public class RouteRepositoryImpl implements RouteRepository {
     }
     @Override
     public Route findById(Long resourceId, Long userId) {
-        return null;
+        RouteEntity routeEntity = routeRepositoryJpa.findRouteByUserIdAndRouteId(userId , resourceId).orElseThrow(
+                ()-> new EntityNotFoundException("El recurso buscado no ha sido encontrado "+ resourceId)
+        );
+        return routeMapper.toModel(routeEntity);
     }
 
     @Override

@@ -38,9 +38,7 @@ public class RouteController {
             @PathVariable("id") @NotNull Long resourceId,
             @RequestHeader(name = "userId") Long userId
     ) {
-        Optional<Route> result = Optional.ofNullable(routeService.findById(resourceId,userId));
-        return result.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(routeService.findById(resourceId,userId));
     }
 
     // Endpoint para obtener todas las rutas

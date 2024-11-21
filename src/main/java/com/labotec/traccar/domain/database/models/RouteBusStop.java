@@ -1,4 +1,5 @@
 package com.labotec.traccar.domain.database.models;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import java.time.Instant;
@@ -10,6 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 public class RouteBusStop {
     private Long id;
+    @JsonIgnore
     private Route route;
     private BusStop firstBusStop;
     private BusStop secondBusStop;
