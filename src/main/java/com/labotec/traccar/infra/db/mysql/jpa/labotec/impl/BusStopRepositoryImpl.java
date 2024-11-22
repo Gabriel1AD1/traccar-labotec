@@ -30,7 +30,7 @@ public class BusStopRepositoryImpl implements BusStopRepository {
     @Override
     public BusStop findById(Long resourceId, Long userId) {
         BusStopEntity busStopEntity = busStopRepositoryJpa.findByIdAndUserId(resourceId,userId).orElseThrow(
-                () -> new EntityNotFoundException(BUS_STOP_NOT_FOUND_BY_ID + userId)
+                () -> new EntityNotFoundException(BUS_STOP_NOT_FOUND_BY_ID + resourceId)
         );
         return busStopMapper.toModel(busStopEntity);
     }
