@@ -49,7 +49,7 @@ public class RouteEntity {
     @Embedded
     private ProgressRouteE progressRoutes;
 
-    @OneToMany(mappedBy = "route", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "route", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<RouteBusStopEntity> busStopsList;
 
     @CreatedDate

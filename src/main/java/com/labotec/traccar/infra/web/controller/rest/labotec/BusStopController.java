@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.labotec.traccar.infra.web.controller.common.API_VERSION_MANAGER.API_VERSION_V1;
@@ -38,6 +39,19 @@ public class BusStopController {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Location", uriLocation);
 
+        return ResponseEntity.status(CREATED).headers(headers).build();
+    }
+    @PostMapping("/list")
+    public ResponseEntity<BusStop> createBusStopList(
+            @RequestHeader(name = "userId") Long userId,
+            @RequestBody @Valid List<BusStopDTO> busStopDTO) {
+
+        List<Long> createdBusStop = busStopService.createBusStopList(busStopDTO,userId);
+        // Crear la URI del recurso recién creado
+        String uriLocation = "/api/v1/user/" + createdBusStop;
+        // Crear encabezados
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Location", uriLocation);
         return ResponseEntity.status(CREATED).headers(headers).build();
     }
 

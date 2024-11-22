@@ -6,7 +6,6 @@ import com.labotec.traccar.app.usecase.ports.input.repository.CompanyRepository;
 import com.labotec.traccar.app.usecase.ports.input.repository.UserRepository;
 import com.labotec.traccar.app.usecase.ports.out.BusStopService;
 import com.labotec.traccar.domain.database.models.BusStop;
-import com.labotec.traccar.domain.database.models.Company;
 import com.labotec.traccar.domain.database.models.User;
 import com.labotec.traccar.domain.enums.STATE;
 import com.labotec.traccar.domain.web.dto.entel.create.BusStopDTO;
@@ -14,6 +13,9 @@ import com.labotec.traccar.domain.web.dto.entel.update.BusStopUpdateDTO;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 
@@ -58,5 +60,19 @@ public class BusStopImpl implements BusStopService {
     @Override
     public void deleteById(Long resourceId, Long userId) {
         busStopRepository.deleteById(resourceId,userId);
+    }
+
+    @Override
+    public List<Long> createBusStopList(List<BusStopDTO> busStopListCreateDTO,Long userId) {
+        List<Long> idBusStops = new ArrayList<>();
+        for (BusStopDTO busStopDTO : busStopListCreateDTO){
+            User userFindByUserId = userRepository.findByUserId(userId);
+            BusStop busStop = busStopModelMapper.toBusStopModel(busStopDTO);
+            busStop.setUserId(userFindByUserId);
+            busStop.setCompanyId(userFindByUserId.getCompanyId());
+            busStop.setStatus(STATE.ACTIVO);
+            idBusStops.add(busStopRepository.create(busStop).getId());
+        }
+        return idBusStops;
     }
 }

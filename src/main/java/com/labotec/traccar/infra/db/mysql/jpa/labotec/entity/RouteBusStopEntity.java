@@ -43,7 +43,7 @@ public class RouteBusStopEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_segundo_paradero", nullable = false)
     private BusStopEntity secondBusStop;
-    @OneToMany(mappedBy = "routeBusStop", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "routeBusStop", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<OverviewPolylineEntity> overviewPolylines;
     @Column(name = "orden", nullable = false)
     private Long order;
