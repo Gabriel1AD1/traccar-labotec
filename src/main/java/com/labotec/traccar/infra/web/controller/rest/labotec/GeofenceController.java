@@ -1,9 +1,9 @@
 package com.labotec.traccar.infra.web.controller.rest.labotec;
 
-import com.labotec.traccar.app.usecase.ports.out.GeofencePoligonalService;
+import com.labotec.traccar.app.ports.out.GeofencePoligonalService;
 import com.labotec.traccar.domain.database.models.CircularGeofence;
-import com.labotec.traccar.domain.web.dto.entel.create.CircularGeofenceDTO;
-import com.labotec.traccar.domain.web.dto.entel.update.GeofencePoligonalUpdateDTO;
+import com.labotec.traccar.domain.web.dto.labotec.request.create.CircularGeofenceDTO;
+import com.labotec.traccar.domain.web.dto.labotec.request.update.GeofencePoligonalUpdateDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -22,7 +22,7 @@ public class GeofenceController {
 
 
     // Endpoint para crear una nueva geo cerca
-    @PostMapping("")
+    @PostMapping("/circular")
     public ResponseEntity<CircularGeofence> create(
             @RequestBody @Valid CircularGeofenceDTO locationDTO,
             @RequestHeader(name = "userId") Long userId) {
@@ -31,7 +31,7 @@ public class GeofenceController {
     }
 
     // Endpoint para obtener una geo cerca por su ID
-    @GetMapping("/{id}")
+    @GetMapping("/circular/{id}")
     public ResponseEntity<CircularGeofence> findById(
             @PathVariable("id") @NotNull Long resourceId,
             @RequestHeader(name = "userId") Long userId) {
@@ -42,14 +42,14 @@ public class GeofenceController {
     }
 
     // Endpoint para obtener todas las geo cerca
-    @GetMapping("")
+    @GetMapping("/circular")
     public ResponseEntity<Iterable<CircularGeofence>> findAll(@RequestHeader(name = "userId") Long userId) {
         Iterable<CircularGeofence> allLocations = poligonalService.findAll(userId);
         return ResponseEntity.ok(allLocations);
     }
 
     // Endpoint para actualizar una geo cerca existente
-    @PutMapping("/{id}")
+    @PutMapping("/circular/{id}")
     public ResponseEntity<CircularGeofence> update(
             @RequestBody @Valid GeofencePoligonalUpdateDTO locationDTO,
             @PathVariable("id") @NotNull Long resourceId,

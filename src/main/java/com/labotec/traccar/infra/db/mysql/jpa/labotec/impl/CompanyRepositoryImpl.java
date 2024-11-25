@@ -1,6 +1,6 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.impl;
 
-import com.labotec.traccar.app.usecase.ports.input.repository.CompanyRepository;
+import com.labotec.traccar.app.ports.input.repository.CompanyRepository;
 import com.labotec.traccar.domain.database.models.Company;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.CompanyEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.CompanyMapper;

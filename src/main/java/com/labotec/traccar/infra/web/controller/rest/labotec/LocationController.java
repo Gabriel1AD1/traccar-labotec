@@ -1,18 +1,21 @@
 package com.labotec.traccar.infra.web.controller.rest.labotec;
 
-import com.labotec.traccar.app.usecase.ports.out.LocationService;
+import com.labotec.traccar.app.ports.out.LocationService;
 import com.labotec.traccar.domain.database.models.Location;
-import com.labotec.traccar.domain.web.dto.entel.create.LocationDTO;
-import com.labotec.traccar.domain.web.dto.entel.update.LocationUpdateDTO;
+import com.labotec.traccar.domain.web.dto.labotec.request.create.LocationDTO;
+import com.labotec.traccar.domain.web.dto.labotec.request.update.LocationUpdateDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.Optional;
 
 import static com.labotec.traccar.infra.web.controller.common.API_VERSION_MANAGER.API_VERSION_V1;
+import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
 @RequestMapping(value = API_VERSION_V1 + "location")
@@ -24,13 +27,14 @@ public class LocationController {
 
     // Endpoint para crear una nueva ubicación
     @PostMapping("")
-    public ResponseEntity<Location> create(
+    public ResponseEntity<Void> create(
             @RequestBody @Valid LocationDTO locationDTO,
             @RequestHeader(name = "userId") Long userId) {
-        Location createdLocation = locationService.create(locationDTO,userId);
-        return ResponseEntity.ok(createdLocation);
-    }
-
+        Long createdLocation = locationService.create(locationDTO,userId).getId();
+        HttpHeaders httpHeaders = new  HttpHeaders();
+        httpHeaders.setLocation(URI.create("/api/v1/location/"+ createdLocation));
+        return ResponseEntity.status(CREATED).headers(httpHeaders).build();
+}
     // Endpoint para obtener una ubicación por su ID
     @GetMapping("/{id}")
     public ResponseEntity<Location> findById(

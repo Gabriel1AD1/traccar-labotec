@@ -16,10 +16,8 @@ import java.time.Instant;
         name = "tbl_unidades",
         schema = "traccar_db",
         indexes = {
-                @Index(name = "idx_id_company", columnList = "id, empresa_id"),
-                @Index(name = "idx_id_user", columnList = "id, usuario_id"),
-                @Index(name = "idx_company", columnList = "empresa_id"),
-                @Index(name = "idx_user", columnList = "usuario_id"),
+                @Index(name = "idx_device_company", columnList = "id_device_traccar, empresa_id"),
+                @Index(name = "idx_device_user", columnList = "id_device_traccar, usuario_id")
         }
 
 )
@@ -29,8 +27,9 @@ import java.time.Instant;
 
 public class VehicleEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id_device_traccar", nullable = false, unique = true)
+    private Long traccarDeviceId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id")
     private UserEntity userId;
@@ -39,8 +38,6 @@ public class VehicleEntity {
     @JoinColumn(name = "empresa_id")
     private CompanyEntity companyId;
 
-    @Column(name = "id_device_traccar", nullable = false, unique = true)
-    private Long traccarDeviceId;
 
     @Column(name = "num_placa", nullable = false, length = 50)
     private String licensePlate;

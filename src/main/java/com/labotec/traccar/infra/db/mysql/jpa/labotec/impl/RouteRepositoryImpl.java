@@ -1,6 +1,6 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.impl;
 
-import com.labotec.traccar.app.usecase.ports.input.repository.RouteRepository;
+import com.labotec.traccar.app.ports.input.repository.RouteRepository;
 import com.labotec.traccar.domain.database.models.Route;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.RouteEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.RouteMapper;
@@ -9,10 +9,7 @@ import com.labotec.traccar.infra.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
-
-import static com.labotec.traccar.infra.db.mysql.jpa.labotec.message.RouteMessage.ROUTE_NOT_FOUND_BY_ID;
 
 @AllArgsConstructor
 @Repository

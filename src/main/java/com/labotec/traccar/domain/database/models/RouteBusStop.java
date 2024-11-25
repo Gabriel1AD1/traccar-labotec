@@ -15,6 +15,9 @@ public class RouteBusStop {
     private Route route;
     private BusStop firstBusStop;
     private BusStop secondBusStop;
+    private Integer estimatedTravelTime; // En minutos
+    private Integer maxWaitTime; // En minutos
+    private Integer minWaitTime; // En minutos
     private List<OverviewPolyline> overviewPolylines;
     private Long order;
     private Instant createdDate;

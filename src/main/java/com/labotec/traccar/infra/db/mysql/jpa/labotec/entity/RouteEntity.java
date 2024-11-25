@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @Entity
 @Table(
-        name = "tbl_lab_ruta",
+        name = "tbl_ruta",
         schema = "traccar_db",
         indexes = {
                 @Index(name = "idx_id_company", columnList = "id, empresa_id"),
@@ -40,18 +40,8 @@ public class RouteEntity {
     private CompanyEntity companyId;
     @Column(name = "nombre", nullable = false, length = 250)
     private String name;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_paradero_origen")
-    private BusStopEntity originBusStop;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_paradero_destino")
-    private BusStopEntity destinationBusStop;
-    @Embedded
-    private ProgressRouteE progressRoutes;
-
     @OneToMany(mappedBy = "route", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<RouteBusStopEntity> busStopsList;
-
     @CreatedDate
     @Column(name = "fecha_creacion", updatable = false)
     private Instant createdDate;

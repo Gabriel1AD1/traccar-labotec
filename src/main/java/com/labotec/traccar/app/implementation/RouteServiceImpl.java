@@ -1,14 +1,13 @@
 package com.labotec.traccar.app.implementation;
 
-import com.labotec.traccar.app.mapper.RouteModelMapper;
-import com.labotec.traccar.app.usecase.ports.input.repository.*;
-import com.labotec.traccar.app.usecase.ports.out.RouteService;
+import com.labotec.traccar.app.mapper.model.RouteModelMapper;
+import com.labotec.traccar.app.ports.input.repository.*;
+import com.labotec.traccar.app.ports.out.RouteService;
 import com.labotec.traccar.domain.database.models.*;
-import com.labotec.traccar.domain.enums.STATE;
-import com.labotec.traccar.domain.web.dto.entel.create.CustomRouteBusStopDTO;
-import com.labotec.traccar.domain.web.dto.entel.create.PolylineDTO;
-import com.labotec.traccar.domain.web.dto.entel.create.RouteDTO;
-import com.labotec.traccar.domain.web.dto.entel.update.RouteUpdateDTO;
+import com.labotec.traccar.domain.web.dto.labotec.request.create.RouteBusStopCreateDTO;
+import com.labotec.traccar.domain.web.dto.labotec.request.create.PolylineCreateDTO;
+import com.labotec.traccar.domain.web.dto.labotec.request.create.RouteCreateDTO;
+import com.labotec.traccar.domain.web.dto.labotec.request.update.RouteUpdateDTO;
 import lombok.AllArgsConstructor;
 
 
@@ -27,41 +26,38 @@ public class RouteServiceImpl implements RouteService
 
 
     @Override
-    public Route create(RouteDTO routeDTO, Long userId) {
+    public Route create(RouteCreateDTO routeCreateDTO, Long userId) {
         //1 - Obtenemos el usuario por su userId
         User user = userRepository.findByUserId(userId);
         //2 - Obtenemos la compañía de el usuario
         Company company = user.getCompanyId();
 
-        //3 - Obtener el paradero de inicio de la ruta
-        BusStop originBusStop  = busStopRepository.findById(routeDTO.getOriginBusStopId(),userId);
-        //4 - Obtenemos el ultimo paradero de la ruta
-        BusStop destinationBusStop = busStopRepository.findById(routeDTO.getDestinationBusStopId(),userId);
         //5 - Mapeamos el dto a un objeto de dominio
-        Route route = routeModelMapper.toRoute(routeDTO);
+        Route route = routeModelMapper.toRoute(routeCreateDTO);
         //6 - Enriquecemos La ruta
         route.setUserId(user);
         route.setCompanyId(company);
-        route.setOriginBusStop(originBusStop);
-        route.setDestinationBusStop(destinationBusStop);
         //7- Ruta creada
         Route routeSave = routeRepository.create(route);
         //8- Creamos la tabla intermedia de rutas y paraderos
-        for(CustomRouteBusStopDTO routeIterable : routeDTO.getBusStops()){
+        for(RouteBusStopCreateDTO routeIterable : routeCreateDTO.getSegments()){
             RouteBusStop routeBusStopCreate = new RouteBusStop();
             //9- Buscamos los paraderos
-            BusStop firstBusStop = busStopRepository.findById(routeIterable.getFirstBusStopId(),userId);
-            BusStop secondBusStop = busStopRepository.findById(routeIterable.getSecondBusStopId(),userId);
+            BusStop firstBusStop = busStopRepository.findById(routeIterable.getStartBusStopId(),userId);
+            BusStop secondBusStop = busStopRepository.findById(routeIterable.getEndBusStopId(),userId);
             routeBusStopCreate.setFirstBusStop(firstBusStop);
             routeBusStopCreate.setSecondBusStop(secondBusStop);
             routeBusStopCreate.setOrder(routeIterable.getOrder());
+            routeBusStopCreate.setEstimatedTravelTime(routeIterable.getEstimatedTravelTime());
+            routeBusStopCreate.setMaxWaitTime(routeIterable.getMaxWaitTime());
+            routeBusStopCreate.setMinWaitTime(routeIterable.getMinWaitTime());
             routeBusStopCreate.setRoute(routeSave);
             RouteBusStop routeBusStopSaved = routeBusStopRepository.create(routeBusStopCreate);
-                for(PolylineDTO polylineDTO : routeIterable.getPolylines()){
+                for(PolylineCreateDTO polylineCreateDTO : routeIterable.getPolylines()){
                     OverviewPolyline overviewPolyline = new OverviewPolyline();
-                    overviewPolyline.setPolyline(polylineDTO.getPolyline());
+                    overviewPolyline.setPolyline(polylineCreateDTO.getPolyline());
                     overviewPolyline.setRouteBusStop(routeBusStopSaved);
-                    overviewPolyline.setIsPrimary(polylineDTO.getIsPrimary());
+                    overviewPolyline.setIsPrimary(polylineCreateDTO.getIsPrimary());
                     overviewPolylineRepository.create(overviewPolyline);
 
                 }
@@ -97,8 +93,6 @@ public class RouteServiceImpl implements RouteService
         //6 - Enriquecemos La ruta
         route.setUserId(user);
         route.setCompanyId(company);
-        route.setOriginBusStop(originBusStop);
-        route.setDestinationBusStop(destinationBusStop);
         //7- Ruta creada
         Route routeSave = routeRepository.create(route);
         //8- Creamos la tabla intermedia de rutas y paraderos
@@ -112,8 +106,8 @@ public class RouteServiceImpl implements RouteService
             routeBusStopCreate.setOrder(routeIterable.getOrder());
             routeBusStopCreate.setRoute(routeSave);
             RouteBusStop routeBusStopSaved = routeBusStopRepository.create(routeBusStopCreate);/*
-            for (RouteUpdateDTO.BusStopDTO  busStopDTO: routeUpdateDTO.getBusStops()) {
-                for(PolylineDTO polylineDTO : busStopDTO){
+            for (RouteUpdateDTO.BusStopCreateDTO  busStopDTO: routeUpdateDTO.getBusStops()) {
+                for(PolylineCreateDTO polylineDTO : busStopDTO){
                     OverviewPolyline overviewPolyline = new OverviewPolyline();
                     overviewPolyline.setPolyline(polylineDTO.getPolyline());
                     overviewPolyline.setRouteBusStop(routeBusStopSaved);

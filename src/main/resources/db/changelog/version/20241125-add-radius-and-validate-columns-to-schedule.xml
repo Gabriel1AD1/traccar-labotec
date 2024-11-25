@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="20241125-add-radius-and-validate-columns-to-schedule" author="yourname">
+        <!-- Agregar la columna radiusValidateRoutePolyline -->
+        <addColumn tableName="tbl_programacion">
+            <column name="radio_validador_polilynea" type="BIGINT" defaultValue="0">
+            </column>
+        </addColumn>
+
+        <!-- Agregar la columna validateRouteExplicit -->
+        <addColumn tableName="tbl_programacion">
+            <column name="validdar ruta_por_polilyne" type="BOOLEAN" defaultValue="false">
+            </column>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

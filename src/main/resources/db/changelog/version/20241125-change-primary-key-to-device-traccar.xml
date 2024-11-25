@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="update-tbl-eventos-id-device-traccar" author="cerroteberes@gmail.com">
+
+        <!-- 1. Eliminar la clave foránea existente en tbl_eventos -->
+        <dropForeignKeyConstraint baseTableName="tbl_eventos" constraintName="FKhthkl4gd4e7i9y2c2x5m8wkv2"/>
+
+        <!-- 2. Renombrar columna vehiculo_id a id_device_traccar -->
+        <renameColumn tableName="tbl_eventos" oldColumnName="vehiculo_id" newColumnName="id_device_traccar" columnDataType="BIGINT"/>
+
+        <!-- 3. Agregar la nueva clave foránea apuntando a id_device_traccar de tbl_unidades -->
+        <addForeignKeyConstraint baseTableName="tbl_eventos"
+                                 baseColumnNames="id_device_traccar"
+                                 referencedTableName="tbl_unidades"
+                                 referencedColumnNames="id_device_traccar"
+                                 constraintName="FK_tbl_eventos_vehicle_device_traccar"/>
+
+        <!-- 4. (Opcional) Actualizar los índices si dependen de la columna renombrada -->
+        <dropIndex tableName="tbl_eventos" indexName="idx_vehicle"/>
+        <createIndex tableName="tbl_eventos" indexName="idx_eventos_device_traccar">
+            <column name="id_device_traccar"/>
+        </createIndex>
+
+    </changeSet>
+</databaseChangeLog>

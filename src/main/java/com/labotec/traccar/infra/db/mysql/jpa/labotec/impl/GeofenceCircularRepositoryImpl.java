@@ -1,6 +1,6 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.impl;
 
-import com.labotec.traccar.app.usecase.ports.input.repository.GeofenceCircularRepository;
+import com.labotec.traccar.app.ports.input.repository.GeofenceCircularRepository;
 import com.labotec.traccar.domain.database.models.CircularGeofence;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.CircularGeofenceEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.GeofenceCircularMapper;

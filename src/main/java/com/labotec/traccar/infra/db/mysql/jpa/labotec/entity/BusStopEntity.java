@@ -34,7 +34,8 @@ public class BusStopEntity {
 
     @Column(name = "nombre", length = 200)
     private String name;
-
+    @Column(name = "descripcion")
+    private String description;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id")
     private UserEntity userId;

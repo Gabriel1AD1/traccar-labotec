@@ -1,0 +1,20 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="update-tbl_lab_ruta-to-tbl_ruta" author="cerroteberes@gmail.com">
+
+        <!-- Eliminar claves foráneas relacionadas -->
+        <dropForeignKeyConstraint baseTableName="tbl_ruta" constraintName="FKrix6dp29n4vgmo74fxc5qioki"/>
+        <dropForeignKeyConstraint baseTableName="tbl_ruta" constraintName="FKnono2v50jdbuhqkuoy6wsuvny"/>
+
+        <!-- Eliminar columnas específicas -->
+        <dropColumn tableName="tbl_ruta" columnName="id_paradero_destino"/>
+        <dropColumn tableName="tbl_ruta" columnName="id_paradero_origen"/>
+        <dropColumn tableName="tbl_ruta" columnName="percentage_completed"/>
+        <dropColumn tableName="tbl_ruta" columnName="route_bus_stop_id"/>
+    </changeSet>
+
+</databaseChangeLog>

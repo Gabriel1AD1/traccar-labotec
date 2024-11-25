@@ -1,26 +1,30 @@
 package com.labotec.traccar.infra.web.controller.rest.labotec;
 
-import com.labotec.traccar.app.usecase.ports.out.DriverService;
+import com.labotec.traccar.app.ports.out.DriverService;
 import com.labotec.traccar.domain.database.models.Driver;
-import com.labotec.traccar.domain.web.dto.entel.create.DriverDTO;
-import com.labotec.traccar.domain.web.dto.entel.update.DriverUpdateDTO;
+import com.labotec.traccar.domain.web.dto.labotec.request.create.DriverDTO;
+import com.labotec.traccar.domain.web.dto.labotec.request.update.DriverUpdateDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.Optional;
 
 import static com.labotec.traccar.infra.web.controller.common.API_VERSION_MANAGER.API_VERSION_V1;
+import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
-@RequestMapping(value = API_VERSION_V1 + "driver")
+@RequestMapping(value = API_VERSION_V1 + "drivers")
 @AllArgsConstructor
 public class DriverController {
 
     // Inyección del servicio específico de Driver
     private final DriverService driverService;
+    private final HttpHeaders headers = new HttpHeaders();
 
     // Endpoint para crear un nuevo conductor
     @PostMapping("")
@@ -28,8 +32,9 @@ public class DriverController {
             @RequestBody @Valid DriverDTO driverDTO,
             @RequestHeader(name = "userId") Long userId
     ) {
-        Driver createdDriver = driverService.create(driverDTO,userId);
-        return ResponseEntity.ok(createdDriver);
+        Long createdDriver = driverService.create(driverDTO,userId).getId();
+        headers.setLocation(URI.create("/api/v1/drivers/"+createdDriver));
+        return ResponseEntity.status(CREATED).headers(headers).build();
     }
 
     // Endpoint para obtener un conductor por su ID

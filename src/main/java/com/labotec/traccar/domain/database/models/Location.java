@@ -1,5 +1,6 @@
 package com.labotec.traccar.domain.database.models;
 
+import com.labotec.traccar.domain.enums.STATE;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -14,6 +15,9 @@ public class Location {
     private User userId;
     private Company companyId;
     private String name;
+    private String description;
+    private STATE state;
+    private BusStop busStopAssociate;
     private String latitude;
     private String longitude;
     private BigDecimal radius;

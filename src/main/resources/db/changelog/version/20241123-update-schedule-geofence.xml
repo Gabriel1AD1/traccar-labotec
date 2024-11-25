@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="20241123-update-schedule-geofence" author="cerroteberes@gmail.com">
+        <!-- Eliminar la relación con CircularGeofenceEntity -->
+        <dropForeignKeyConstraint baseTableName="tbl_programacion" constraintName="fk_schedule_geofence" />
+
+        <!-- Cambiar la columna de relación a un campo Long -->
+        <dropColumn tableName="tbl_programacion" columnName="id_geofence_poligonal" />
+        <addColumn tableName="tbl_programacion">
+            <column name="geofence_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+
+        <!-- Agregar nueva columna para el tipo de geocerca -->
+        <addColumn tableName="tbl_programacion">
+            <column name="tipo_geocerca" type="VARCHAR(20)">
+                <constraints nullable="false" defaultValue="CIRCULAR"/>
+            </column>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

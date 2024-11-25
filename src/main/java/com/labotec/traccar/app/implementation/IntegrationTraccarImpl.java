@@ -1,19 +1,13 @@
 package com.labotec.traccar.app.implementation;
 
-import com.labotec.traccar.app.lib.GpsLibDecoded;
-import com.labotec.traccar.app.mapper.RouteModelMapper;
-import com.labotec.traccar.app.usecase.ports.input.email.GoogleEmail;
-import com.labotec.traccar.app.usecase.ports.input.repository.*;
-import com.labotec.traccar.app.usecase.ports.out.IntegrationTraccarService;
+import com.labotec.traccar.app.mapper.model.RouteModelMapper;
+import com.labotec.traccar.app.ports.input.email.GoogleEmail;
+import com.labotec.traccar.app.ports.input.repository.*;
+import com.labotec.traccar.app.ports.out.IntegrationTraccarService;
 import com.labotec.traccar.domain.database.models.*;
 import com.labotec.traccar.domain.web.dto.traccar.DeviceRequestDTO;
 import com.labotec.traccar.domain.web.dto.traccar.LastedInformationVehicle;
 import lombok.AllArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.labotec.traccar.app.constants.IntegrationTraccarConstant.*;
 
 @AllArgsConstructor
 public class IntegrationTraccarImpl implements IntegrationTraccarService {
@@ -39,7 +33,7 @@ public class IntegrationTraccarImpl implements IntegrationTraccarService {
         // 3. Obtener la ruta de la programación
         Route route = schedule.getRoute();
         System.out.println(route.toString());
-
+        /*
         // 4. Obtener la geocerca circular
         CircularGeofence geofence = schedule.getGeofence();
 
@@ -82,8 +76,10 @@ public class IntegrationTraccarImpl implements IntegrationTraccarService {
         System.out.println("El vehículo se ha desviado " + gpsLib.getDistanceFromRoute() +
                 " metros de la ruta programada para el día de hoy: " + route.getName());
         System.out.println("Porcentaje de ruta completado: " + gpsLib.getCompletionPercentage() + "%");
-
+         */
         return "GOOD";
+
+
     }
 
     @Override

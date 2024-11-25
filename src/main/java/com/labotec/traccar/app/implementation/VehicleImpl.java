@@ -1,17 +1,16 @@
 package com.labotec.traccar.app.implementation;
 
-import com.labotec.traccar.app.mapper.VehicleModelMapper;
-import com.labotec.traccar.app.usecase.ports.input.repository.CompanyRepository;
-import com.labotec.traccar.app.usecase.ports.input.repository.UserRepository;
-import com.labotec.traccar.app.usecase.ports.input.repository.VehicleRepository;
-import com.labotec.traccar.app.usecase.ports.input.repository.VehicleTypeRepository;
-import com.labotec.traccar.app.usecase.ports.out.VehicleService;
-import com.labotec.traccar.domain.database.models.Company;
+import com.labotec.traccar.app.mapper.model.VehicleModelMapper;
+import com.labotec.traccar.app.ports.input.repository.CompanyRepository;
+import com.labotec.traccar.app.ports.input.repository.UserRepository;
+import com.labotec.traccar.app.ports.input.repository.VehicleRepository;
+import com.labotec.traccar.app.ports.input.repository.VehicleTypeRepository;
+import com.labotec.traccar.app.ports.out.VehicleService;
 import com.labotec.traccar.domain.database.models.User;
 import com.labotec.traccar.domain.database.models.Vehicle;
 import com.labotec.traccar.domain.database.models.VehicleType;
-import com.labotec.traccar.domain.web.dto.entel.create.VehicleDTO;
-import com.labotec.traccar.domain.web.dto.entel.update.VehicleUpdateDTO;
+import com.labotec.traccar.domain.web.dto.labotec.request.create.VehicleDTO;
+import com.labotec.traccar.domain.web.dto.labotec.request.update.VehicleUpdateDTO;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -28,6 +27,7 @@ public class VehicleImpl  implements VehicleService {
         User user = userRepository.findByUserId(userId);
         Vehicle vehicleMap = vehicleModelMapper.toVehicleModel(vehicleDTO);
         VehicleType vehicleType = vehicleTypeRepository.findById(vehicleDTO.getTypeVehicleId(),userId);
+        System.out.println(vehicleType);
         vehicleMap.setUserId(user);
         vehicleMap.setCompanyId(user.getCompanyId());
         vehicleMap.setTypeVehicle(vehicleType);

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="add-id-chofer-to-tbl-programacion" author="cerroteberes@gmail.com">
+        <!-- Agregar columna id_chofer -->
+        <addColumn tableName="tbl_programacion">
+            <column name="id_chofer" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+
+        <!-- Agregar la clave foránea para id_chofer -->
+        <addForeignKeyConstraint
+                baseTableName="tbl_programacion"
+                baseColumnNames="id_chofer"
+                referencedTableName="tbl_chofer"
+                referencedColumnNames="id"
+                constraintName="FK_tbl_programacion_id_chofer"/>
+    </changeSet>
+
+</databaseChangeLog>

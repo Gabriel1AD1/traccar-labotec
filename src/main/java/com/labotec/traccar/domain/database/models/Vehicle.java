@@ -11,7 +11,6 @@ import java.time.Instant;
 @AllArgsConstructor
 
 public class Vehicle {
-    private Long id;
     private User userId;
     private Company companyId;
     private Long traccarDeviceId;

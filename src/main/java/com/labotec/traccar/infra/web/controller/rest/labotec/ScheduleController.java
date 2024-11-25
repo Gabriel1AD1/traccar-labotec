@@ -1,10 +1,10 @@
 package com.labotec.traccar.infra.web.controller.rest.labotec;
 
-import com.labotec.traccar.app.usecase.ports.out.ScheduleService;
+import com.labotec.traccar.app.ports.out.ScheduleService;
 import com.labotec.traccar.domain.database.models.Schedule;
 import com.labotec.traccar.domain.enums.STATE;
-import com.labotec.traccar.domain.web.dto.entel.create.ScheduleDTO;
-import com.labotec.traccar.domain.web.dto.entel.update.ScheduleUpdateDTO;
+import com.labotec.traccar.domain.web.dto.labotec.request.create.ScheduleDTO;
+import com.labotec.traccar.domain.web.dto.labotec.request.update.ScheduleUpdateDTO;
 import com.labotec.traccar.infra.web.controller.rest.constant.ApiDocumentationConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

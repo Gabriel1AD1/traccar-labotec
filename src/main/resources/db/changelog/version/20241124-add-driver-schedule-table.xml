@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- Cambiar la estructura de la tabla `tbl_programacion` para incluir la relación -->
+    <changeSet id="20241124-add-relation-schedule-drivers" author="cerroteberes@gmail.com">
+        <!-- Crear tabla tbl_programacion_chofer -->
+        <createTable tableName="tbl_programacion_chofer">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="id_programacion" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_tbl_programacion_chofer_programacion" references="tbl_programacion(id)"/>
+            </column>
+            <column name="id_chofer" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_tbl_programacion_chofer_chofer" references="tbl_chofer(id)"/>
+            </column>
+            <column name="rol_asignado" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="usuario_asignador" type="BIGINT">
+                <constraints nullable="true" foreignKeyName="fk_tbl_programacion_chofer_usuario" references="tbl_usuario(usuario_id)"/>
+            </column>
+            <column name="fecha_creacion" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="fecha_actualizacion" type="DATETIME">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <!-- Crear índice compuesto en `id_programacion` e `id_chofer` -->
+        <createIndex tableName="tbl_programacion_chofer" indexName="idx_schedule_driver">
+            <column name="id_programacion"/>
+            <column name="id_chofer"/>
+        </createIndex>
+
+        <!-- Crear índice para `rol_asignado` si se usa frecuentemente -->
+        <createIndex tableName="tbl_programacion_chofer" indexName="idx_rol_asignado">
+            <column name="rol_asignado"/>
+        </createIndex>
+
+        <!-- Crear restricción única para evitar duplicados en una programación -->
+        <addUniqueConstraint
+                tableName="tbl_programacion_chofer"
+                columnNames="id_programacion, id_chofer, rol_asignado"
+                constraintName="uq_tbl_programacion_chofer"/>
+    </changeSet>
+</databaseChangeLog>

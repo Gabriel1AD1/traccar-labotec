@@ -1,15 +1,14 @@
 package com.labotec.traccar.app.implementation;
 
-import com.labotec.traccar.app.mapper.DriverModelMapper;
-import com.labotec.traccar.app.usecase.ports.input.repository.CompanyRepository;
-import com.labotec.traccar.app.usecase.ports.input.repository.DriverRepository;
-import com.labotec.traccar.app.usecase.ports.input.repository.UserRepository;
-import com.labotec.traccar.app.usecase.ports.out.DriverService;
-import com.labotec.traccar.domain.database.models.Company;
+import com.labotec.traccar.app.mapper.model.DriverModelMapper;
+import com.labotec.traccar.app.ports.input.repository.CompanyRepository;
+import com.labotec.traccar.app.ports.input.repository.DriverRepository;
+import com.labotec.traccar.app.ports.input.repository.UserRepository;
+import com.labotec.traccar.app.ports.out.DriverService;
 import com.labotec.traccar.domain.database.models.Driver;
 import com.labotec.traccar.domain.database.models.User;
-import com.labotec.traccar.domain.web.dto.entel.create.DriverDTO;
-import com.labotec.traccar.domain.web.dto.entel.update.DriverUpdateDTO;
+import com.labotec.traccar.domain.web.dto.labotec.request.create.DriverDTO;
+import com.labotec.traccar.domain.web.dto.labotec.request.update.DriverUpdateDTO;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor

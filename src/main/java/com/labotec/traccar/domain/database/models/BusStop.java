@@ -19,6 +19,7 @@ public class BusStop {
     @JsonIgnore
     private Company companyId;
     private String name;
+    private String description;
     private String latitude;
     private String longitude;
     private STATE status;

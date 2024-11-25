@@ -1,20 +1,22 @@
 package com.labotec.traccar.app.implementation;
 
-import com.labotec.traccar.app.mapper.LocationModelMapper;
-import com.labotec.traccar.app.usecase.ports.input.repository.CompanyRepository;
-import com.labotec.traccar.app.usecase.ports.input.repository.LocationRepository;
-import com.labotec.traccar.app.usecase.ports.input.repository.UserRepository;
-import com.labotec.traccar.app.usecase.ports.out.LocationService;
-import com.labotec.traccar.domain.database.models.Company;
+import com.labotec.traccar.app.mapper.model.LocationModelMapper;
+import com.labotec.traccar.app.ports.input.repository.BusStopRepository;
+import com.labotec.traccar.app.ports.input.repository.CompanyRepository;
+import com.labotec.traccar.app.ports.input.repository.LocationRepository;
+import com.labotec.traccar.app.ports.input.repository.UserRepository;
+import com.labotec.traccar.app.ports.out.LocationService;
+import com.labotec.traccar.domain.database.models.BusStop;
 import com.labotec.traccar.domain.database.models.Location;
 import com.labotec.traccar.domain.database.models.User;
-import com.labotec.traccar.domain.web.dto.entel.create.LocationDTO;
-import com.labotec.traccar.domain.web.dto.entel.update.LocationUpdateDTO;
+import com.labotec.traccar.domain.enums.STATE;
+import com.labotec.traccar.domain.web.dto.labotec.request.create.LocationDTO;
+import com.labotec.traccar.domain.web.dto.labotec.request.update.LocationUpdateDTO;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class LocationImpl implements LocationService {
-
+    private final BusStopRepository busStopRepository;
     private final LocationRepository locationRepository;
     private final CompanyRepository companyRepository;
     private final LocationModelMapper locationModelMapper;
@@ -24,8 +26,12 @@ public class LocationImpl implements LocationService {
     public Location create(LocationDTO locationDTO, Long userId) {
         User user = userRepository.findByUserId(userId);
         Location location = locationModelMapper.toEntity(locationDTO);
+        BusStop busStop = busStopRepository.findById(locationDTO.getBusStopAssociateId(), userId);
         location.setUserId(user);
         location.setCompanyId(user.getCompanyId());
+        location.setBusStopAssociate(busStop);
+        location.setState(STATE.ACTIVO);
+        location.setDescription(locationDTO.getDescription());
         return locationRepository.create(location);
 
     }

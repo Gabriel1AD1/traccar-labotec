@@ -1,7 +1,6 @@
 package com.labotec.traccar.infra.config;
 
-import com.labotec.traccar.app.usecase.ports.input.email.GoogleEmail;
-import org.springframework.context.annotation.Bean;
+import com.labotec.traccar.app.ports.input.email.GoogleEmail;
 import org.springframework.stereotype.Component;
 
 import javax.mail.*;

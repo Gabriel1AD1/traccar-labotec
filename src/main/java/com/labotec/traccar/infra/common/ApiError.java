@@ -26,10 +26,10 @@ public class ApiError {
 
     // Excluir el campo si es null o vacío
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private Map<String, String> errors;
+    private Map<String, Object> errors;
 
     // Constructor personalizado
-    public ApiError(HttpStatus status, String message, String debugMessage, Map<String, String> errors) {
+    public ApiError(HttpStatus status, String message, String debugMessage, Map<String, Object> errors) {
         this.status = status;
         this.timestamp = LocalDateTime.now(); // Asignamos el tiempo actual automáticamente
         this.message = message;

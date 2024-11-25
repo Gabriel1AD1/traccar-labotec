@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="delete-columns-route-entity" author="cerroteberes@gmail.com">
+        <!-- Eliminar la clave foránea de id_paradero_origen -->
+        <dropForeignKeyConstraint
+                baseTableName="tbl_lab_ruta"
+                constraintName="FKnono2v50jdbuhqkuoy6wsuvny" />
+
+        <!-- Eliminar la clave foránea de id_paradero_destino -->
+        <dropForeignKeyConstraint
+                baseTableName="tbl_lab_ruta"
+                constraintName="FKrix6dp29n4vgmo74fxc5qioki" />
+
+        <!-- Eliminar la columna id_paradero_origen -->
+        <dropColumn
+                tableName="tbl_lab_ruta"
+                columnName="id_paradero_origen" />
+
+        <!-- Eliminar la columna id_paradero_destino -->
+        <dropColumn
+                tableName="tbl_lab_ruta"
+                columnName="id_paradero_destino" />
+    </changeSet>
+
+</databaseChangeLog>

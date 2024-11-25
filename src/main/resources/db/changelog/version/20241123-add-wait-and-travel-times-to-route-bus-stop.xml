@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="20241123-add-wait-and-travel-times-to-route-bus-stop" author="cerroteberes@gmail.com">
+        <addColumn tableName="tbl_ruta_paradero">
+            <column name="tiempo_min_espera" type="INT" defaultValue="5">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tiempo_max_espera" type="INT" defaultValue="10">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tiempo_estimado" type="INT" defaultValue="15">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

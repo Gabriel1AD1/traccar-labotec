@@ -1,0 +1,19 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.15.xsd">
+
+    <!-- Cambiar el ID y autor -->
+    <changeSet id="20241125-remove-id-geofence-poligonal" author="tu-email@example.com">
+
+        <!-- 1. Eliminar la restricción de clave foránea -->
+        <dropForeignKeyConstraint
+                baseTableName="tbl_programacion"
+                constraintName="FK7jvoqwf1gqiyioe4sj0dtj6k9" />
+
+        <!-- 2. Eliminar la columna -->
+        <dropColumn tableName="tbl_programacion" columnName="id_geofence_poligonal" />
+
+    </changeSet>
+</databaseChangeLog>

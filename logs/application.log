@@ -1,0 +1,99 @@
+2024-11-25T03:27:42.741-05:00  INFO 20924 --- [traccar] [restartedMain] com.labotec.traccar.TraccarApplication   : Starting TraccarApplication using Java 17.0.7 with PID 20924 (C:\Workspace\traccar\build\classes\java\main started by PC in C:\Workspace\traccar)
+2024-11-25T03:27:42.748-05:00  INFO 20924 --- [traccar] [restartedMain] com.labotec.traccar.TraccarApplication   : No active profile set, falling back to 1 default profile: "default"
+2024-11-25T03:27:43.632-05:00  INFO 20924 --- [traccar] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-11-25T03:27:43.673-05:00  INFO 20924 --- [traccar] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 40 ms. Found 4 JPA repository interfaces.
+2024-11-25T03:27:43.674-05:00  INFO 20924 --- [traccar] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-11-25T03:27:43.822-05:00  INFO 20924 --- [traccar] [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 147 ms. Found 17 JPA repository interfaces.
+2024-11-25T03:27:44.245-05:00  INFO 20924 --- [traccar] [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 9010 (http)
+2024-11-25T03:27:44.247-05:00  INFO 20924 --- [traccar] [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-11-25T03:27:44.248-05:00  INFO 20924 --- [traccar] [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.30]
+2024-11-25T03:27:44.309-05:00  INFO 20924 --- [traccar] [restartedMain] o.a.c.c.C.[Tomcat-1].[localhost].[/]     : Initializing Spring embedded WebApplicationContext
+2024-11-25T03:27:44.309-05:00  INFO 20924 --- [traccar] [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1550 ms
+2024-11-25T03:27:44.363-05:00  INFO 20924 --- [traccar] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Starting...
+2024-11-25T03:27:44.385-05:00  INFO 20924 --- [traccar] [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-4 - Added connection com.mysql.cj.jdbc.ConnectionImpl@1ddcf4bb
+2024-11-25T03:27:44.386-05:00  INFO 20924 --- [traccar] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Start completed.
+2024-11-25T03:27:44.414-05:00  INFO 20924 --- [traccar] [restartedMain] liquibase.command                        : Command execution complete
+2024-11-25T03:27:44.415-05:00  WARN 20924 --- [traccar] [restartedMain] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'traccarDbEntityManagerFactory' defined in class path resource [com/labotec/traccar/infra/config/TraccarDbConfig.class]: Failed to initialize dependency 'liquibase' of LoadTimeWeaverAware bean 'traccarDbEntityManagerFactory': Error creating bean with name 'liquibase' defined in class path resource [org/springframework/boot/autoconfigure/liquibase/LiquibaseAutoConfiguration$LiquibaseConfiguration.class]: liquibase.exception.ChangeLogParseException: liquibase.exception.SetupException: The file db/changelog/version/20241121-add-bus-stop-to-location.xml was not found in the configured search path:
+    - Spring classpath
+More locations can be added with the 'searchPath' parameter.
+2024-11-25T03:27:44.416-05:00  INFO 20924 --- [traccar] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Shutdown initiated...
+2024-11-25T03:27:44.424-05:00  INFO 20924 --- [traccar] [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Shutdown completed.
+2024-11-25T03:27:44.425-05:00  INFO 20924 --- [traccar] [restartedMain] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2024-11-25T03:27:44.436-05:00  INFO 20924 --- [traccar] [restartedMain] .s.b.a.l.ConditionEvaluationReportLogger : 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2024-11-25T03:27:44.448-05:00 ERROR 20924 --- [traccar] [restartedMain] o.s.boot.SpringApplication               : Application run failed
+
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'traccarDbEntityManagerFactory' defined in class path resource [com/labotec/traccar/infra/config/TraccarDbConfig.class]: Failed to initialize dependency 'liquibase' of LoadTimeWeaverAware bean 'traccarDbEntityManagerFactory': Error creating bean with name 'liquibase' defined in class path resource [org/springframework/boot/autoconfigure/liquibase/LiquibaseAutoConfiguration$LiquibaseConfiguration.class]: liquibase.exception.ChangeLogParseException: liquibase.exception.SetupException: The file db/changelog/version/20241121-add-bus-stop-to-location.xml was not found in the configured search path:
+    - Spring classpath
+More locations can be added with the 'searchPath' parameter.
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:326) ~[spring-beans-6.1.13.jar:6.1.13]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:205) ~[spring-beans-6.1.13.jar:6.1.13]
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:954) ~[spring-context-6.1.13.jar:6.1.13]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:625) ~[spring-context-6.1.13.jar:6.1.13]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146) ~[spring-boot-3.3.4.jar:3.3.4]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754) ~[spring-boot-3.3.4.jar:3.3.4]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456) ~[spring-boot-3.3.4.jar:3.3.4]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335) ~[spring-boot-3.3.4.jar:3.3.4]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1363) ~[spring-boot-3.3.4.jar:3.3.4]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1352) ~[spring-boot-3.3.4.jar:3.3.4]
+	at com.labotec.traccar.TraccarApplication.main(TraccarApplication.java:16) ~[main/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568) ~[na:na]
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:50) ~[spring-boot-devtools-3.3.4.jar:3.3.4]
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'liquibase' defined in class path resource [org/springframework/boot/autoconfigure/liquibase/LiquibaseAutoConfiguration$LiquibaseConfiguration.class]: liquibase.exception.ChangeLogParseException: liquibase.exception.SetupException: The file db/changelog/version/20241121-add-bus-stop-to-location.xml was not found in the configured search path:
+    - Spring classpath
+More locations can be added with the 'searchPath' parameter.
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1806) ~[spring-beans-6.1.13.jar:6.1.13]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:600) ~[spring-beans-6.1.13.jar:6.1.13]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522) ~[spring-beans-6.1.13.jar:6.1.13]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337) ~[spring-beans-6.1.13.jar:6.1.13]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-6.1.13.jar:6.1.13]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335) ~[spring-beans-6.1.13.jar:6.1.13]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200) ~[spring-beans-6.1.13.jar:6.1.13]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:313) ~[spring-beans-6.1.13.jar:6.1.13]
+	... 15 common frames omitted
+Caused by: liquibase.exception.CommandExecutionException: liquibase.exception.ChangeLogParseException: liquibase.exception.SetupException: The file db/changelog/version/20241121-add-bus-stop-to-location.xml was not found in the configured search path:
+    - Spring classpath
+More locations can be added with the 'searchPath' parameter.
+	at liquibase.command.CommandScope.execute(CommandScope.java:236) ~[liquibase-core-4.23.2.jar:na]
+	at liquibase.Liquibase.lambda$update$0(Liquibase.java:223) ~[liquibase-core-4.23.2.jar:na]
+	at liquibase.Scope.lambda$child$0(Scope.java:197) ~[liquibase-core-4.23.2.jar:na]
+	at liquibase.Scope.child(Scope.java:206) ~[liquibase-core-4.23.2.jar:na]
+	at liquibase.Scope.child(Scope.java:196) ~[liquibase-core-4.23.2.jar:na]
+	at liquibase.Scope.child(Scope.java:175) ~[liquibase-core-4.23.2.jar:na]
+	at liquibase.Liquibase.runInScope(Liquibase.java:1361) ~[liquibase-core-4.23.2.jar:na]
+	at liquibase.Liquibase.update(Liquibase.java:215) ~[liquibase-core-4.23.2.jar:na]
+	at liquibase.Liquibase.update(Liquibase.java:197) ~[liquibase-core-4.23.2.jar:na]
+	at liquibase.integration.spring.SpringLiquibase.performUpdate(SpringLiquibase.java:329) ~[liquibase-core-4.23.2.jar:na]
+	at liquibase.integration.spring.SpringLiquibase.afterPropertiesSet(SpringLiquibase.java:284) ~[liquibase-core-4.23.2.jar:na]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1853) ~[spring-beans-6.1.13.jar:6.1.13]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1802) ~[spring-beans-6.1.13.jar:6.1.13]
+	... 22 common frames omitted
+Caused by: liquibase.exception.ChangeLogParseException: liquibase.exception.SetupException: The file db/changelog/version/20241121-add-bus-stop-to-location.xml was not found in the configured search path:
+    - Spring classpath
+More locations can be added with the 'searchPath' parameter.
+	at liquibase.parser.core.xml.AbstractChangeLogParser.parse(AbstractChangeLogParser.java:25) ~[liquibase-core-4.23.2.jar:na]
+	at liquibase.command.core.helpers.DatabaseChangelogCommandStep.lambda$getDatabaseChangeLog$0(DatabaseChangelogCommandStep.java:115) ~[liquibase-core-4.23.2.jar:na]
+	at liquibase.Scope.child(Scope.java:206) ~[liquibase-core-4.23.2.jar:na]
+	at liquibase.Scope.child(Scope.java:182) ~[liquibase-core-4.23.2.jar:na]
+	at liquibase.command.core.helpers.DatabaseChangelogCommandStep.getDatabaseChangeLog(DatabaseChangelogCommandStep.java:114) ~[liquibase-core-4.23.2.jar:na]
+	at liquibase.command.core.helpers.DatabaseChangelogCommandStep.run(DatabaseChangelogCommandStep.java:93) ~[liquibase-core-4.23.2.jar:na]
+	at liquibase.command.CommandScope.execute(CommandScope.java:213) ~[liquibase-core-4.23.2.jar:na]
+	... 34 common frames omitted
+Caused by: liquibase.exception.SetupException: The file db/changelog/version/20241121-add-bus-stop-to-location.xml was not found in the configured search path:
+    - Spring classpath
+More locations can be added with the 'searchPath' parameter.
+	at liquibase.changelog.DatabaseChangeLog.handleChildNode(DatabaseChangeLog.java:453) ~[liquibase-core-4.23.2.jar:na]
+	at liquibase.changelog.DatabaseChangeLog.load(DatabaseChangeLog.java:376) ~[liquibase-core-4.23.2.jar:na]
+	at liquibase.parser.core.xml.AbstractChangeLogParser.parse(AbstractChangeLogParser.java:23) ~[liquibase-core-4.23.2.jar:na]
+	... 40 common frames omitted
+Caused by: liquibase.exception.ChangeLogParseException: The file db/changelog/version/20241121-add-bus-stop-to-location.xml was not found in the configured search path:
+    - Spring classpath
+More locations can be added with the 'searchPath' parameter.
+	at liquibase.changelog.DatabaseChangeLog.include(DatabaseChangeLog.java:875) ~[liquibase-core-4.23.2.jar:na]
+	at liquibase.changelog.DatabaseChangeLog.handleChildNode(DatabaseChangeLog.java:443) ~[liquibase-core-4.23.2.jar:na]
+	... 42 common frames omitted
+

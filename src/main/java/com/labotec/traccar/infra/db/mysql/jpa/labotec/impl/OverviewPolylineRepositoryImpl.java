@@ -1,6 +1,6 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.impl;
 
-import com.labotec.traccar.app.usecase.ports.input.repository.OverviewPolylineRepository;
+import com.labotec.traccar.app.ports.input.repository.OverviewPolylineRepository;
 import com.labotec.traccar.domain.database.models.BusStop;
 import com.labotec.traccar.domain.database.models.OverviewPolyline;
 import com.labotec.traccar.domain.database.models.RouteBusStop;
@@ -12,9 +12,6 @@ import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.OverviewPolylin
 import com.labotec.traccar.infra.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
-import java.util.Optional;
 
 @Repository
 @AllArgsConstructor

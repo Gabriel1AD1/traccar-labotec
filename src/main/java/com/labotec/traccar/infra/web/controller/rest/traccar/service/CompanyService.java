@@ -1,7 +1,7 @@
 package com.labotec.traccar.infra.web.controller.rest.traccar.service;
 
-import com.labotec.traccar.app.usecase.ports.input.repository.CompanyRepository;
-import com.labotec.traccar.app.usecase.ports.input.repository.UserRepository;
+import com.labotec.traccar.app.ports.input.repository.CompanyRepository;
+import com.labotec.traccar.app.ports.input.repository.UserRepository;
 import com.labotec.traccar.domain.database.models.Company;
 import com.labotec.traccar.domain.database.models.User;
 import com.labotec.traccar.infra.db.mysql.jpa.traccar.entity.TcCompany;

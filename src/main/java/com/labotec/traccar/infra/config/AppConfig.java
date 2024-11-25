@@ -1,10 +1,10 @@
     package com.labotec.traccar.infra.config;
 
     import com.labotec.traccar.app.implementation.*;
-    import com.labotec.traccar.app.mapper.*;
-    import com.labotec.traccar.app.usecase.ports.input.email.GoogleEmail;
-    import com.labotec.traccar.app.usecase.ports.input.repository.*;
-    import com.labotec.traccar.app.usecase.ports.out.*;
+    import com.labotec.traccar.app.mapper.model.*;
+    import com.labotec.traccar.app.ports.input.email.GoogleEmail;
+    import com.labotec.traccar.app.ports.input.repository.*;
+    import com.labotec.traccar.app.ports.out.*;
     import org.springframework.context.annotation.Bean;
     import org.springframework.context.annotation.Configuration;
     import lombok.AllArgsConstructor;
@@ -37,6 +37,7 @@
         private final UserRepository userRepository;
         private final GoogleEmail googleEmail;
         private final OverviewPolylineRepository overviewPolylineRepository;
+        private final DriverScheduleRepository driverScheduleRepository;
         @Bean(name = "busStopService")
         public BusStopService busStop() {
             return new BusStopImpl(busStopRepository,companyRepository,busStopModelMapper,userRepository);
@@ -60,6 +61,7 @@
         @Bean(name = "locationService")
         public LocationService location() {
             return new LocationImpl(
+                    busStopRepository,
                     locationRepository,
                     companyRepository,
                     locationModelMapper,
@@ -93,6 +95,7 @@
                     companyRepository,
                     geofenceCircularRepository,
                     scheduleModelMapper,
+                    driverScheduleRepository,
                     userRepository
             );
         }

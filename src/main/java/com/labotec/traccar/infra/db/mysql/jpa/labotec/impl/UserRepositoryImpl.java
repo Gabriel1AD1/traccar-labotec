@@ -1,6 +1,6 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.impl;
 
-import com.labotec.traccar.app.usecase.ports.input.repository.UserRepository;
+import com.labotec.traccar.app.ports.input.repository.UserRepository;
 import com.labotec.traccar.domain.database.models.User;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.UserEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.UserMapper;
@@ -10,7 +10,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
 @Repository
 @AllArgsConstructor
 public class UserRepositoryImpl implements UserRepository {

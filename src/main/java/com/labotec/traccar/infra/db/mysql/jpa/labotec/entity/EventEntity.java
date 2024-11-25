@@ -24,7 +24,7 @@ import static com.labotec.traccar.infra.db.mysql.jpa.labotec.constant.CONFIG_SCH
                 @Index(name = "idx_id_user", columnList = "id, usuario_id"),
                 @Index(name = "idx_company", columnList = "empresa_id"),
                 @Index(name = "idx_user", columnList = "usuario_id"),
-                @Index(name = "idx_vehicle", columnList = "vehiculo_id")
+                @Index(name = "idx_vehicle", columnList = "id_device_traccar")
         }
 )
 @EntityListeners(AuditingEntityListener.class)
@@ -48,7 +48,7 @@ public class EventEntity {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "vehiculo_id")
+    @JoinColumn(name = "id_device_traccar")
     private VehicleEntity vehicleEntity;
 
     @CreatedDate

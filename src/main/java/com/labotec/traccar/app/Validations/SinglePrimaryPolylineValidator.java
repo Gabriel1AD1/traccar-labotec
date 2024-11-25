@@ -1,36 +1,51 @@
 package com.labotec.traccar.app.Validations;
-
-import com.labotec.traccar.domain.web.dto.entel.create.PolylineDTO;
-import com.labotec.traccar.domain.web.dto.entel.create.RouteDTO;
+import com.labotec.traccar.domain.web.dto.labotec.request.create.RouteBusStopCreateDTO;
+import com.labotec.traccar.domain.web.dto.labotec.request.create.RouteCreateDTO;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import org.springframework.stereotype.Component;
 
-import java.util.List;
-
-@Component
-public class SinglePrimaryPolylineValidator implements ConstraintValidator<SinglePrimaryPolyline, List<PolylineDTO>> {
+public class SinglePrimaryPolylineValidator implements ConstraintValidator<SinglePrimaryPolyline, RouteCreateDTO> {
 
     @Override
-    public boolean isValid(List<PolylineDTO> polylineList, ConstraintValidatorContext context) {
-        System.out.println(polylineList);
-        System.out.println("Entrando al validador XD ");
-        if (polylineList == null || polylineList.isEmpty()) {
-            return true; // Permitir nulo o lista vacía
+    public boolean isValid(RouteCreateDTO value, ConstraintValidatorContext context) {
+
+        System.out.println("Validating RouteCreateDTO: " + value);
+
+        if (value == null || value.getSegments() == null || value.getSegments().isEmpty()) {
+            context.disableDefaultConstraintViolation();
+            context.buildConstraintViolationWithTemplate("Segments list cannot be null or empty.")
+                    .addConstraintViolation();
+            return false;
         }
 
-        long primaryCount = polylineList.stream()
-                .filter(PolylineDTO::getIsPrimary)
-                .count();
+        for (RouteBusStopCreateDTO segment : value.getSegments()) {
+            if (segment == null || segment.getPolylines() == null || segment.getPolylines().isEmpty()) {
+                context.disableDefaultConstraintViolation();
+                context.buildConstraintViolationWithTemplate("Each segment must have a non-empty polylines list.")
+                        .addConstraintViolation();
+                return false;
+            }
 
-        // Si hay más de una polilínea primaria, se construye un mensaje de error
-        if (primaryCount > 1) {
-            context.disableDefaultConstraintViolation(); // Desactivar el mensaje de error predeterminado
-            context.buildConstraintViolationWithTemplate("Only one polyline can be marked as primary.")
-                    .addConstraintViolation(); // Añadir el nuevo mensaje de error
-            return false; // La validación falla
+            // Contar cuántas polylines tienen `isPrimary=true`
+            long primaryCount = segment.getPolylines().stream()
+                    .filter(polyline -> polyline != null && Boolean.TRUE.equals(polyline.getIsPrimary()))
+                    .count();
+
+            if (primaryCount > 1) {
+                context.disableDefaultConstraintViolation();
+                context.buildConstraintViolationWithTemplate("Segment with order " + segment.getOrder() + " has multiple primary polylines.")
+                        .addConstraintViolation();
+                return false; // Fallar si hay más de una primaria en un segmento
+            }
+
+            if (primaryCount == 0) {
+                context.disableDefaultConstraintViolation();
+                context.buildConstraintViolationWithTemplate("Segment with order " + segment.getOrder() + " must have at least one primary polyline.")
+                        .addConstraintViolation();
+                return false; // Fallar si no hay ninguna primaria
+            }
         }
 
-        return true; // La validación es exitosa si hay 0 o 1 polilínea primaria
+        return true; // Validación exitosa si no hay errores
     }
 }

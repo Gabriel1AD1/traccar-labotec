@@ -1,6 +1,6 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.impl;
 
-import com.labotec.traccar.app.usecase.ports.input.repository.BusStopRepository;
+import com.labotec.traccar.app.ports.input.repository.BusStopRepository;
 import com.labotec.traccar.domain.database.models.BusStop;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.BusStopEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.BusStopMapper;

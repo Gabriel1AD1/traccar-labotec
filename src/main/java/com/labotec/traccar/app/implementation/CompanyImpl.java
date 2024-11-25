@@ -1,11 +1,11 @@
 package com.labotec.traccar.app.implementation;
 
-import com.labotec.traccar.app.mapper.CompanyModelMapper;
-import com.labotec.traccar.app.usecase.ports.input.repository.CompanyRepository;
-import com.labotec.traccar.app.usecase.ports.out.CompanyService;
+import com.labotec.traccar.app.mapper.model.CompanyModelMapper;
+import com.labotec.traccar.app.ports.input.repository.CompanyRepository;
+import com.labotec.traccar.app.ports.out.CompanyService;
 import com.labotec.traccar.domain.database.models.Company;
-import com.labotec.traccar.domain.web.dto.entel.create.CompanyDTO;
-import com.labotec.traccar.domain.web.dto.entel.update.CompanyUpdateDTO;
+import com.labotec.traccar.domain.web.dto.labotec.request.create.CompanyDTO;
+import com.labotec.traccar.domain.web.dto.labotec.request.update.CompanyUpdateDTO;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor

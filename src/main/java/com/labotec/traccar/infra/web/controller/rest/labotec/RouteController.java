@@ -1,18 +1,20 @@
 package com.labotec.traccar.infra.web.controller.rest.labotec;
 
-import com.labotec.traccar.app.usecase.ports.out.RouteService;
+import com.labotec.traccar.app.ports.out.RouteService;
 import com.labotec.traccar.domain.database.models.Route;
-import com.labotec.traccar.domain.web.dto.entel.create.RouteDTO;
-import com.labotec.traccar.domain.web.dto.entel.update.RouteUpdateDTO;
+import com.labotec.traccar.domain.web.dto.labotec.request.create.RouteCreateDTO;
+import com.labotec.traccar.domain.web.dto.labotec.request.update.RouteUpdateDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
+import java.net.URI;
 
 import static com.labotec.traccar.infra.web.controller.common.API_VERSION_MANAGER.API_VERSION_V1;
+import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
 @RequestMapping(value = API_VERSION_V1 + "route")
@@ -24,12 +26,11 @@ public class RouteController {
 
     // Endpoint para crear una nueva ruta
     @PostMapping("")
-    public ResponseEntity<Route> create(
-            @Valid @RequestBody RouteDTO routeDTO,
-            @RequestHeader(name = "userId") Long userId) {
-        System.out.println(routeDTO.toString());
-        Route createdRoute = routeService.create(routeDTO,userId);
-        return ResponseEntity.ok(createdRoute);
+    public ResponseEntity<Void> create(@Valid @RequestBody RouteCreateDTO routeCreateDTO, @RequestHeader(name = "userId") Long userId) {
+        Long createdRoute = routeService.create(routeCreateDTO,userId).getId();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setLocation(URI.create("/api/v1/route/"+createdRoute));
+        return ResponseEntity.status(CREATED).headers(httpHeaders).build();
     }
 
     // Endpoint para obtener una ruta por su ID

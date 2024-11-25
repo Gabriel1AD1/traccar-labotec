@@ -1,15 +1,19 @@
 package com.labotec.traccar.app.implementation;
 
-import com.labotec.traccar.app.mapper.ScheduleModelMapper;
-import com.labotec.traccar.app.usecase.ports.input.repository.*;
-import com.labotec.traccar.app.usecase.ports.out.ScheduleService;
+import com.labotec.traccar.app.exception.AlreadyAssignedVehicleSchedule;
+import com.labotec.traccar.app.mapper.model.ScheduleModelMapper;
+import com.labotec.traccar.app.ports.input.repository.*;
+import com.labotec.traccar.app.ports.out.ScheduleService;
 import com.labotec.traccar.domain.database.models.*;
 import com.labotec.traccar.domain.enums.STATE;
-import com.labotec.traccar.domain.web.dto.entel.create.ScheduleDTO;
-import com.labotec.traccar.domain.web.dto.entel.update.ScheduleUpdateDTO;
+import com.labotec.traccar.domain.web.dto.labotec.request.create.DriverRolScheduleCreateDTO;
+import com.labotec.traccar.domain.web.dto.labotec.request.create.ScheduleDTO;
+import com.labotec.traccar.domain.web.dto.labotec.request.update.ScheduleUpdateDTO;
 import lombok.AllArgsConstructor;
 
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -23,27 +27,38 @@ public class ScheduleImpl implements ScheduleService {
     private final CompanyRepository companyRepository;
     private final GeofenceCircularRepository overviewPolylineRepository;
     private final ScheduleModelMapper scheduleModelMapper;
+    private final DriverScheduleRepository driverScheduleRepository;
     private final UserRepository userRepository;
-
-
 
     @Override
     public Schedule create(ScheduleDTO scheduleDTO, Long userId) {
+        if (scheduleRepository.existsOverlappingSchedule(scheduleDTO.getVehicleId() , scheduleDTO.getDepartureTime(),scheduleDTO.getArrivalTime())){
+            throw new AlreadyAssignedVehicleSchedule("El vehiculo ya tiene una programación programada dentro del rango "
+                    .concat(scheduleDTO.getDepartureTime().toString().concat("y ") . concat(scheduleDTO.getDepartureTime().toString()))
+            );
+        }
         User user = userRepository.findByUserId(userId);
         Vehicle vehicle =  vehicleRepository.findById(scheduleDTO.getVehicleId(),userId);
-        Driver driver = driverRepository.findById(scheduleDTO.getDriverId(),userId);
         Location location = locationRepository.findById(scheduleDTO.getLocationId(),userId);
         Route route = routeRepository.findById(scheduleDTO.getRouteId(),userId);
         Schedule scheduleMap  = scheduleModelMapper.toScheduleDomain(scheduleDTO);
-        CircularGeofence circularGeofence = overviewPolylineRepository.findById(scheduleDTO.getGeofencePoligonalId(),userId);
+        scheduleMap.setStatus(STATE.ACTIVO);
         scheduleMap.setCompanyId(user.getCompanyId());
-        scheduleMap.setGeofence(circularGeofence);
         scheduleMap.setVehicle(vehicle);
-        scheduleMap.setDriver(driver);
         scheduleMap.setLocation(location);
         scheduleMap.setRoute(route);
         scheduleMap.setUserId(user);
-        return scheduleRepository.create(scheduleMap);
+        Schedule scheduleSaved = scheduleRepository.create(scheduleMap);
+        for (DriverRolScheduleCreateDTO driverListAssigment : scheduleDTO.getDriverAssignmentRoute()){
+            Driver driver = driverRepository.findById(driverListAssigment.getDriverId(),userId);
+            DriverSchedule driverSchedule = new DriverSchedule();
+            driverSchedule.setRouteAssignmentRole(driverListAssigment.getRouteAssignmentRole());
+            driverSchedule.setUserAllocatorId(user);
+            driverSchedule.setScheduleId(scheduleSaved);
+            driverSchedule.setDriverId(driver);
+            driverScheduleRepository.create(driverSchedule);
+        }
+        return scheduleSaved;
     }
 
     @Override
@@ -60,15 +75,11 @@ public class ScheduleImpl implements ScheduleService {
     public Schedule update(ScheduleUpdateDTO scheduleUpdateDTO, Long resourceId, Long userId) {
         User user = userRepository.findByUserId(userId);
         Vehicle vehicle =  vehicleRepository.findById(scheduleUpdateDTO.getVehicleId(),userId);
-        Driver driver = driverRepository.findById(scheduleUpdateDTO.getDriverId(),userId);
         Location location = locationRepository.findById(scheduleUpdateDTO.getLocationId(),userId);
         Route route = routeRepository.findById(scheduleUpdateDTO.getRouteId(),userId);
         Schedule scheduleMap  = scheduleModelMapper.toScheduleDomain(scheduleUpdateDTO);
-        CircularGeofence circularGeofence = overviewPolylineRepository.findById(scheduleUpdateDTO.getGeofencePoligonalId(),userId);
         scheduleMap.setCompanyId(user.getCompanyId());
-        scheduleMap.setGeofence(circularGeofence);
         scheduleMap.setVehicle(vehicle);
-        scheduleMap.setDriver(driver);
         scheduleMap.setLocation(location);
         scheduleMap.setRoute(route);
         scheduleMap.setUserId(user);

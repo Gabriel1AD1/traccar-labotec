@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="20241125-update-schedule-entity" author="cerroteberes@gmail.com">
+
+        <!-- 1. Eliminar la clave foránea actual -->
+        <dropForeignKeyConstraint baseTableName="tbl_programacion" constraintName="FK9uw9n3431e4j9ccq3w971wlay"/>
+
+        <!-- 2. Renombrar la columna id_unidad a id_device_traccar -->
+        <renameColumn tableName="tbl_programacion" oldColumnName="id_unidad" newColumnName="id_device_traccar" columnDataType="BIGINT"/>
+
+        <!-- 3. Crear una nueva clave foránea para id_device_traccar -->
+        <addForeignKeyConstraint baseTableName="tbl_programacion"
+                                 baseColumnNames="id_device_traccar"
+                                 referencedTableName="tbl_unidades"
+                                 referencedColumnNames="id_device_traccar"
+                                 constraintName="FK_tbl_programacion_vehicle_device_traccar"/>
+
+    </changeSet>
+</databaseChangeLog>

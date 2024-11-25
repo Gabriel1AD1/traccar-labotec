@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="20241123-rename-and-remove-columns" author="cerroteberes@gmail.com">
+        <!-- Renombrar la columna 'phone' a 'telefono' -->
+        <renameColumn tableName="tbl_chofer" oldColumnName="phone" newColumnName="telefono" columnDataType="VARCHAR(50)" />
+
+        <!-- Eliminar la columna 'telefono' existente -->
+        <dropColumn tableName="tbl_chofer" columnName="telfono" />
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="20241125-remove-id-chofer" author="cerroteberes@gmail.com">
+        <!-- 1. Eliminar la restricción de clave foránea en id_chofer -->
+        <dropForeignKeyConstraint baseTableName="tbl_programacion" constraintName="FK5p9pn5w5c7smukbyqsfc514up"/>
+
+        <!-- 2. Eliminar la columna id_chofer -->
+        <dropColumn tableName="tbl_programacion" columnName="id_chofer"/>
+
+        <!-- 3. Eliminar índices relacionados con id_chofer si existen (opcional) -->
+        <!-- Aquí se pueden agregar más instrucciones si hay índices relacionados -->
+    </changeSet>
+
+</databaseChangeLog>

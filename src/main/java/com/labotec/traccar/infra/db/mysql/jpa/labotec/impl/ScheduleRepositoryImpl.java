@@ -1,8 +1,7 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.impl;
 
-import com.labotec.traccar.app.usecase.ports.input.repository.ScheduleRepository;
+import com.labotec.traccar.app.ports.input.repository.ScheduleRepository;
 import com.labotec.traccar.domain.database.models.Schedule;
-import com.labotec.traccar.domain.database.models.Vehicle;
 import com.labotec.traccar.domain.enums.STATE;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.*;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.ScheduleMapper;
@@ -15,9 +14,6 @@ import org.springframework.stereotype.Repository;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
-
-import static com.labotec.traccar.infra.db.mysql.jpa.labotec.message.ScheduleMessage.SCHEDULE_NOT_FOUND_BY_ID;
-import static com.labotec.traccar.infra.db.mysql.jpa.labotec.message.VehicleMessage.VEHICLE_NOT_FOUND_BY_ID;
 
 @AllArgsConstructor
 @Repository
@@ -99,6 +95,22 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
                 () -> new jakarta.persistence.EntityNotFoundException("La ultima programación no existe")
         );
         return scheduleMapper.toModel(scheduleEntity);
+    }
+
+    @Override
+    public Schedule findByVehicleId(Long vehicleId) {
+        return null;
+    }
+
+    @Override
+    public boolean existsOverlappingSchedule(Long vehicleId, Instant newDepartureTime, Instant newArrivalTime) {
+        return scheduleRepositoryJpa.existsOverlappingSchedule(vehicleId,newDepartureTime,newArrivalTime);
+    }
+
+    @Override
+    public Schedule findByVehicleIdAndInstantNow(long deviceId, Instant now) {
+        ScheduleEntity schedule = scheduleRepositoryJpa.findScheduleByVehicleAndCurrentTime(deviceId,now).orElse(null);
+        return scheduleMapper.toModel(schedule);
     }
 
 }

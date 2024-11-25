@@ -1,9 +1,9 @@
 package com.labotec.traccar.infra.web.controller.rest.labotec;
 
-import com.labotec.traccar.app.usecase.ports.out.BusStopService;
+import com.labotec.traccar.app.ports.out.BusStopService;
 import com.labotec.traccar.domain.database.models.BusStop;
-import com.labotec.traccar.domain.web.dto.entel.create.BusStopDTO;
-import com.labotec.traccar.domain.web.dto.entel.update.BusStopUpdateDTO;
+import com.labotec.traccar.domain.web.dto.labotec.request.create.BusStopCreateDTO;
+import com.labotec.traccar.domain.web.dto.labotec.request.update.BusStopUpdateDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,35 +25,23 @@ public class BusStopController {
 
     // Inyección del servicio específico de BusStop
     private final BusStopService busStopService;
+    private final HttpHeaders headers = new HttpHeaders();
 
     // Endpoint para crear una nueva parada de autobús
     @PostMapping("")
     public ResponseEntity<BusStop> create(
             @RequestHeader(name = "userId") Long userId,
-            @RequestBody @Valid BusStopDTO busStopDTO) {
-
-        BusStop createdBusStop = busStopService.create(busStopDTO,userId);
-        // Crear la URI del recurso recién creado
-        String uriLocation = "/api/v1/user/" + createdBusStop.getId();
-
-        // Crear encabezados
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Location", uriLocation);
-
+            @RequestBody @Valid BusStopCreateDTO busStopCreateDTO) {
+        Long resourceId = busStopService.create(busStopCreateDTO,userId).getId();
+        headers.setLocation(URI.create("/api/v1/bus-stop/"+resourceId));
         return ResponseEntity.status(CREATED).headers(headers).build();
     }
     @PostMapping("/list")
-    public ResponseEntity<BusStop> createBusStopList(
+    public ResponseEntity<List<Long>> createBusStopList(
             @RequestHeader(name = "userId") Long userId,
-            @RequestBody @Valid List<BusStopDTO> busStopDTO) {
-
-        List<Long> createdBusStop = busStopService.createBusStopList(busStopDTO,userId);
-        // Crear la URI del recurso recién creado
-        String uriLocation = "/api/v1/user/" + createdBusStop;
-        // Crear encabezados
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Location", uriLocation);
-        return ResponseEntity.status(CREATED).headers(headers).build();
+            @RequestBody @Valid List<BusStopCreateDTO> busStopCreateDTO) {
+        List<Long> createdBusStop = busStopService.createBusStopList(busStopCreateDTO,userId);
+        return ResponseEntity.status(CREATED).body(createdBusStop);
     }
 
     // Endpoint para obtener una parada de autobús por su ID

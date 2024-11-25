@@ -19,8 +19,6 @@ public class Route {
     private Company companyId;
     private String name;
     private List<RouteBusStop> busStopsList;
-    private BusStop originBusStop;
-    private BusStop destinationBusStop;
     @JsonIgnore
     private Instant lastModifiedDate;
     @JsonIgnore

@@ -1,6 +1,6 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.impl;
 
-import com.labotec.traccar.app.usecase.ports.input.repository.LocationRepository;
+import com.labotec.traccar.app.ports.input.repository.LocationRepository;
 import com.labotec.traccar.domain.database.models.Location;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.LocationEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.LocationMapper;
@@ -12,8 +12,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-import static com.labotec.traccar.infra.db.mysql.jpa.labotec.message.LocationMessage.LOCATION_NOT_FOUND_BY_ID;
-
 @AllArgsConstructor
 @Repository
 public class LocationRepositoryImpl implements LocationRepository {
@@ -22,6 +20,8 @@ public class LocationRepositoryImpl implements LocationRepository {
     @Override
     public Location create(Location entity) {
         LocationEntity locationEntity = locationMapper.toEntity(entity);
+        System.out.println(locationEntity.getDescription());
+        System.out.println(locationEntity.getState());
         LocationEntity locationSaved = locationRepositoryJpa.save(locationEntity);
         return locationMapper.toModel(locationSaved);    }
 

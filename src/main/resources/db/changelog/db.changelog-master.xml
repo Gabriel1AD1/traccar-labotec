@@ -6,5 +6,20 @@
             http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
     <include file="db/changelog/version/20241121-add-bus-stop-to-location.xml" />
-
+    <include file="db/changelog/version/20241123-delete-route-columns.xml" />
+    <include file="db/changelog/version/20241123-add-colum-description-to-bus-stop.xml" />
+    <include file="db/changelog/version/20241123-add-colum-driver.xml" />
+    <include file="db/changelog/version/20241123-rename-phone-to-telefono.xml" />
+    <include file="db/changelog/version/20241123-add-wait-and-travel-times-to-route-bus-stop.xml"/>
+    <include file="db/changelog/version/20241124-add-new-fields-to-tbl-local.xml"/>
+    <include file="db/changelog/version/20241124-rename-fields-to-spanish.xml"/>
+    <include file="db/changelog/version/20241124-rename-table-and-delete-columns.xml"/>
+    <include file="db/changelog/version/20241124-add-driver-schedule-table.xml"/>
+    <include file="db/changelog/version/20241125-add-radius-and-validate-columns-to-schedule.xml"/>
+    <include file="db/changelog/version/20241125-update-schedule-entity.xml"/>
+    <include file="db/changelog/version/20241125-remove-description-and-state.xml"/>
+    <include file="db/changelog/version/20241125-remove-id-chofer.xml"/>
+    <include file="db/changelog/version/20241125-add-id-chofer-to-tbl-programacion.xml"/>
+    <include file="db/changelog/version/20241125-changes-delete.xml"/>
+    <include file="db/changelog/version/20241125-remove-id-geofence-poligonal.xml"/>
 </databaseChangeLog>

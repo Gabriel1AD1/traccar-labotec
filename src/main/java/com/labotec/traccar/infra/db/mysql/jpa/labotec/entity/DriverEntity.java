@@ -40,13 +40,16 @@
 
         @Column(name = "nombres", length = 250)
         private String firstName;
+        @Column(name = "apellido", length = 250)
+        private String lastName;
 
         @Column(name = "identidad")
         private String documentType;
 
         @Column(name = "numero_identidad", nullable = false, length = 50)
         private String documentNumber;
-
+        @Column(name = "telefono")
+        private String phone;
         @Column(name = "estado", nullable = false)
         private STATE status;
 

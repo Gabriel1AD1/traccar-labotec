@@ -1,15 +1,15 @@
 package com.labotec.traccar.app.implementation;
 
-import com.labotec.traccar.app.mapper.BusStopModelMapper;
-import com.labotec.traccar.app.usecase.ports.input.repository.BusStopRepository;
-import com.labotec.traccar.app.usecase.ports.input.repository.CompanyRepository;
-import com.labotec.traccar.app.usecase.ports.input.repository.UserRepository;
-import com.labotec.traccar.app.usecase.ports.out.BusStopService;
+import com.labotec.traccar.app.mapper.model.BusStopModelMapper;
+import com.labotec.traccar.app.ports.input.repository.BusStopRepository;
+import com.labotec.traccar.app.ports.input.repository.CompanyRepository;
+import com.labotec.traccar.app.ports.input.repository.UserRepository;
+import com.labotec.traccar.app.ports.out.BusStopService;
 import com.labotec.traccar.domain.database.models.BusStop;
 import com.labotec.traccar.domain.database.models.User;
 import com.labotec.traccar.domain.enums.STATE;
-import com.labotec.traccar.domain.web.dto.entel.create.BusStopDTO;
-import com.labotec.traccar.domain.web.dto.entel.update.BusStopUpdateDTO;
+import com.labotec.traccar.domain.web.dto.labotec.request.create.BusStopCreateDTO;
+import com.labotec.traccar.domain.web.dto.labotec.request.update.BusStopUpdateDTO;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,9 +27,9 @@ public class BusStopImpl implements BusStopService {
     private static final Logger logger = LoggerFactory.getLogger(BusStopImpl.class);
 
     @Override
-    public BusStop create(BusStopDTO busStopDTO, Long userId) {
+    public BusStop create(BusStopCreateDTO busStopCreateDTO, Long userId) {
         User userFindByUserId = userRepository.findByUserId(userId);
-        BusStop busStop = busStopModelMapper.toBusStopModel(busStopDTO);
+        BusStop busStop = busStopModelMapper.toBusStopModel(busStopCreateDTO);
         busStop.setUserId(userFindByUserId);
         busStop.setCompanyId(userFindByUserId.getCompanyId());
         busStop.setStatus(STATE.ACTIVO);
@@ -63,11 +63,11 @@ public class BusStopImpl implements BusStopService {
     }
 
     @Override
-    public List<Long> createBusStopList(List<BusStopDTO> busStopListCreateDTO,Long userId) {
+    public List<Long> createBusStopList(List<BusStopCreateDTO> busStopListCreateDTO, Long userId) {
         List<Long> idBusStops = new ArrayList<>();
-        for (BusStopDTO busStopDTO : busStopListCreateDTO){
+        for (BusStopCreateDTO busStopCreateDTO : busStopListCreateDTO){
             User userFindByUserId = userRepository.findByUserId(userId);
-            BusStop busStop = busStopModelMapper.toBusStopModel(busStopDTO);
+            BusStop busStop = busStopModelMapper.toBusStopModel(busStopCreateDTO);
             busStop.setUserId(userFindByUserId);
             busStop.setCompanyId(userFindByUserId.getCompanyId());
             busStop.setStatus(STATE.ACTIVO);

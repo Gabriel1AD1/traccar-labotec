@@ -1,5 +1,6 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.entity;
 
+import com.labotec.traccar.domain.enums.STATE;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -40,6 +41,11 @@ public class LocationEntity {
 
     @Column(name = "nombre", nullable = false, length = 200)
     private String name;
+    @Column(name = "descripcion", nullable = false, length = 200)
+    private String description;
+    @Column(name = "estado")
+    @Enumerated(EnumType.STRING)
+    private STATE state;
 
     @Column(name = "latitud", length = 100)
     private String latitude;
@@ -52,7 +58,7 @@ public class LocationEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "paradero_id")
-    private BusStopEntity busStopId;
+    private BusStopEntity busStopAssociate;
 
     @CreatedDate
     @Column(name = "fecha_creacion", updatable = false)

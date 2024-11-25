@@ -1,0 +1,14 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="20241123-add-column-description-to-bus-stop" author="cerroteberes@gmail.com">
+        <!-- Agregar columna paradero_id -->
+        <addColumn tableName="tbl_paradero" schemaName="traccar_db">
+            <column name="descripcion" type="TEXT" />
+        </addColumn>
+
+    </changeSet>
+</databaseChangeLog>

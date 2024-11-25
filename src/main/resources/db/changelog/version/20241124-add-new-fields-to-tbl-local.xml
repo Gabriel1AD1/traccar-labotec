@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="20241124-add-new-fields-to-tbl-local" author="cerroteberes@gmail.com">
+        <!-- Add 'description' column -->
+        <addColumn tableName="tbl_local">
+            <column name="description" type="VARCHAR(200)">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+
+        <!-- Add 'state' column -->
+        <addColumn tableName="tbl_local">
+            <column name="state" type="VARCHAR(50)">
+                <constraints nullable="true" />
+            </column>
+        </addColumn>
+
+    </changeSet>
+</databaseChangeLog>

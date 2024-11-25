@@ -1,5 +1,6 @@
 package com.labotec.traccar.infra.exception;
 
+import com.labotec.traccar.app.exception.AlreadyAssignedVehicleSchedule;
 import com.labotec.traccar.infra.common.ApiError;
 import com.labotec.traccar.infra.web.controller.rest.traccar.exception.EntityAllReadyException;
 import com.labotec.traccar.infra.web.controller.rest.traccar.exception.Unauthorised;
@@ -16,10 +17,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.labotec.traccar.infra.exception.constant.ERROR_DUPLICATE.UNIQUE_CONSTRAINT_MESSAGES;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.CONFLICT;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -45,28 +49,52 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
     }
 
-    // Maneja los errores de validación (MethodArgumentNotValidException)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiError> handleValidationException(MethodArgumentNotValidException ex, WebRequest request) {
-        // Crear un mapa de errores donde la clave es el campo y el valor es el mensaje de error
-        Map<String, String> subErrors = ex.getBindingResult().getFieldErrors().stream()
+        // Procesar errores de campos
+        Map<String, String> fieldErrors = ex.getBindingResult().getFieldErrors().stream()
                 .collect(Collectors.toMap(
-                        FieldError::getField,        // El nombre del campo que produjo el error
-                        FieldError::getDefaultMessage // El mensaje de error asociado a ese campo
+                        FieldError::getField,        // Nombre del campo
+                        FieldError::getDefaultMessage // Mensaje de error
                 ));
 
-        // Mensaje de depuración opcional
-        String debugMessage = debugEnabled ? ex.getLocalizedMessage() : null;
+        // Procesar errores a nivel de clase
+        List<String> globalErrors = ex.getBindingResult().getGlobalErrors().stream()
+                .map(globalError -> String.format("Error in object '%s': %s",
+                        globalError.getObjectName(),
+                        globalError.getDefaultMessage()))
+                .collect(Collectors.toList());
 
-        // Crear un ApiError con los subErrores de validación
-        ApiError apiError = new ApiError(
-                HttpStatus.BAD_REQUEST,
-                "Validation failed",
-                debugMessage,
-                subErrors
+        // Combinar errores en un mapa
+        Map<String, Object> errors = Map.of(
+                "fieldErrors", fieldErrors,
+                "globalErrors", globalErrors
         );
 
-        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+        String debugMessage = debugEnabled ? ex.getLocalizedMessage() : null;
+
+        ApiError apiError = new ApiError(
+                BAD_REQUEST,
+                "Validation failed",
+                debugMessage,
+                errors
+        );
+
+        return new ResponseEntity<>(apiError, BAD_REQUEST);
+    }
+    @ExceptionHandler(AlreadyAssignedVehicleSchedule.class)
+    public ResponseEntity<ApiError> handleMethodAlreadyAssignedVehicleSchedule(AlreadyAssignedVehicleSchedule ex){
+        String debugMessage = debugEnabled ? ex.getLocalizedMessage() : null;
+
+        ApiError apiError = new ApiError(
+                HttpStatus.CONFLICT,
+                "Conflictos en el vehiculo al asignar un vehiculo",
+                debugMessage,
+                Map.of("ERROR" , ex.getMessage()) // No hay subErrores en este caso
+        );
+
+
+        return new ResponseEntity<>(apiError,CONFLICT);
     }
 
     // Maneja HttpRequestMethodNotSupportedException (método no permitido)
@@ -111,13 +139,13 @@ public class GlobalExceptionHandler {
         String userMessage = "Invalid JSON format or invalid data provided.";
 
         ApiError apiError = new ApiError(
-                HttpStatus.BAD_REQUEST,
+                BAD_REQUEST,
                 userMessage,
                 debugMessage,
                 Map.of("ERROR", "Malformed JSON or invalid value provided.") // Suberror detallado
         );
 
-        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(apiError, BAD_REQUEST);
     }
     @ExceptionHandler(Unauthorised.class)
     public ResponseEntity<ApiError> handleNoAuthorized(Unauthorised ex, WebRequest request){
