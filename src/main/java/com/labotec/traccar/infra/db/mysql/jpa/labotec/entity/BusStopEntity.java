@@ -39,7 +39,6 @@ public class BusStopEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id")
     private UserEntity userId;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "empresa_id")
     private CompanyEntity companyId;

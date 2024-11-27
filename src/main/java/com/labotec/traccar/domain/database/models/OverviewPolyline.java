@@ -19,6 +19,8 @@ public class OverviewPolyline {
     private RouteBusStop routeBusStop; // Referencia a tabla intermedia
     private String polyline;
     private Boolean isPrimary;
+    @JsonIgnore
     private Instant lastModifiedDate;
+    @JsonIgnore
     private Instant createdDate;
 }

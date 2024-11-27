@@ -1,5 +1,6 @@
 package com.labotec.traccar.domain.database.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.labotec.traccar.domain.enums.STATE;
 import lombok.*;
 
@@ -11,7 +12,9 @@ import java.time.Instant;
 @AllArgsConstructor
 public class Driver {
     private Long id;
+    @JsonIgnore
     private User userId;
+    @JsonIgnore
     private Company companyId;
     private String phone;
     private String firstName;

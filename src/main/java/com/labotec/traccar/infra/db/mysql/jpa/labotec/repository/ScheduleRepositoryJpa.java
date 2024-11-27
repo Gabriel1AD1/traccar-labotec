@@ -4,6 +4,7 @@ import com.labotec.traccar.domain.database.models.Vehicle;
 import com.labotec.traccar.domain.enums.STATE;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.ScheduleEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.VehicleEntity;
+import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.ScheduleProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -137,22 +138,48 @@ public interface ScheduleRepositoryJpa extends JpaRepository<ScheduleEntity, Lon
     @Query("SELECT COUNT(s) > 0 " +
             "FROM ScheduleEntity s " +
             "WHERE s.vehicle.traccarDeviceId = :vehicleId " +
-            "AND s.estimatedArrivalTime < :newArrivalTime " +
-            "AND s.estimatedDepartureTime > :newDepartureTime")
+            "AND s.estimatedDepartureTime < :newArrivalTime " +
+            "AND s.estimatedArrivalTime > :newDepartureTime")
     boolean existsOverlappingSchedule(
             @Param("vehicleId") Long vehicleId,
             @Param("newDepartureTime") Instant newDepartureTime,
             @Param("newArrivalTime") Instant newArrivalTime
     );
 
-    @Query(value = "SELECT * FROM traccar_db.tbl_programacion s " +
-            "WHERE s.id_device_traccar = :vehicleId " +
-            "AND :currentTime BETWEEN s.fecha_hora_salida_estimada AND s.fecha_hora_llegada_estimada " +
-            "LIMIT 1",
-            nativeQuery = true)
+    @Query("SELECT s FROM ScheduleEntity s " +
+            "WHERE s.vehicle.traccarDeviceId = :vehicleId " +
+            "AND :currentTime BETWEEN s.estimatedDepartureTime AND s.estimatedArrivalTime " +
+            "ORDER BY s.estimatedDepartureTime ASC")
     Optional<ScheduleEntity> findScheduleByVehicleAndCurrentTime(
             @Param("vehicleId") Long vehicleId,
             @Param("currentTime") Instant currentTime
     );
+    @Query("SELECT s.id as id," +
+            "s.route AS route, " +
+            "s.geofenceType AS geofenceType, " +
+            "s.geofenceId AS geofenceId, " +
+            "s.radiusValidateRoutePolyline AS radiusValidateRoutePolyline, " +
+            "s.validateRouteExplicit AS validateRouteExplicit, " +
+            "s.status AS status " +
+            "FROM ScheduleEntity s " +
+            "WHERE s.vehicle.traccarDeviceId = :vehicleId " +
+            "AND :currentTime BETWEEN s.estimatedDepartureTime AND s.estimatedArrivalTime " +
+            "ORDER BY s.estimatedDepartureTime ASC")
+    Optional<ScheduleProjection> findScheduleProjectionViewByVehicleAndCurrentTime(
+            @Param("vehicleId") Long vehicleId,
+            @Param("currentTime") Instant currentTime
+    );
 
+
+    // Actualizar departureTime por ID
+    @Transactional
+    @Modifying
+    @Query("UPDATE ScheduleEntity s SET s.departureTime = :departureTime WHERE s.id = :id")
+    void updateDepartureTimeById(Long id, Instant departureTime);
+
+    // Actualizar arrivalTime por ID
+    @Transactional
+    @Modifying
+    @Query("UPDATE ScheduleEntity s SET s.arrivalTime = :arrivalTime WHERE s.id = :id")
+    void updateArrivalTimeById(Long id, Instant arrivalTime);
 }

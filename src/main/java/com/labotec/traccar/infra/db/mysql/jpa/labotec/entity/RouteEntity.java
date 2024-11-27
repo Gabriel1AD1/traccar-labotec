@@ -1,5 +1,6 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.labotec.traccar.domain.enums.STATE;
 import jakarta.persistence.*;
 import lombok.*;
@@ -41,6 +42,7 @@ public class RouteEntity {
     @Column(name = "nombre", nullable = false, length = 250)
     private String name;
     @OneToMany(mappedBy = "route", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JsonManagedReference
     private List<RouteBusStopEntity> busStopsList;
     @CreatedDate
     @Column(name = "fecha_creacion", updatable = false)

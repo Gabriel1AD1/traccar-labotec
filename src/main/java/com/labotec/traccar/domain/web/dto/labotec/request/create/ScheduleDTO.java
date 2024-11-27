@@ -1,25 +1,19 @@
 package com.labotec.traccar.domain.web.dto.labotec.request.create;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.labotec.traccar.domain.enums.STATE;
 import com.labotec.traccar.domain.enums.TYPE_GEOFENCE;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Getter
 @Setter
 public class ScheduleDTO {
 
-    @NotNull(message = "Departure time is required")
-    @JsonProperty("departure_time")  // Mapea con "departure_time" en el JSON
-    private Instant departureTime;
-    @NotNull(message = "Arrival time is required")
-    @JsonProperty("arrival_time")  // Mapea con "arrival_time" en el JSON
-    private Instant arrivalTime;
     @NotNull(message = "Vehicle is required")
     @JsonProperty("vehicle_id")  // Mapea con "vehicle_id" en el JSON
     private Long vehicleId;  // Refers to the vehicle id
@@ -50,9 +44,10 @@ public class ScheduleDTO {
     private Long radiusValidateRoutePolyline;
     @NotNull(message = "Estimated departure time is required")
     @JsonProperty("estimated_departure_time")  // Mapea con "estimated_departure_time" en el JSON
-    private Instant estimatedDepartureTime;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+    private ZonedDateTime zoneEstimatedDepartureTime;
 
     @NotNull(message = "Estimated arrival time is required")
     @JsonProperty("estimated_arrival_time")  // Mapea con "estimated_arrival_time" en el JSON
-    private Instant estimatedArrivalTime;
-}
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+    private ZonedDateTime zoneEstimatedArrivalTime;}

@@ -38,6 +38,7 @@
         private final GoogleEmail googleEmail;
         private final OverviewPolylineRepository overviewPolylineRepository;
         private final DriverScheduleRepository driverScheduleRepository;
+        private final StateVehiclePositionRepository stateVehiclePositionRepository;
         @Bean(name = "busStopService")
         public BusStopService busStop() {
             return new BusStopImpl(busStopRepository,companyRepository,busStopModelMapper,userRepository);
@@ -67,6 +68,17 @@
                     locationModelMapper,
                     userRepository
             );
+        }
+
+        @Bean(name = "processRoute")
+        public ProcessRouteService processRouteService(){
+            return new ProcessRoute(
+                    scheduleRepository,
+                    vehicleRepository,
+                    routeRepository,
+                    geofenceCircularRepository,
+                    stateVehiclePositionRepository
+                    );
         }
 
         @Bean(name = "routeService")

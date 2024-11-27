@@ -57,4 +57,5 @@ public class GeofenceCircularRepositoryImpl implements GeofenceCircularRepositor
     public void deleteById(Long resourceId, Long userId) {
         geofenceCircularRepositoryJpa.deleteByIdAndUserId(resourceId,userId);
     }
+
 }

@@ -2,11 +2,12 @@ package com.labotec.traccar.app.ports.input.repository;
 
 import com.labotec.traccar.app.utils.common.repository.GenericRepository;
 import com.labotec.traccar.domain.database.models.Schedule;
-import com.labotec.traccar.domain.database.models.Vehicle;
 import com.labotec.traccar.domain.enums.STATE;
+import com.labotec.traccar.domain.query.ScheduleProcessPosition;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Interfaz de repositorio para interactuar con las entidades de Schedule (Programación).
@@ -75,4 +76,7 @@ public interface ScheduleRepository extends GenericRepository<Schedule , Long> {
     boolean existsOverlappingSchedule(Long vehicleId , Instant newDepartureTime , Instant newArrivalTime );
 
     Schedule findByVehicleIdAndInstantNow(long deviceId, Instant now);
+    Optional<ScheduleProcessPosition> findByScheduleProjectionVehicleIdAndInstantNow(long deviceId, Instant now);
+    void updateDepartureTime(Long id, Instant now);
+    void updateArrivedTime(Long id, Instant now);
 }

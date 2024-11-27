@@ -12,8 +12,7 @@ import com.labotec.traccar.domain.web.dto.labotec.request.update.ScheduleUpdateD
 import lombok.AllArgsConstructor;
 
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.time.ZoneOffset;
 import java.util.List;
 
 @AllArgsConstructor
@@ -32,9 +31,12 @@ public class ScheduleImpl implements ScheduleService {
 
     @Override
     public Schedule create(ScheduleDTO scheduleDTO, Long userId) {
-        if (scheduleRepository.existsOverlappingSchedule(scheduleDTO.getVehicleId() , scheduleDTO.getDepartureTime(),scheduleDTO.getArrivalTime())){
+        Instant departureTimeUTC = scheduleDTO.getZoneEstimatedDepartureTime().withZoneSameInstant(ZoneOffset.UTC).toInstant();
+        Instant arrivalTimeUTC = scheduleDTO.getZoneEstimatedArrivalTime().withZoneSameInstant(ZoneOffset.UTC).toInstant();
+
+        if (scheduleRepository.existsOverlappingSchedule(scheduleDTO.getVehicleId() ,departureTimeUTC ,arrivalTimeUTC)){
             throw new AlreadyAssignedVehicleSchedule("El vehiculo ya tiene una programación programada dentro del rango "
-                    .concat(scheduleDTO.getDepartureTime().toString().concat("y ") . concat(scheduleDTO.getDepartureTime().toString()))
+                    .concat(scheduleDTO.getZoneEstimatedArrivalTime().toString().concat(" y ") . concat(scheduleDTO.getZoneEstimatedDepartureTime().toString()))
             );
         }
         User user = userRepository.findByUserId(userId);
@@ -45,9 +47,12 @@ public class ScheduleImpl implements ScheduleService {
         scheduleMap.setStatus(STATE.ACTIVO);
         scheduleMap.setCompanyId(user.getCompanyId());
         scheduleMap.setVehicle(vehicle);
-        scheduleMap.setLocation(location);
         scheduleMap.setRoute(route);
         scheduleMap.setUserId(user);
+        scheduleMap.setLocation(location);
+        scheduleMap.setEstimatedDepartureTime(departureTimeUTC);
+        scheduleMap.setEstimatedArrivalTime(arrivalTimeUTC);
+
         Schedule scheduleSaved = scheduleRepository.create(scheduleMap);
         for (DriverRolScheduleCreateDTO driverListAssigment : scheduleDTO.getDriverAssignmentRoute()){
             Driver driver = driverRepository.findById(driverListAssigment.getDriverId(),userId);

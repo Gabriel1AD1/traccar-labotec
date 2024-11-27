@@ -10,13 +10,8 @@ import java.util.Set;
 
 @Mapper(componentModel = "spring")
 public interface CompanyMapper {
-
-
     Company toModel(CompanyEntity entity);
-
-
     CompanyEntity toEntity(Company model);
-
     List<Company> toModelList(List<CompanyEntity> entities);
     List<CompanyEntity> toEntityList(List<Company> models);
     Set<Company> toModelSet(Set<CompanyEntity> entities);

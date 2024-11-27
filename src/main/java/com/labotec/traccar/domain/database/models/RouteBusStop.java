@@ -20,6 +20,8 @@ public class RouteBusStop {
     private Integer minWaitTime; // En minutos
     private List<OverviewPolyline> overviewPolylines;
     private Long order;
+    @JsonIgnore
     private Instant createdDate;
+    @JsonIgnore
     private Instant lastModifiedDate;
 }

@@ -1,10 +1,9 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -33,6 +32,8 @@ public class OverviewPolylineEntity {
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "route_bus_stop_id")
+    @JsonIgnore
+    @JsonBackReference
     private RouteBusStopEntity routeBusStop;
     @Column(name = "polyline", length = 5000)
     private String polyline;

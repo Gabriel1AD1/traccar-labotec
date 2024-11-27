@@ -1,5 +1,6 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,6 +32,7 @@ public class DriverScheduleEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_programacion", nullable = false)
+    @JsonIgnore
     private ScheduleEntity scheduleId;
 
     @ManyToOne(fetch = FetchType.LAZY)

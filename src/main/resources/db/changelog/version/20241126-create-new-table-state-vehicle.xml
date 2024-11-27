@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- Cambio 1: Crear la tabla tbl_estado_vehiculo_pocision -->
+    <changeSet id="1" author="cerroteberes@gmail.com">
+        <createTable tableName="tbl_estado_vehiculo_posicion">
+            <column name="vehicle_id" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="latitude" type="DOUBLE"/>
+            <column name="longitude" type="DOUBLE"/>
+            <column name="ultimo_tiempo_detenido" type="TIMESTAMP"/>
+            <column name="minutos_detenido" type="INT"/>
+            <column name="ultimo_paradero_registrado" type="BIGINT"/>
+            <column name="state_vehicle" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
+    <!-- Cambio 2: Agregar índice para la columna vehicle_id -->
+    <changeSet id="2" author="cerroteberes@gmail.com">
+        <createIndex indexName="idx_vehicle_associate" tableName="tbl_estado_vehiculo_posicion">
+            <column name="vehicle_id"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- Cambio 3: Agregar la restricción de clave foránea para ultimo_paradero_registrado -->
+    <changeSet id="3" author="cerroteberes@gmail.com">
+        <addForeignKeyConstraint
+            baseTableName="tbl_estado_vehiculo_posicion"
+            baseColumnNames="ultimo_paradero_registrado"
+            referencedTableName="tbl_paradero"
+            referencedColumnNames="id"
+            constraintName="fk_estado_vehiculo_paradero"
+            onDelete="SET NULL"/>
+    </changeSet>
+
+</databaseChangeLog>

@@ -20,8 +20,8 @@ public class BusStop {
     private Company companyId;
     private String name;
     private String description;
-    private String latitude;
-    private String longitude;
+    private Double latitude;
+    private Double longitude;
     private STATE status;
     @JsonIgnore
     private Instant lastModifiedDate;

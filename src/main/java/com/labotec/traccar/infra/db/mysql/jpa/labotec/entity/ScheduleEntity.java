@@ -40,10 +40,10 @@ public class ScheduleEntity {
     @JoinColumn(name = "empresa_id")
     private CompanyEntity companyId;
 
-    @Column(name = "fecha_hora_salida", nullable = false)
+    @Column(name = "fecha_hora_salida", nullable = true)
     private Instant departureTime;
 
-    @Column(name = "fecha_hora_llegada", nullable = false)
+    @Column(name = "fecha_hora_llegada", nullable = true)
     private Instant arrivalTime;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -57,7 +57,8 @@ public class ScheduleEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_ruta", nullable = false)
     private RouteEntity route;
-
+    @OneToMany(mappedBy = "scheduleId", cascade = CascadeType.ALL, orphanRemoval = true , fetch = FetchType.EAGER)
+    private List<DriverScheduleEntity> drivers;
     @Column(name = "num_planillas", length = 50)
     private String sheetNumber;
 
@@ -70,8 +71,7 @@ public class ScheduleEntity {
     @Column(name = "fecha_hora_salida_estimada", nullable = false)
     private Instant estimatedDepartureTime;
     // Relación uno a muchos con conductores
-    @OneToMany(mappedBy = "scheduleId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<DriverScheduleEntity> drivers;
+
     @Column(name = "fecha_hora_llegada_estimada", nullable = false)
     private Instant estimatedArrivalTime;
     @Column(name = "geofence_id", nullable = true)

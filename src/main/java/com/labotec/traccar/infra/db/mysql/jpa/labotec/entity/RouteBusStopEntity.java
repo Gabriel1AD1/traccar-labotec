@@ -1,7 +1,9 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.labotec.traccar.domain.database.models.BusStop;
 import com.labotec.traccar.domain.database.models.OverviewPolyline;
 import jakarta.persistence.*;
@@ -36,6 +38,7 @@ public class RouteBusStopEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_ruta", nullable = false)
     @JsonIgnore
+    @JsonBackReference
     private RouteEntity route;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_primer_paradero", nullable = false)
@@ -44,6 +47,7 @@ public class RouteBusStopEntity {
     @JoinColumn(name = "id_segundo_paradero", nullable = false)
     private BusStopEntity secondBusStop;
     @OneToMany(mappedBy = "routeBusStop", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JsonManagedReference
     private List<OverviewPolylineEntity> overviewPolylines;
     @Column(name = "orden", nullable = false)
     private Long order;

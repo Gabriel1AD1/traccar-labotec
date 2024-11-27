@@ -3,12 +3,17 @@ package com.labotec.traccar.infra.db.mysql.jpa.labotec.impl;
 import com.labotec.traccar.app.ports.input.repository.ScheduleRepository;
 import com.labotec.traccar.domain.database.models.Schedule;
 import com.labotec.traccar.domain.enums.STATE;
+import com.labotec.traccar.domain.query.ScheduleProcessPosition;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.*;
+import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.RouteMapper;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.ScheduleMapper;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.VehicleMapper;
+import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.ScheduleProjection;
+import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.mapper.ScheduleProjectionMapper;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.*;
 import com.labotec.traccar.infra.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
@@ -22,11 +27,13 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     private final ScheduleRepositoryJpa scheduleRepositoryJpa;
     private final ScheduleMapper scheduleMapper;
     private final VehicleMapper vehicleMapper;
-
+    private final RouteMapper routeMapper;
+    private final ScheduleProjectionMapper scheduleProjectionMapper;
     @Override
     public Schedule create(Schedule entity) {
         ScheduleEntity schedule = scheduleMapper.toEntity(entity);
         ScheduleEntity scheduleEntitySaved = scheduleRepositoryJpa.save(schedule);
+        System.out.println(scheduleEntitySaved.toString());
         return scheduleMapper.toModel(scheduleEntitySaved);
     }
 
@@ -109,8 +116,34 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
 
     @Override
     public Schedule findByVehicleIdAndInstantNow(long deviceId, Instant now) {
-        ScheduleEntity schedule = scheduleRepositoryJpa.findScheduleByVehicleAndCurrentTime(deviceId,now).orElse(null);
+        ScheduleEntity schedule = scheduleRepositoryJpa.findScheduleByVehicleAndCurrentTime(deviceId,now).orElseThrow(
+                () -> new EntityNotFoundException(" la entidad no existe"));
+
         return scheduleMapper.toModel(schedule);
+    }
+
+    @Override
+    @Cacheable(value = "scheduleCache", key = "#deviceId", sync = true)
+    public Optional<ScheduleProcessPosition> findByScheduleProjectionVehicleIdAndInstantNow(long deviceId, Instant now) {
+        System.out.println("ENTRO AQUI");
+        ScheduleProjection scheduleProjection = scheduleRepositoryJpa.findScheduleProjectionViewByVehicleAndCurrentTime(deviceId,now).orElse(null);
+        if (scheduleProjection == null){
+            return Optional.empty();
+        }
+        ScheduleProcessPosition scheduleProcessPosition;
+        scheduleProcessPosition  = scheduleProjectionMapper.toScheduleProcessPosition(scheduleProjection);
+        return Optional.of(scheduleProcessPosition);
+
+    }
+
+    @Override
+    public void updateDepartureTime(Long id, Instant now) {
+        scheduleRepositoryJpa.updateDepartureTimeById(id, now);
+    }
+
+    @Override
+    public void updateArrivedTime(Long id, Instant now) {
+        scheduleRepositoryJpa.updateArrivalTimeById(id, now);
     }
 
 }

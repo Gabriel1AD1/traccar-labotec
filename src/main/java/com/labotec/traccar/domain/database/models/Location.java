@@ -1,5 +1,6 @@
 package com.labotec.traccar.domain.database.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.labotec.traccar.domain.enums.STATE;
 import lombok.*;
 
@@ -12,7 +13,9 @@ import java.time.Instant;
 @AllArgsConstructor
 public class Location {
     private Long id;
+    @JsonIgnore
     private User userId;
+    @JsonIgnore
     private Company companyId;
     private String name;
     private String description;
@@ -21,6 +24,8 @@ public class Location {
     private String latitude;
     private String longitude;
     private BigDecimal radius;
+    @JsonIgnore
     private Instant lastModifiedDate;
+    @JsonIgnore
     private Instant createdDate;
 }

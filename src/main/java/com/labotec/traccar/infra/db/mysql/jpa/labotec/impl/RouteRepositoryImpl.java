@@ -9,6 +9,7 @@ import com.labotec.traccar.infra.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.Instant;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -54,4 +55,9 @@ public class RouteRepositoryImpl implements RouteRepository {
 
     }
 
+    @Override
+    public Route findRouteByVehicleAndCurrentTime(long deviceId, Instant localInstant) {
+        RouteEntity routeEntity = routeRepositoryJpa.findRouteByVehicleAndCurrentTime(deviceId,localInstant).orElse(null);
+        return routeMapper.toModel(routeEntity);
+    }
 }

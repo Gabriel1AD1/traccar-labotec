@@ -17,12 +17,12 @@ public class BusStopUpdateDTO {
     @Size(max = 100, message = "Latitude must not exceed 100 characters")
     @NotEmpty(message = "latitude is required")
     @JsonProperty("latitude")
-    private String latitude;
+    private Double latitude;
 
     @Size(max = 100, message = "Longitude must not exceed 100 characters")
     @NotEmpty(message = "longitude is required")
     @JsonProperty("longitude")
-    private String longitude;
+    private Double longitude;
 
     @NotNull(message = "Status is required")
     @JsonProperty("status")

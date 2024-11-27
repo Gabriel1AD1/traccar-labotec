@@ -22,4 +22,7 @@
     <include file="db/changelog/version/20241125-add-id-chofer-to-tbl-programacion.xml"/>
     <include file="db/changelog/version/20241125-changes-delete.xml"/>
     <include file="db/changelog/version/20241125-remove-id-geofence-poligonal.xml"/>
+    <include file="db/changelog/version/20241125-allow-null-fecha-hora.xml"/>
+    <include file="db/changelog/version/20241126-update-foreign-key-on-delete-cascade.xml"/>
+    <include file="db/changelog/version/20241126-create-new-table-state-vehicle.xml"/>
 </databaseChangeLog>

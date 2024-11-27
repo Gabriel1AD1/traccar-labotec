@@ -1,5 +1,6 @@
 package com.labotec.traccar.domain.web.dto.labotec.request.update;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.labotec.traccar.domain.enums.STATE;
 import jakarta.validation.constraints.NotNull;
@@ -7,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.time.ZonedDateTime;
 
 @Getter
 @Setter
@@ -48,10 +50,12 @@ public class ScheduleUpdateDTO {
 
     @NotNull(message = "Estimated departure time is required")
     @JsonProperty("estimated_departure_time")  // Mapea con "estimated_departure_time" en el JSON
-    private Instant estimatedDepartureTime;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+    private ZonedDateTime zoneEstimatedDepartureTime;
 
     @NotNull(message = "Estimated arrival time is required")
     @JsonProperty("estimated_arrival_time")  // Mapea con "estimated_arrival_time" en el JSON
-    private Instant estimatedArrivalTime;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+    private ZonedDateTime zoneEstimatedArrivalTime;
 
 }

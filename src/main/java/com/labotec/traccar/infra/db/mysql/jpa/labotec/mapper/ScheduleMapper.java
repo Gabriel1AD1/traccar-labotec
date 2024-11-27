@@ -8,7 +8,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@Mapper(componentModel = "spring", uses = {VehicleMapper.class, DriverMapper.class, RouteMapper.class, CompanyMapper.class})
+@Mapper(componentModel = "spring", uses = {
+        VehicleMapper.class,
+        DriverMapper.class,
+        RouteMapper.class,
+        CompanyMapper.class,
+        DriverScheduleMapper.class
+
+})
 public interface ScheduleMapper {
 
     // De entidad a modelo
