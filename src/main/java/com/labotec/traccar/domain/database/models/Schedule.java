@@ -34,6 +34,7 @@ public class Schedule {
     private String sheetNumber;
     private STATE status;
     private Long geofenceId;
+    private Boolean isProgramCompleted;
     private Long radiusValidateRoutePolyline;
     private Boolean validateRouteExplicit;
     private List<DriverSchedule> drivers;

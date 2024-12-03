@@ -21,7 +21,9 @@ public class StopRegister {
     private Boolean isMinimumTimeMet;
     private Boolean timeExceeded;     // Indica si el tiempo excedió lo programado
     private Boolean alerted;          // Indica si se generó una alerta
+    private Integer maxTimeExcess; // Minutos que se pasó del tiempo máximo
 
+    private Integer minTimeShortfall; // Minutos que se fue del tiempo mínimo
     public StopRegister() {
 
     }

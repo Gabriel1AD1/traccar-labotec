@@ -15,6 +15,8 @@ import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.mapper.Schedule
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.*;
 import com.labotec.traccar.infra.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
@@ -31,6 +33,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     private final VehicleMapper vehicleMapper;
     private final RouteMapper routeMapper;
     private final ScheduleProjectionMapper scheduleProjectionMapper;
+    private static final Logger logger = LoggerFactory.getLogger(ScheduleRepositoryImpl.class);
     @Override
     public Schedule create(Schedule entity) {
         ScheduleEntity schedule = scheduleMapper.toEntity(entity);
@@ -151,6 +154,16 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     @Override
     public void updateArrivedTime(Long id, Instant now) {
         scheduleRepositoryJpa.updateArrivalTimeById(id, now);
+    }
+
+    @Override
+    public void updateProgramCompletionStatus(Long resourceId, Boolean isComplete) {
+        int rowAffected = scheduleRepositoryJpa.updateProgramCompletionStatus(resourceId,isComplete);
+        if(rowAffected > 0 ){
+            logger.info("Se ha actualizado correctamente la programacion con el id {} ", resourceId);
+        }else {
+            logger.warn("No se ha actualizado correctamente la programacion a estado false");
+        }
     }
 
     @Override

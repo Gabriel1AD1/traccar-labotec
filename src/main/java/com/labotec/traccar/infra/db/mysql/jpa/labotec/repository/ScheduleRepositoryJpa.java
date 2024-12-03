@@ -155,7 +155,7 @@ public interface ScheduleRepositoryJpa extends JpaRepository<ScheduleEntity, Lon
             @Param("vehicleId") Long vehicleId,
             @Param("currentTime") Instant currentTime
     );
-    @Query("SELECT s.id as id," +
+    @Query("SELECT s.id as id, " +
             "s.route AS route, " +
             "s.geofenceType AS geofenceType, " +
             "s.geofenceId AS geofenceId, " +
@@ -165,11 +165,17 @@ public interface ScheduleRepositoryJpa extends JpaRepository<ScheduleEntity, Lon
             "FROM ScheduleEntity s " +
             "WHERE s.vehicle.traccarDeviceId = :vehicleId " +
             "AND :currentTime BETWEEN s.estimatedDepartureTime AND s.estimatedArrivalTime " +
+            "AND s.isProgramCompleted = false " +  // Añadir esta condición para verificar si la programación no está completada
             "ORDER BY s.estimatedDepartureTime ASC")
     Optional<ScheduleProjection> findScheduleProjectionViewByVehicleAndCurrentTime(
             @Param("vehicleId") Long vehicleId,
             @Param("currentTime") Instant currentTime
     );
+    @Modifying
+    @Transactional
+    @Query("UPDATE ScheduleEntity s SET s.isProgramCompleted = :isProgramCompleted WHERE s.id = :id")
+    int updateProgramCompletionStatus(@Param("id") Long id, @Param("isProgramCompleted") Boolean isProgramCompleted);
+
     @Query("SELECT s.route.id " +
             "FROM ScheduleEntity s " +
             "WHERE s.vehicle.traccarDeviceId = :vehicleId " +

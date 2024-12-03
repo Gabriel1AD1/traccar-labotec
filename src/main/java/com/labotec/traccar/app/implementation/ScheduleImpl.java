@@ -52,6 +52,7 @@ public class ScheduleImpl implements ScheduleService {
         scheduleMap.setVehicle(vehicle);
         scheduleMap.setRoute(route);
         scheduleMap.setUserId(user);
+        scheduleMap.setIsProgramCompleted(false);
         scheduleMap.setLocation(location);
         scheduleMap.setEstimatedDepartureTime(departureTimeUTC);
         scheduleMap.setEstimatedArrivalTime(arrivalTimeUTC);

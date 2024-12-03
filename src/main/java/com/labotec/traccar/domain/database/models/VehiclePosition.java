@@ -6,6 +6,7 @@ import java.time.Instant;
 
 @Data
 public class VehiclePosition {
+    private Long id;
     private Long deviceId;
     private Double latitude;
     private Double longitude;
@@ -19,6 +20,7 @@ public class VehiclePosition {
     private Long currentBusStop;
     private Long nexBusStopId;
     private boolean resetRoute;
+    private boolean completeRoute;
     private Instant nextMinBusStopTimeBusStop;
     private Instant nextMaxBusStopTimeBusStop;
 

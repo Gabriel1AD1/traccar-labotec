@@ -39,7 +39,7 @@ public interface StopRegisterRepositoryJpa extends JpaRepository<StopRegisterEnt
     @Transactional
     @Modifying
     @Query("UPDATE StopRegisterEntity s " +
-            "SET s.timeExceeded = CASE WHEN :timeExceeded = true THEN s.timeExceeded ELSE :timeExceeded END " +
+            "SET s.timeExceeded = CASE WHEN :timeExceeded = false THEN s.timeExceeded ELSE :timeExceeded END " +
             "WHERE s.scheduleId = :scheduleId AND s.busStopId = :busStopId")
     int updateTimeExceeded(@Param("scheduleId") Long scheduleId,
                            @Param("busStopId") Long busStopId,
@@ -51,5 +51,19 @@ public interface StopRegisterRepositoryJpa extends JpaRepository<StopRegisterEnt
                              @Param("busStopId") Long busStopId,
                              @Param("isMinimumTimeMet") Boolean isMinimumTimeMet);
 
+    // Actualizar el exceso de tiempo máximo (maxTimeExcess) para un scheduleId y busStopId específicos
+    @Modifying
+    @Transactional
+    @Query("UPDATE StopRegisterEntity s " +
+            "SET s.maxTimeExcess = :maxTimeExcess " +
+            "WHERE s.scheduleId = :scheduleId AND s.busStopId = :busStopId")
+    int updateMaxTimeExcess(Long scheduleId, Long busStopId, Integer maxTimeExcess);
 
+    // Actualizar el exceso de tiempo mínimo (minTimeShortfall) para un scheduleId y busStopId específicos
+    @Modifying
+    @Transactional
+    @Query("UPDATE StopRegisterEntity s " +
+            "SET s.minTimeShortfall = :minTimeShortfall " +
+            "WHERE s.scheduleId = :scheduleId AND s.busStopId = :busStopId")
+    int updateMinTimeShortfall(Long scheduleId, Long busStopId, Integer minTimeShortfall);
 }

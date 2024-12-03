@@ -73,6 +73,8 @@ public class ScheduleEntity {
     @Column(name = "fecha_hora_salida_estimada", nullable = false)
     private Instant estimatedDepartureTime;
     // Relación uno a muchos con conductores
+    @Column(name = "programacion_completada")
+    private Boolean isProgramCompleted;
 
     @Column(name = "fecha_hora_llegada_estimada", nullable = false)
     private Instant estimatedArrivalTime;

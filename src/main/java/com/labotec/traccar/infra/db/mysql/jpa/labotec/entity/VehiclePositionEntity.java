@@ -8,10 +8,18 @@ import java.time.Instant;
 
 @Entity
 @Data
-@Table(name = "tbl_vehicle_position") // Especifica el nombre de la tabla en la base de datos, si es necesario.
+@Table(
+        name = "tbl_vehicle_position",
+        indexes = {
+                @Index(name = "idx_device_bus_stop_segment", columnList = "id, current_bus_stop, current_segment")
+        }
+)
 public class VehiclePositionEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @Column(name = "device_id") // El nombre de la columna en la base de datos
     private Long deviceId;
 
@@ -43,6 +51,8 @@ public class VehiclePositionEntity {
     private Long nexBusStopId;
     @Column(name = "ruta_reiniciada")
     private boolean resetRoute;
+    @Column(name = "ruta_completada")
+    private boolean completeRoute;
 
     @Column(name = "min_next_bus_stop_time")
     private Instant nextMinBusStopTimeBusStop;

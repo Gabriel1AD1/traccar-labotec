@@ -44,5 +44,11 @@ public class StopRegisterEntity {
     private Boolean isMinimumTimeMet;
     @Column(name = "alertado", nullable = false) // Indica si se generó una alerta
     private Boolean alerted;
+    // Nuevas columnas para el exceso de tiempo y tiempo mínimo
+    @Column(name = "exceso_tiempo_maximo")
+    private Integer maxTimeExcess; // Minutos que se pasó del tiempo máximo
+
+    @Column(name = "exceso_tiempo_minimo")
+    private Integer minTimeShortfall; // Minutos que se fue del tiempo mínimo
 
 }

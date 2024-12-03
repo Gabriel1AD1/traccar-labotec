@@ -82,4 +82,23 @@ public class StopRegisterRepositoryImpl implements StopRegisterRepository {
             logger.warn("El tiempo excedido no ha sido actualizado nada.");
         }
     }
+
+    @Override
+    public void updateMaxTimeExcess(Long scheduleId, Long busStopId, Integer maxTimeExcess) {
+        int affectedRows = repositoryJpa.updateMaxTimeExcess(scheduleId, busStopId, maxTimeExcess);
+        if (affectedRows > 0) {
+            logger.info("Se ha actualizado el tiempo el minimo tiempo.");
+        } else {
+            logger.warn("El tiempo excedido no ha sido actualizado nada.");
+        }
+    }
+
+    @Override
+    public void updateMinTimeShortfall(Long scheduleId, Long busStopId, Integer minTimeShortfall) {
+        int affectedRows = repositoryJpa.updateMinTimeShortfall(scheduleId, busStopId, minTimeShortfall);
+        if (affectedRows > 0) {
+            logger.info("Se ha actualizado el tiempo el minimo tiempo.");
+        } else {
+            logger.warn("El tiempo excedido no ha sido actualizado nada.");
+        }    }
 }

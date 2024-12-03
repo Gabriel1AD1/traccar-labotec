@@ -15,4 +15,9 @@ public interface StopRegisterRepository {
     void updateAlertSend(Long scheduleId, @NotNull Long busStopId, @NotNull Boolean alertSend);
     void updateTimeExceeded(Long scheduleId, @NotNull Long busStopId, @NotNull Boolean timeExceeded);
     void updateMinimumTimeMet(Long scheduleId, @NotNull Long busStopId, @NotNull Boolean timeSpent);
+    // Actualizar el exceso de tiempo máximo (maxTimeExcess) para un scheduleId y busStopId específicos
+    void updateMaxTimeExcess(Long scheduleId, Long busStopId, Integer maxTimeExcess);
+
+    // Actualizar el exceso de tiempo mínimo (minTimeShortfall) para un scheduleId y busStopId específicos
+    void updateMinTimeShortfall(Long scheduleId, Long busStopId, Integer minTimeShortfall);
 }

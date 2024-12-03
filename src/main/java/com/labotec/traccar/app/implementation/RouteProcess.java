@@ -3,12 +3,10 @@ package com.labotec.traccar.app.implementation;
 import com.labotec.traccar.app.enums.RouteType;
 import com.labotec.traccar.app.ports.input.repository.*;
 import com.labotec.traccar.app.utils.GeoUtils;
-import com.labotec.traccar.domain.database.models.StopRegister;
 import com.labotec.traccar.domain.database.models.VehiclePosition;
 import com.labotec.traccar.domain.database.models.read.InformationRoute;
 import com.labotec.traccar.domain.enums.TYPE_BUS_STOP;
 import com.labotec.traccar.domain.enums.TYPE_GEOFENCE;
-import com.labotec.traccar.domain.query.ScheduleBusStopProjection;
 import com.labotec.traccar.domain.query.ScheduleProcessPosition;
 import com.labotec.traccar.domain.query.ScheduleRouteBusStopProjection;
 import com.labotec.traccar.domain.web.dto.labotec.response.BusStopResponse;
@@ -25,8 +23,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.labotec.traccar.domain.enums.TYPE_BUS_STOP.FINAL;
 
@@ -46,19 +42,24 @@ public class RouteProcess {
     public void validateRoute(DeviceRequestDTO deviceRequestDTO) {
         // Obtenemos la Velocidad del vehiculo
         double speed = deviceRequestDTO.getSpeed();
-        boolean isMoving = speed > 0.0;
+        boolean isNotMoving = speed == 0.0;
 
         // Obtener la hora actual en Instant
         Instant timeCurrent =  getTimeCurrent();
-
+        Double deviceLatitude = deviceRequestDTO.getLatitude();;
+        Double deviceLongitude = deviceRequestDTO.getLongitude();
         // Obtener la programación asociada al vehículo y hora actual
         ScheduleProcessPosition scheduleProcessPosition = scheduleRepository.findByScheduleProjectionVehicleIdAndInstantNow(deviceRequestDTO.getDeviceId(), timeCurrent).orElseThrow(() -> new IllegalArgumentException("Programación no encontrada"));
         InformationRoute informationRoute = getInformationRoute(deviceRequestDTO.getDeviceId(),timeCurrent);
-        Long routeId = informationRoute.getRouteId();
+        long routeId = informationRoute.getRouteId();
         Long scheduleId  = informationRoute.getScheduleId();
         RouteType routeType = getTypeRoute(routeRepository.getRouteTypeByRouteId(routeId));
-
+        //Si no se esta moviendo pues se actualiza el tiempo parado
+        if (isNotMoving){
+            vehiclePositionRepository.updateTimeStopByRouteId(scheduleId,deviceLatitude,deviceLongitude,timeCurrent);
+        }
         VehiclePosition vehiclePosition = vehiclePositionRepository.findByScheduleId(scheduleId);
+        Long idVehiclePosition = vehiclePosition.getId();
         Long lasteIdBusStop = vehiclePosition.getCurrentBusStop();
         logger.info("Pocision del vehiculo relacionado ala programacion {}",vehiclePosition);
         //Nueva generacion de busqueda
@@ -67,7 +68,7 @@ public class RouteProcess {
         //Obtener la lista de paraderos del vehiculo;
         List<BusStopResponse> getListBusStop = getBusStops(busStopSegments);
         //Obtener el paradero actual del vehiculo
-        BusStopResponse currentBusStop = getCurrentBusStop(deviceRequestDTO.getLatitude(), deviceRequestDTO.getLongitude(),getListBusStop);
+        BusStopResponse currentBusStop = getCurrentBusStop(deviceRequestDTO.getLatitude(), deviceRequestDTO.getLongitude(),getListBusStop,routeType);
         //Obtenemos el id del paradero de inicio  ;
         Long firstBusStopId  = getFirstBusStopId(busStopSegments);
         //Obtenemos el id del paradero final
@@ -76,11 +77,18 @@ public class RouteProcess {
         BusStopResponse firstBusStop = getBusStopById(getListBusStop,firstBusStopId);
         //Obtenemos el ultimo Paradero
         BusStopResponse finalBusStop = getBusStopById(getListBusStop,finalBusStopId);
+
+
+
         logger.info("Ulitmo paradero {} " ,finalBusStop);
         boolean isNullBusStop = currentBusStop == null;
+        //EN PARADERO
         if (!isNullBusStop){
-            //Obtenemos el id del paradero actual
+
+
             Long currentBusStopId = currentBusStop.getId();
+
+
 
             // Procesar ubicación del vehículo en el primer paradero
             boolean isAtFirstBusStop = GeoUtils.isWithinGeofence(firstBusStop.getLatitude(), firstBusStop.getLongitude(), deviceRequestDTO.getLatitude(), deviceRequestDTO.getLongitude(), 40);
@@ -90,6 +98,37 @@ public class RouteProcess {
             //Obtenemos el segmento de donde esta parado el auto
             RouteBusStopSegmentResponse currentSegment = getBusStopSegmentById(currentBusStopId,busStopSegments);
             //Verificamos que el tipo de bus stop donde esta parado sea el final
+            Long currentOrdenSegment = currentSegment.getOrder();
+            Integer minWaitTime = currentSegment.getMinWaitTime();
+            Integer maxWaitTime = currentSegment.getMaxWaitTime();
+            Instant nextMaxBusStopTimeBusStop = Instant.now().plus(currentSegment.getMaxWaitTime().longValue(), ChronoUnit.MINUTES)
+                    .plus(currentSegment.getEstimatedTravelTime().longValue(), ChronoUnit.MINUTES);
+            Instant nextMinBusStopTimeBusStop = Instant.now().plus(currentSegment.getMinWaitTime().longValue(), ChronoUnit.MINUTES)
+                    .plus(currentSegment.getEstimatedTravelTime().longValue(), ChronoUnit.MINUTES);
+            if (!vehiclePosition.isResetRoute()){
+                if (!vehiclePosition.isCompleteRoute()){
+                    // Verificar si el tiempo actual (timeCurrent) está dentro del rango entre el tiempo mínimo y máximo de parada
+                    boolean arriveOnTime = !timeCurrent.isBefore(vehiclePosition.getNextMinBusStopTimeBusStop())
+                            && !timeCurrent.isAfter(vehiclePosition.getNextMaxBusStopTimeBusStop());
+                    //Obtenemos el id del paradero actual
+                    // Si el tiempo está dentro del rango de la parada (inclusive)
+                    if (!isAtFirstBusStop || !isAtLastBusStop){
+                        if (arriveOnTime) {
+                            timeComplete(scheduleId,currentBusStopId,true);
+                        }
+
+                        // Si el tiempo no está dentro del rango de la parada
+                        if (!arriveOnTime) {
+                            // Lógica que se ejecuta si el tiempo no está dentro del rango permitido
+                            noTimeComplete(scheduleId, currentBusStopId, false);
+                        }
+
+                    }
+                }
+
+            }
+
+
             if (!(currentSegment.getTypeBusStop() == FINAL)){
                 Long nexOrderSegment = currentSegment.getOrder() + 1;
                 RouteBusStopSegmentResponse nextSegment = getBusStopSegmentByOrder(nexOrderSegment , busStopSegments);
@@ -100,16 +139,22 @@ public class RouteProcess {
                 if (!vehiclePosition.isResetRoute()){
                     boolean remainsAtTheSameLocation = isRemainsAtTheSameLocation(currentBusStopId,lasteIdBusStop);
                     if (remainsAtTheSameLocation){
-                        boolean isLastedPosition = checkMaxWaitTime(vehiclePosition.getCurrentTimeStoppedForBusStop(), vehiclePosition.getMaxWaitTimeForBusStop());
+                        int timeWaited = getTimeExceded(vehiclePosition.getCurrentTimeStoppedForBusStop());
+                        boolean isLastedPosition = checkMaxWaitTime(vehiclePosition.getMaxWaitTimeForBusStop(),timeWaited);
+                        logger.info("TIEMPO EXECEDIDO : {}", timeWaited);
                         if (isLastedPosition){
+                            stopRegisterRepository.updateMaxTimeExcess(scheduleId,vehiclePosition.getCurrentBusStop(),timeWaited);
                             stopRegisterRepository.updateAlertSend(scheduleId,vehiclePosition.getCurrentBusStop(),true);
                             stopRegisterRepository.updateTimeExceeded(scheduleId,vehiclePosition.getCurrentBusStop(),true);
                             sendAlertForExceedingWaitTimeForSegment(currentBusStop.getName(),currentBusStopId);
                         }
                     }
                     if(!remainsAtTheSameLocation){
-                        boolean haveYouLeftTheBusStop = checkMinWaitTime(vehiclePosition.getCurrentTimeStoppedForBusStop(), currentSegment.getMinWaitTime());
+                        int timeWaited = getTimeExceded(vehiclePosition.getCurrentTimeStoppedForBusStop());
+                        boolean haveYouLeftTheBusStop = checkMinWaitTime(vehiclePosition.getMinWaitTimeForBusStop(),timeWaited);
                         if (haveYouLeftTheBusStop){
+                            stopRegisterRepository.updateMinTimeShortfall(scheduleId,vehiclePosition.getCurrentBusStop(),timeWaited);
+                            stopRegisterRepository.updateMinimumTimeMet(scheduleId,vehiclePosition.getCurrentBusStop(),false);
                             stopRegisterRepository.updateAlertSend(scheduleId,vehiclePosition.getCurrentBusStop(),true);
                             sendAlertForExceedingWaitTimeForSegment("EL VEHICULO HA SALIDO ANTES DEL TIEMPO DEL PARADERO QUE SE LAESTIPULADO" , finalBusStopId);
                         }
@@ -121,39 +166,44 @@ public class RouteProcess {
                     if (vehiclePosition.isResetRoute()) {
                         stopRegisterRepository.updateEntryTimeForRegisterBuStop(scheduleId,currentBusStopId,Instant.now());
                         scheduleRepository.updateDepartureTime(scheduleProcessPosition.getId(), Instant.now());
-                        vehiclePosition.setCurrentBusStop(currentBusStopId);
-                        vehiclePosition.setNexBusStopId(nextBusStopId);
-                        vehiclePosition.setLatitude(deviceRequestDTO.getLatitude());
-                        vehiclePosition.setLongitude(deviceRequestDTO.getLongitude());
-                        vehiclePosition.setMinWaitTimeForBusStop(currentSegment.getMinWaitTime());
-                        vehiclePosition.setMaxWaitTimeForBusStop(currentSegment.getMaxWaitTime());
-                        vehiclePosition.setCurrentTimeStoppedForBusStop(Instant.now());
-                        vehiclePosition.setCurrentSegment(currentSegment.getOrder());
-                        vehiclePosition.setWhereaboutsStatus(true);
-                        vehiclePosition.setResetRoute(false);
-                        vehiclePosition.setNextMaxBusStopTimeBusStop(Instant.now().plus(currentSegment.getMaxWaitTime(), ChronoUnit.MINUTES));
-                        vehiclePosition.setNextMinBusStopTimeBusStop(Instant.now().plus(currentSegment.getMinWaitTime(), ChronoUnit.MINUTES));
-                        vehiclePositionRepository.save(vehiclePosition);
+                        updateInitialBusStopForVehicleState(
+                                currentBusStopId,
+                                nextBusStopId,
+                                deviceLatitude,
+                                deviceLongitude,
+                                minWaitTime,
+                                maxWaitTime,
+                                timeCurrent,
+                                currentOrdenSegment,
+                                true,
+                                false,
+                                nextMaxBusStopTimeBusStop,
+                                nextMinBusStopTimeBusStop,
+                                idVehiclePosition
+                        );
                     }
 
 
                 }
                 //Paraderos intermedios
                 if (!isAtLastBusStop && !isAtFirstBusStop || currentSegment.getTypeBusStop() == TYPE_BUS_STOP.INTERMEDIO){
+
                     stopRegisterRepository.updateEntryTimeForRegisterBuStop(scheduleId,currentBusStopId,Instant.now());
-                    vehiclePosition.setCurrentBusStop(currentBusStopId);
-                    vehiclePosition.setNexBusStopId(nextBusStopId);
-                    vehiclePosition.setLatitude(deviceRequestDTO.getLatitude());
-                    vehiclePosition.setLongitude(deviceRequestDTO.getLongitude());
-                    vehiclePosition.setCurrentTimeStoppedForBusStop(Instant.now());
-                    vehiclePosition.setMinWaitTimeForBusStop(currentSegment.getMinWaitTime());
-                    vehiclePosition.setMaxWaitTimeForBusStop(currentSegment.getMaxWaitTime());
-                    vehiclePosition.setCurrentSegment(currentSegment.getOrder());
-                    vehiclePosition.setWhereaboutsStatus(true);
-                    vehiclePosition.setResetRoute(false);
-                    vehiclePosition.setNextMaxBusStopTimeBusStop(Instant.now().plus(currentSegment.getMaxWaitTime(), ChronoUnit.MINUTES));
-                    vehiclePosition.setNextMinBusStopTimeBusStop(Instant.now().plus(currentSegment.getMinWaitTime(), ChronoUnit.MINUTES));
-                    vehiclePositionRepository.save(vehiclePosition);
+                    updateInitialBusStopForVehicleState(
+                            currentBusStopId,
+                            nextBusStopId,
+                            deviceLatitude,
+                            deviceLongitude,
+                            minWaitTime,
+                            maxWaitTime,
+                            timeCurrent,
+                            currentOrdenSegment,
+                            true,
+                            false,
+                            nextMaxBusStopTimeBusStop,
+                            nextMinBusStopTimeBusStop,
+                            idVehiclePosition
+                    );
                 }
             }
 
@@ -161,19 +211,22 @@ public class RouteProcess {
             //Padero final
             if (isAtLastBusStop || currentSegment.getTypeBusStop() == FINAL){
                 stopRegisterRepository.updateEntryTimeForRegisterBuStop(scheduleId,currentBusStopId,Instant.now());
-                vehiclePosition.setCurrentBusStop(currentBusStopId);
-                vehiclePosition.setNexBusStopId(null);
-                vehiclePosition.setLatitude(deviceRequestDTO.getLatitude());
-                vehiclePosition.setLongitude(deviceRequestDTO.getLongitude());
-                vehiclePosition.setCurrentTimeStoppedForBusStop(Instant.now());
-                vehiclePosition.setCurrentSegment(currentSegment.getOrder());
-                vehiclePosition.setMinWaitTimeForBusStop(currentSegment.getMinWaitTime());
-                vehiclePosition.setMaxWaitTimeForBusStop(currentSegment.getMaxWaitTime());
-                vehiclePosition.setWhereaboutsStatus(true);
-                vehiclePosition.setResetRoute(false);
-                vehiclePosition.setNextMaxBusStopTimeBusStop(Instant.now().plus(currentSegment.getMaxWaitTime(), ChronoUnit.MINUTES));
-                vehiclePosition.setNextMinBusStopTimeBusStop(Instant.now().plus(currentSegment.getMinWaitTime(), ChronoUnit.MINUTES));
-                vehiclePositionRepository.save(vehiclePosition);
+                updateInitialBusStopForVehicleState(
+                        currentBusStopId,
+                        null,
+                        deviceLatitude,
+                        deviceLongitude,
+                        minWaitTime,
+                        maxWaitTime,
+                        timeCurrent,
+                        currentOrdenSegment,
+                        true,
+                        false,
+                        null,
+                        null,
+                        idVehiclePosition
+                );
+                vehiclePositionRepository.updateCompleteRouteById(idVehiclePosition,true);
                 scheduleRepository.updateArrivedTime(scheduleProcessPosition.getId(),Instant.now());
             }
 
@@ -186,15 +239,17 @@ public class RouteProcess {
                 //Actualizar la pocision dle vehiculo
                 vehiclePosition.setWhereaboutsStatus(false);
                 vehiclePositionRepository.save(vehiclePosition);
+                scheduleRepository.updateProgramCompletionStatus(scheduleId,true);
 
                 boolean isBusStop = vehiclePosition.isWhereaboutsStatus();
                 if (!isBusStop){
                     stopRegisterRepository.updateExitTimeForRegisterBusStop(scheduleId,vehiclePosition.getCurrentBusStop(), Instant.now());
-                    boolean haveYouLeftTheBusStop = checkMinWaitTime(vehiclePosition.getCurrentTimeStoppedForBusStop(), vehiclePosition.getMinWaitTimeForBusStop());
-
+                    int timeWaited = getTimeExceded(vehiclePosition.getCurrentTimeStoppedForBusStop());
+                    boolean haveYouLeftTheBusStop = checkMinWaitTime(vehiclePosition.getMinWaitTimeForBusStop(),timeWaited);
 
 
                     if (haveYouLeftTheBusStop){
+                        stopRegisterRepository.updateMinTimeShortfall(scheduleId,vehiclePosition.getCurrentBusStop(),timeWaited);
                         stopRegisterRepository.updateMinimumTimeMet(scheduleId, vehiclePosition.getCurrentBusStop(),false);
                         stopRegisterRepository.updateAlertSend(scheduleId,vehiclePosition.getCurrentBusStop(),true);
                         sendAlertForExceedingWaitTimeForSegment("EL VEHICULO HA SALIDO ANTES DEL TIEMPO DEL PARADERO QUE SE LAESTIPULADO" , 2);
@@ -222,6 +277,14 @@ public class RouteProcess {
             // TODO: Implementar validación de polilíneas
         }
 
+    }
+
+    private void noTimeComplete(Long scheduleId, Long currentBusStopId, boolean b) {
+        logger.warn("TIEMPO NO COMPLETADO D:");
+    }
+
+    private void timeComplete(Long scheduleId, Long currentBusStopId, boolean b) {
+        logger.info("TIEMPO COMPLETADO :D");
     }
 
     private RouteType getTypeRoute(Optional<RouteType> routeTypeByRouteId) {
@@ -293,9 +356,9 @@ public class RouteProcess {
         // Lógica para enviar alerta (por ejemplo, log o notificación)
         logger.warn("AlertaA: El vehículo ha excedido el tiempo de espera en {}. Tiempo transcurrido: {} minutos.", busStop, timeSpent);
     }
-    private BusStopResponse getCurrentBusStop(Double vehicleLatitude,Double vehicleLongitude,List<BusStopResponse> listBusStop){
+    private BusStopResponse getCurrentBusStop(Double vehicleLatitude,Double vehicleLongitude,List<BusStopResponse> listBusStop , RouteType type){
         double radiusApplicateForBusStop = 30.0;
-        return GeoUtils.getBusStopResponseIdIfWithinProximity(vehicleLatitude,vehicleLongitude,listBusStop,radiusApplicateForBusStop, RouteType.SHORT);
+        return GeoUtils.getBusStopResponseIdIfWithinProximity(vehicleLatitude,vehicleLongitude,listBusStop,radiusApplicateForBusStop, type);
     }
     // Manejador para geocerca circular
     private void handlerGeofenceCircular(DeviceRequestDTO deviceRequestDTO, ScheduleProcessPosition schedule) {
@@ -348,24 +411,44 @@ public class RouteProcess {
                 .findFirst()
                 .orElse(null);
     }
-    public static boolean checkMaxWaitTime(Instant arrivalTime, int maxWaitTime) {
-        Instant currentTime = Instant.now();
-        logger.info("currentTime : {}",currentTime);
-        // Calcular la diferencia en minutos entre el tiempo actual y la hora de llegada
-        long minutesWaited = ChronoUnit.MINUTES.between(arrivalTime, currentTime);
-        logger.info("arrivalTime : {}" , arrivalTime);
-        logger.info("Tiempo en el cual se ha quedado parado el vehiculo {}", minutesWaited);
-        // Verificar si está dentro del rango
-        return minutesWaited > maxWaitTime;
+    private void updateInitialBusStopForVehicleState(
+            Long currentBusStopId,
+            Long nextBusStopId,
+            Double latitude,
+            Double longitude,
+            Integer minWaitTime,
+            Integer maxWaitTime,
+            Instant currentTimeStoppedForBusStop,
+            Long currentSegmentOrder,
+            Boolean whereaboutsStatus,
+            Boolean resetRoute,
+            Instant nextMaxBusStopTimeBusStop,
+            Instant nextMinBusStopTimeBusStop,
+            Long id
+    ){
+        vehiclePositionRepository.updateInformationInitialVehicleByIdIfSegmentChanged(currentBusStopId,
+                nextBusStopId,
+                latitude,
+                longitude,
+                minWaitTime,
+                maxWaitTime,
+                currentTimeStoppedForBusStop,
+                currentSegmentOrder,
+                whereaboutsStatus,
+                resetRoute,
+                nextMaxBusStopTimeBusStop,
+                nextMinBusStopTimeBusStop,
+                id);
     }
-    public static boolean checkMinWaitTime(Instant arrivalTime, int minWaitTime) {
-        Instant currentTime = Instant.now();
-        logger.info("currentTime : {}",currentTime);
-        // Calcular la diferencia en minutos entre el tiempo actual y la hora de llegada
-        long minutesWaited = ChronoUnit.MINUTES.between(arrivalTime, currentTime);
-        logger.info("arrivalTime : {}" , arrivalTime);
-        logger.info("Tiempo en el cual se ha quedado parado el vehiculo {}", minutesWaited);
+    public static boolean checkMaxWaitTime(Integer maxWaitTime , Integer timeWaited) {
         // Verificar si está dentro del rango
-        return minutesWaited < minWaitTime;
+        return timeWaited > maxWaitTime;
+    }
+    public static int getTimeExceded(Instant arrivalTime){
+        Instant currentTime = Instant.now();
+        return (int) ChronoUnit.MINUTES.between(arrivalTime, currentTime);
+    }
+    public static boolean checkMinWaitTime(Integer minWaitTime , int timeWaited) {
+        return timeWaited < minWaitTime;
     }
 }
