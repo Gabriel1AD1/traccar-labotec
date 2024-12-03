@@ -2,12 +2,14 @@ package com.labotec.traccar.infra.db.mysql.jpa.labotec.impl;
 
 import com.labotec.traccar.app.ports.input.repository.ScheduleRepository;
 import com.labotec.traccar.domain.database.models.Schedule;
+import com.labotec.traccar.domain.database.models.read.InformationRoute;
 import com.labotec.traccar.domain.enums.STATE;
 import com.labotec.traccar.domain.query.ScheduleProcessPosition;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.*;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.RouteMapper;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.ScheduleMapper;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.VehicleMapper;
+import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.InformationScheduleProjection;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.ScheduleProjection;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.mapper.ScheduleProjectionMapper;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.*;
@@ -125,7 +127,6 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     @Override
     @Cacheable(value = "scheduleCache", key = "#deviceId", sync = true)
     public Optional<ScheduleProcessPosition> findByScheduleProjectionVehicleIdAndInstantNow(long deviceId, Instant now) {
-        System.out.println("ENTRO AQUI");
         ScheduleProjection scheduleProjection = scheduleRepositoryJpa.findScheduleProjectionViewByVehicleAndCurrentTime(deviceId,now).orElse(null);
         if (scheduleProjection == null){
             return Optional.empty();
@@ -134,6 +135,12 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
         scheduleProcessPosition  = scheduleProjectionMapper.toScheduleProcessPosition(scheduleProjection);
         return Optional.of(scheduleProcessPosition);
 
+    }
+
+    @Override
+    public Optional<Long> findByScheduleVehicleIdAndInstantNow(long deviceId, Instant now) {
+        Long scheduleId = scheduleRepositoryJpa.findRouteIdByScheduleForVehicleIdAndCurrentTime(deviceId,now).orElse(null);
+        return Optional.ofNullable(scheduleId);
     }
 
     @Override
@@ -146,4 +153,14 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
         scheduleRepositoryJpa.updateArrivalTimeById(id, now);
     }
 
+    @Override
+    public Optional<InformationRoute> findByInformationSchedule(long vehicleId, Instant now){
+        InformationScheduleProjection scheduleInformation = scheduleRepositoryJpa.findByInformationScheduleIds(vehicleId,now).orElse(null);
+        InformationRoute informationRoute = new InformationRoute();
+        assert scheduleInformation != null;
+        informationRoute.setScheduleId(scheduleInformation.getScheduleId());
+        informationRoute.setRouteId(scheduleInformation.getRouteId());
+        return  Optional.of(informationRoute);
+
+    }
 }

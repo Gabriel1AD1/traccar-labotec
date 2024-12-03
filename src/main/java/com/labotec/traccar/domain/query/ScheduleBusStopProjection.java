@@ -8,7 +8,7 @@ public class ScheduleBusStopProjection {
     private Long id; // Identificador del paradero
     private String name; // Nombre del paradero
     private String description; // Descripción del paradero
-    private String latitude; // Latitud del paradero
-    private String longitude; // Longitud del paradero
+    private Double latitude; // Latitud del paradero
+    private Double longitude; // Longitud del paradero
     private STATE status; // Estado del paradero
 }

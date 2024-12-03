@@ -46,7 +46,7 @@ public class TraccarDbLabotecConfig {
                 .dataSource(dataSource)
                 .packages("com.labotec.traccar.infra.db.mysql.jpa.labotec.entity")
                 .persistenceUnit("traccarDbLabotec")
-                .properties(Map.of("hibernate.hbm2ddl.auto", "validate")) // Esto ya no será necesario
+                .properties(Map.of("hibernate.hbm2ddl.auto", "update")) // Esto ya no será necesario
                 .build();
     }
 

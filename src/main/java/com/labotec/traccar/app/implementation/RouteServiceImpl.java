@@ -1,14 +1,21 @@
 package com.labotec.traccar.app.implementation;
 
+import com.labotec.traccar.app.enums.RouteType;
 import com.labotec.traccar.app.mapper.model.RouteModelMapper;
 import com.labotec.traccar.app.ports.input.repository.*;
 import com.labotec.traccar.app.ports.out.RouteService;
+import com.labotec.traccar.app.usecase.ports.input.repository.RouteBusStopSegmentRepository;
+import com.labotec.traccar.app.utils.RouteUtils;
 import com.labotec.traccar.domain.database.models.*;
+import com.labotec.traccar.domain.enums.TYPE_BUS_STOP;
 import com.labotec.traccar.domain.web.dto.labotec.request.create.RouteBusStopCreateDTO;
 import com.labotec.traccar.domain.web.dto.labotec.request.create.PolylineCreateDTO;
 import com.labotec.traccar.domain.web.dto.labotec.request.create.RouteCreateDTO;
+import com.labotec.traccar.domain.web.dto.labotec.request.create.RouteSegmentCreateDTO;
 import com.labotec.traccar.domain.web.dto.labotec.request.update.RouteUpdateDTO;
 import lombok.AllArgsConstructor;
+
+import java.util.*;
 
 
 @AllArgsConstructor
@@ -23,7 +30,7 @@ public class RouteServiceImpl implements RouteService
     private final VehicleRepository vehicleRepository;
     private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
-
+    private final RouteBusStopSegmentRepository routeBusStopSegmentRepository;
 
     @Override
     public Route create(RouteCreateDTO routeCreateDTO, Long userId) {
@@ -37,16 +44,34 @@ public class RouteServiceImpl implements RouteService
         //6 - Enriquecemos La ruta
         route.setUserId(user);
         route.setCompanyId(company);
+
+        route.setDistanceMaxInKM(routeCreateDTO.getDistanceMaxInKM());
+        route.setDistanceMinInKM(routeCreateDTO.getDistanceMinInKM());
+
+        RouteType routeType = RouteUtils.checkRouteLength(routeCreateDTO.getDistanceMaxInKM(),routeCreateDTO.getDistanceMinInKM());
+        route.setRouteType(routeType);
         //7- Ruta creada
         Route routeSave = routeRepository.create(route);
         //8- Creamos la tabla intermedia de rutas y paraderos
+        for (RouteSegmentCreateDTO routeBusStopSegment : routeCreateDTO.getSegmentsBusStop()){
+            RouteBusStopSegment routeBusStopSegmentSave = new RouteBusStopSegment();
+            busStopRepository.validateIdBusStop(routeBusStopSegment.getStartBusStopId(),userId);
+            routeBusStopSegmentSave.setBusStop(new BusStop(routeBusStopSegment.getStartBusStopId()));
+            routeBusStopSegmentSave.setTypeBusStop(routeBusStopSegment.getTypeBusStop());
+            routeBusStopSegmentSave.setRoute(routeSave);
+            routeBusStopSegmentSave.setOrder(routeBusStopSegment.getOrder());
+            routeBusStopSegmentSave.setMaxWaitTime(routeBusStopSegment.getMaxWaitTime());
+            routeBusStopSegmentSave.setMinWaitTime(routeBusStopSegment.getMinWaitTime());
+            routeBusStopSegmentSave.setEstimatedTravelTime(routeBusStopSegment.getEstimatedNextTravelTime());
+            routeBusStopSegmentRepository.create(routeBusStopSegmentSave);
+        }
         for(RouteBusStopCreateDTO routeIterable : routeCreateDTO.getSegments()){
             RouteBusStop routeBusStopCreate = new RouteBusStop();
             //9- Buscamos los paraderos
-            BusStop firstBusStop = busStopRepository.findById(routeIterable.getStartBusStopId(),userId);
-            BusStop secondBusStop = busStopRepository.findById(routeIterable.getEndBusStopId(),userId);
-            routeBusStopCreate.setFirstBusStop(firstBusStop);
-            routeBusStopCreate.setSecondBusStop(secondBusStop);
+            busStopRepository.validateIdBusStop(routeIterable.getStartBusStopId(),userId);
+            busStopRepository.validateIdBusStop(routeIterable.getEndBusStopId(),userId);
+            routeBusStopCreate.setFirstBusStop(new BusStop(routeIterable.getStartBusStopId()));
+            routeBusStopCreate.setSecondBusStop(new BusStop(routeIterable.getEndBusStopId()));
             routeBusStopCreate.setOrder(routeIterable.getOrder());
             routeBusStopCreate.setEstimatedTravelTime(routeIterable.getEstimatedTravelTime());
             routeBusStopCreate.setMaxWaitTime(routeIterable.getMaxWaitTime());
@@ -120,6 +145,7 @@ public class RouteServiceImpl implements RouteService
         }
         return routeSave;
     }
+
 
     @Override
     public void deleteById(Long resourceId, Long userId) {

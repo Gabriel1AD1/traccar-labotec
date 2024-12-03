@@ -1,5 +1,6 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.entity;
 
+import com.labotec.traccar.app.enums.RouteType;
 import com.labotec.traccar.domain.enums.STATE;
 import com.labotec.traccar.domain.enums.TYPE_GEOFENCE;
 import jakarta.persistence.*;
@@ -67,6 +68,7 @@ public class ScheduleEntity {
 
     @Column(name = "porcentaje_completado")
     private Double percentageTraveled; // Inicia como 0.0 al crearse
+
 
     @Column(name = "fecha_hora_salida_estimada", nullable = false)
     private Instant estimatedDepartureTime;

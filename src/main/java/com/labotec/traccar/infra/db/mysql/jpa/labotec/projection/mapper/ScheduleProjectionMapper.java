@@ -15,7 +15,6 @@ public class ScheduleProjectionMapper {
         if (scheduleProjection == null) {
             return null;
         }
-
         ScheduleProcessPosition scheduleProcessPosition = new ScheduleProcessPosition();
         scheduleProcessPosition.setId(scheduleProjection.getId());
         scheduleProcessPosition.setTypeGeofence(scheduleProjection.getGeofenceType());

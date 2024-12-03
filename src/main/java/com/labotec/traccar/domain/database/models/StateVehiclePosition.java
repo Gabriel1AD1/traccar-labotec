@@ -10,7 +10,7 @@ public class StateVehiclePosition {
     private Long vehicleAssociate;
     private Double latitude;
     private Double longitude;
-    private Instant timeInstantStopped;
+
     private BusStop lastUpdateBusStop;
     private Integer timeStoppedInMinutes;
     private STATE_VEHICLE stateVehicle;

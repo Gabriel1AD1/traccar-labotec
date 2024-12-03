@@ -4,6 +4,7 @@ import com.labotec.traccar.domain.database.models.Vehicle;
 import com.labotec.traccar.domain.enums.STATE;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.ScheduleEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.VehicleEntity;
+import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.InformationScheduleProjection;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.ScheduleProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -169,6 +170,26 @@ public interface ScheduleRepositoryJpa extends JpaRepository<ScheduleEntity, Lon
             @Param("vehicleId") Long vehicleId,
             @Param("currentTime") Instant currentTime
     );
+    @Query("SELECT s.route.id " +
+            "FROM ScheduleEntity s " +
+            "WHERE s.vehicle.traccarDeviceId = :vehicleId " +
+            "AND :currentTime BETWEEN s.estimatedDepartureTime AND s.estimatedArrivalTime " +
+            "ORDER BY s.estimatedDepartureTime ASC")
+    Optional<Long> findRouteIdByScheduleForVehicleIdAndCurrentTime(
+            @Param("vehicleId") Long vehicleId,
+            @Param("currentTime") Instant currentTime
+    );
+
+    @Query("SELECT s.route.id AS routeId, s.id AS scheduleId " +
+            "FROM ScheduleEntity s " +
+            "WHERE s.vehicle.traccarDeviceId = :vehicleId " +
+            "AND :currentTime BETWEEN s.estimatedDepartureTime AND s.estimatedArrivalTime " +
+            "ORDER BY s.estimatedDepartureTime ASC")
+    Optional<InformationScheduleProjection> findByInformationScheduleIds(
+            @Param("vehicleId") Long vehicleId,
+            @Param("currentTime") Instant currentTime
+    );
+
 
 
     // Actualizar departureTime por ID

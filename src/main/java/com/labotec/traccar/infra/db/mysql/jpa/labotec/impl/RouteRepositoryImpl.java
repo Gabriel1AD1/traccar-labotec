@@ -1,15 +1,20 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.impl;
 
+import com.labotec.traccar.app.enums.RouteType;
 import com.labotec.traccar.app.ports.input.repository.RouteRepository;
 import com.labotec.traccar.domain.database.models.Route;
+import com.labotec.traccar.domain.web.dto.labotec.response.RouteResponse;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.RouteEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.RouteMapper;
+import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.response.RouteResponseMapper;
+import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.RouteBusStopSegmentRepositoryJpa;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.RouteRepositoryJpa;
 import com.labotec.traccar.infra.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -18,7 +23,7 @@ public class RouteRepositoryImpl implements RouteRepository {
 
     private final RouteMapper routeMapper;
     private final RouteRepositoryJpa routeRepositoryJpa;
-
+    private final RouteResponseMapper routeResponseMapper;
     @Override
     public Route create(Route entity) {
         RouteEntity routeEntity = routeMapper.toEntity(entity);
@@ -59,5 +64,18 @@ public class RouteRepositoryImpl implements RouteRepository {
     public Route findRouteByVehicleAndCurrentTime(long deviceId, Instant localInstant) {
         RouteEntity routeEntity = routeRepositoryJpa.findRouteByVehicleAndCurrentTime(deviceId,localInstant).orElse(null);
         return routeMapper.toModel(routeEntity);
+    }
+
+    @Override
+    public Optional<RouteResponse> routeResponse(long resourceId) {
+        RouteEntity routeEntity = routeRepositoryJpa.findById(resourceId).orElse(null);
+        RouteResponse routeResponse = routeResponseMapper.toModel(routeEntity);
+        return Optional.ofNullable(routeResponse);
+    }
+
+    @Override
+    public Optional<RouteType> getRouteTypeByRouteId(long routeId) {
+        RouteType findByRouteId = routeRepositoryJpa.findRouteTypeByRouteId(routeId).orElse(null);
+        return Optional.ofNullable(findByRouteId);
     }
 }

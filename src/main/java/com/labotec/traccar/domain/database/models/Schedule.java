@@ -2,6 +2,7 @@ package com.labotec.traccar.domain.database.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.labotec.traccar.app.enums.RouteType;
 import com.labotec.traccar.domain.enums.STATE;
 import com.labotec.traccar.domain.enums.TYPE_GEOFENCE;
 import jakarta.validation.constraints.DecimalMax;
@@ -30,7 +31,6 @@ public class Schedule {
     @DecimalMax(value = "100.00", message = "El porcentaje no puede exceder el 100.00")
     @DecimalMin(value = "0.0" , message = "El porcentaje minimo es 0.0")
     private Double percentageTraveled;
-
     private String sheetNumber;
     private STATE status;
     private Long geofenceId;

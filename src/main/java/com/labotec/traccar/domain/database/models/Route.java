@@ -1,7 +1,8 @@
 package com.labotec.traccar.domain.database.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.labotec.traccar.domain.enums.STATE;
+import com.labotec.traccar.app.enums.RouteType;
+;
 import lombok.*;
 
 import java.time.Instant;
@@ -18,6 +19,9 @@ public class Route {
     @JsonIgnore
     private Company companyId;
     private String name;
+    private Long distanceMaxInKM;
+    private Long distanceMinInKM;
+    private RouteType routeType;
     private List<RouteBusStop> busStopsList;
     @JsonIgnore
     private Instant lastModifiedDate;

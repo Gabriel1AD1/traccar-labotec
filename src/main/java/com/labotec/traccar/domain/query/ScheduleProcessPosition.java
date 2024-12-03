@@ -2,7 +2,6 @@ package com.labotec.traccar.domain.query;
 
 import com.labotec.traccar.domain.enums.STATE;
 import com.labotec.traccar.domain.enums.TYPE_GEOFENCE;
-import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.ScheduleProjection;
 import lombok.Data;
 
 import java.util.List;

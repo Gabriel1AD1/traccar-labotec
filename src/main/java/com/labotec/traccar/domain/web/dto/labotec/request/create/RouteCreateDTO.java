@@ -24,7 +24,15 @@ public class RouteCreateDTO {
     @NotNull(message = "Description is required")
     @JsonProperty("description")
     private String description;
+    @JsonProperty("distance_max_in_km")
+    @NotNull
+    private Long distanceMaxInKM;
+    @JsonProperty("distance_min_in_km")
+    @NotNull
+    private Long distanceMinInKM;
     @NotNull(message = "List of Bus Stops is required")
     @JsonProperty("bus_stops")
     private List<RouteBusStopCreateDTO> segments;
+    @JsonProperty("bus_stop_segments_list")
+    private List<RouteSegmentCreateDTO> segmentsBusStop;
 }

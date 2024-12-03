@@ -9,6 +9,7 @@ import com.labotec.traccar.domain.enums.STATE;
 import com.labotec.traccar.domain.web.dto.labotec.request.create.DriverRolScheduleCreateDTO;
 import com.labotec.traccar.domain.web.dto.labotec.request.create.ScheduleDTO;
 import com.labotec.traccar.domain.web.dto.labotec.request.update.ScheduleUpdateDTO;
+import com.labotec.traccar.domain.web.dto.labotec.response.RouteBusStopSegmentResponse;
 import lombok.AllArgsConstructor;
 
 import java.time.Instant;
@@ -28,7 +29,9 @@ public class ScheduleImpl implements ScheduleService {
     private final ScheduleModelMapper scheduleModelMapper;
     private final DriverScheduleRepository driverScheduleRepository;
     private final UserRepository userRepository;
-
+    private final RouteBusStopResponseSegmentRepository routeBusStopResponseSegmentRepository;
+    private final VehiclePositionRepository vehiclePositionRepository;
+    private final StopRegisterRepository stopRegisterRepository;
     @Override
     public Schedule create(ScheduleDTO scheduleDTO, Long userId) {
         Instant departureTimeUTC = scheduleDTO.getZoneEstimatedDepartureTime().withZoneSameInstant(ZoneOffset.UTC).toInstant();
@@ -52,8 +55,9 @@ public class ScheduleImpl implements ScheduleService {
         scheduleMap.setLocation(location);
         scheduleMap.setEstimatedDepartureTime(departureTimeUTC);
         scheduleMap.setEstimatedArrivalTime(arrivalTimeUTC);
-
         Schedule scheduleSaved = scheduleRepository.create(scheduleMap);
+        VehiclePosition vehiclePosition = getPosition(scheduleSaved.getId(),vehicle.getTraccarDeviceId());
+        vehiclePositionRepository.save(vehiclePosition);
         for (DriverRolScheduleCreateDTO driverListAssigment : scheduleDTO.getDriverAssignmentRoute()){
             Driver driver = driverRepository.findById(driverListAssigment.getDriverId(),userId);
             DriverSchedule driverSchedule = new DriverSchedule();
@@ -63,8 +67,46 @@ public class ScheduleImpl implements ScheduleService {
             driverSchedule.setDriverId(driver);
             driverScheduleRepository.create(driverSchedule);
         }
+        List<RouteBusStopSegmentResponse> listSegment= routeBusStopResponseSegmentRepository.getSegmentsByRouteId(route.getId());
+        listSegment.forEach(getBusStopSegments ->
+                stopRegisterRepository.create(StopRegister.builder()
+                        .alerted(false)
+                        .busStopId(getBusStopSegments.getBusStopId())
+                        .entryTime(null)
+                        .exitTime(null)
+                        .isMinimumTimeMet(true)
+                        .scheduleId(scheduleSaved.getId())
+                        .estimatedTime(getBusStopSegments.getEstimatedTravelTime())
+                        .scheduledTime(Instant.now().getNano())
+                        .timeExceeded(false)
+                        .vehicleId(vehicle.getTraccarDeviceId())
+                        .build()
+                )
+        );
+
         return scheduleSaved;
     }
+
+    private VehiclePosition getPosition(Long resourceId, Long deviceId) {
+        VehiclePosition vehiclePosition = new VehiclePosition();
+        vehiclePosition.setScheduleId(resourceId); // Asigna el ID de la programación (resourceId)
+        vehiclePosition.setDeviceId(deviceId); // Asigna el ID del dispositivo (deviceId)
+        vehiclePosition.setResetRoute(true); // Por defecto, no reiniciar la ruta
+        vehiclePosition.setCurrentTimeStoppedForBusStop(null); // No hay tiempo detenido en el paradero aún
+        vehiclePosition.setMaxWaitTimeForBusStop(null);
+        vehiclePosition.setMinWaitTimeForBusStop(null);
+        vehiclePosition.setCurrentTimeStopped(null); // No hay tiempo detenido aún
+        vehiclePosition.setWhereaboutsStatus(false);
+        vehiclePosition.setLongitude(0.0); // Valor por defecto de la longitud
+        vehiclePosition.setLatitude(0.0); // Valor por defecto de la latitud
+        vehiclePosition.setNextMinBusStopTimeBusStop(null); // No hay tiempo mínimo asignado aún
+        vehiclePosition.setNextMaxBusStopTimeBusStop(null); // No hay tiempo máximo asignado aún
+        vehiclePosition.setCurrentSegment(0L); // Por defecto, el segmento actual es 0
+        vehiclePosition.setCurrentBusStop(0L); // Por defecto, el paradero actual es 0 (puedes cambiar según tus datos)
+        vehiclePosition.setNexBusStopId(0L); // Por defecto, el siguiente paradero es 0 (puedes cambiar según tus datos)
+        return vehiclePosition;
+    }
+
 
     @Override
     public Schedule findById(Long resourceId, Long userId) {

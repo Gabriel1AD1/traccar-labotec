@@ -5,6 +5,7 @@
     import com.labotec.traccar.app.ports.input.email.GoogleEmail;
     import com.labotec.traccar.app.ports.input.repository.*;
     import com.labotec.traccar.app.ports.out.*;
+    import com.labotec.traccar.app.usecase.ports.input.repository.RouteBusStopSegmentRepository;
     import org.springframework.context.annotation.Bean;
     import org.springframework.context.annotation.Configuration;
     import lombok.AllArgsConstructor;
@@ -14,7 +15,8 @@
     @AllArgsConstructor
     @Transactional
     public class AppConfig {
-
+        private final RouteBusStopResponseSegmentRepository routeBusStopSegmentResponseRepository;
+        private final StopRegisterRepository stopRegisterRepository;
         private final BusStopRepository busStopRepository;
         private final CompanyRepository companyRepository;
         private final DriverRepository driverRepository;
@@ -36,9 +38,11 @@
         private final GeofenceCircularModelMapper geofencePoligonalModelMapper;
         private final UserRepository userRepository;
         private final GoogleEmail googleEmail;
+        private final RouteBusStopSegmentRepository routeBusStopSegmentRepository;
         private final OverviewPolylineRepository overviewPolylineRepository;
         private final DriverScheduleRepository driverScheduleRepository;
         private final StateVehiclePositionRepository stateVehiclePositionRepository;
+        private final VehiclePositionRepository vehiclePositionRepository;
         @Bean(name = "busStopService")
         public BusStopService busStop() {
             return new BusStopImpl(busStopRepository,companyRepository,busStopModelMapper,userRepository);
@@ -70,16 +74,7 @@
             );
         }
 
-        @Bean(name = "processRoute")
-        public ProcessRouteService processRouteService(){
-            return new ProcessRoute(
-                    scheduleRepository,
-                    vehicleRepository,
-                    routeRepository,
-                    geofenceCircularRepository,
-                    stateVehiclePositionRepository
-                    );
-        }
+
 
         @Bean(name = "routeService")
         public RouteService route() {
@@ -92,7 +87,8 @@
                     overviewPolylineRepository,
                     vehicleRepository,
                     scheduleRepository,
-                    userRepository
+                    userRepository,
+                    routeBusStopSegmentRepository
             );
         }
 
@@ -108,7 +104,10 @@
                     geofenceCircularRepository,
                     scheduleModelMapper,
                     driverScheduleRepository,
-                    userRepository
+                    userRepository,
+                    routeBusStopSegmentResponseRepository,
+                    vehiclePositionRepository,
+                    stopRegisterRepository
             );
         }
 

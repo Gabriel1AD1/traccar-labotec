@@ -27,4 +27,8 @@ public class BusStop {
     private Instant lastModifiedDate;
     @JsonIgnore
     private Instant createdDate;
+
+    public BusStop(Long id) {
+        this.id = id;
+    }
 }

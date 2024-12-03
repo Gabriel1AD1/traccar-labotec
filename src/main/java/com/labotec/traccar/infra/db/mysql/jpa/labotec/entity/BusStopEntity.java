@@ -44,10 +44,10 @@ public class BusStopEntity {
     private CompanyEntity companyId;
 
     @Column(name = "latitud", length = 100)
-    private String latitude;
+    private Double latitude;
 
     @Column(name = "longitud", length = 100)
-    private String longitude;
+    private Double longitude;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
