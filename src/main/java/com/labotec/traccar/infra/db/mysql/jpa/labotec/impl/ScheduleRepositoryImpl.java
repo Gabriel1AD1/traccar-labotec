@@ -130,7 +130,8 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     @Override
     @Cacheable(value = "scheduleCache", key = "#deviceId", sync = true)
     public Optional<ScheduleProcessPosition> findByScheduleProjectionVehicleIdAndInstantNow(long deviceId, Instant now) {
-        ScheduleProjection scheduleProjection = scheduleRepositoryJpa.findScheduleProjectionViewByVehicleAndCurrentTime(deviceId,now).orElse(null);
+        ScheduleProjection scheduleProjection = scheduleRepositoryJpa.findScheduleProjectionViewByVehicleAndCurrentTime(deviceId,now).orElseThrow(
+                ()-> new EntityNotFoundException("No hay rutas disponibles para este auto"));
         if (scheduleProjection == null){
             return Optional.empty();
         }

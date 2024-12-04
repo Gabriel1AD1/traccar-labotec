@@ -40,6 +40,10 @@ public class RouteProcess {
     private final RouteBusStopResponseSegmentRepository routeBusStopSegmentRepository;
     private static final Logger logger = LoggerFactory.getLogger(RouteProcess.class);
     public void validateRoute(DeviceRequestDTO deviceRequestDTO) {
+        /*
+        if (deviceRequestDTO.getAttributes().get("Input") == 1){
+
+        }*/
         // Obtenemos la Velocidad del vehiculo
         double speed = deviceRequestDTO.getSpeed();
         boolean isNotMoving = speed == 0.0;
