@@ -29,12 +29,6 @@
         @Positive(message = "Order must be a positive number")
         @JsonProperty("order")
         private Long order;
-        @JsonProperty("min_wait_time")
-        private Integer minWaitTime;// En minutos
-        @JsonProperty("max_wait_time")
-        private Integer maxWaitTime; // En minutos
-        @JsonProperty("estimated_travel_time")
-        private Integer estimatedTravelTime; // En minutos
         @NotNull(message = "List of Polylines is required")
         @JsonProperty("polylines")
         private List<PolylineCreateDTO> polylines;

@@ -51,12 +51,7 @@ public class RouteBusStopEntity {
     private List<OverviewPolylineEntity> overviewPolylines;
     @Column(name = "orden", nullable = false)
     private Long order;
-    @Column(name = "tiempo_min_espera", nullable = false)
-    private Integer minWaitTime; // En minutos
-    @Column(name = "tiempo_max_espera", nullable = false)
-    private Integer maxWaitTime; // En minutos
-    @Column(name = "tiempo_estimado", nullable = false)
-    private Integer estimatedTravelTime; // En minutos
+
     @CreatedDate
     @Column(name = "fecha_creacion", updatable = false)
     private Instant createdDate;

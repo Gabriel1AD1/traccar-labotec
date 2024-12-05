@@ -73,9 +73,6 @@ public class RouteServiceImpl implements RouteService
             routeBusStopCreate.setFirstBusStop(new BusStop(routeIterable.getStartBusStopId()));
             routeBusStopCreate.setSecondBusStop(new BusStop(routeIterable.getEndBusStopId()));
             routeBusStopCreate.setOrder(routeIterable.getOrder());
-            routeBusStopCreate.setEstimatedTravelTime(routeIterable.getEstimatedTravelTime());
-            routeBusStopCreate.setMaxWaitTime(routeIterable.getMaxWaitTime());
-            routeBusStopCreate.setMinWaitTime(routeIterable.getMinWaitTime());
             routeBusStopCreate.setRoute(routeSave);
             RouteBusStop routeBusStopSaved = routeBusStopRepository.create(routeBusStopCreate);
                 for(PolylineCreateDTO polylineCreateDTO : routeIterable.getPolylines()){

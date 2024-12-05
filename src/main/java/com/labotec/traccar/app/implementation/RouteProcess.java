@@ -24,6 +24,7 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
+import static com.labotec.traccar.app.constants.DeviceConstant.ENGINE;
 import static com.labotec.traccar.domain.enums.TYPE_BUS_STOP.FINAL;
 
 @AllArgsConstructor
@@ -40,6 +41,11 @@ public class RouteProcess {
     private final RouteBusStopResponseSegmentRepository routeBusStopSegmentRepository;
     private static final Logger logger = LoggerFactory.getLogger(RouteProcess.class);
     public void validateRoute(DeviceRequestDTO deviceRequestDTO) {
+        int engine = (int) deviceRequestDTO.getAttributes().get(ENGINE);
+        boolean onEngine = engine == 1;
+        if (onEngine){
+
+        }
         /*
         if (deviceRequestDTO.getAttributes().get("Input") == 1){
 
