@@ -1,6 +1,7 @@
 package com.labotec.traccar.app.mapper.model;
 
 import com.labotec.traccar.domain.database.models.BusStop;
+import com.labotec.traccar.domain.database.models.BusStopUpdateListDTO;
 import com.labotec.traccar.domain.web.dto.labotec.request.create.BusStopCreateDTO;
 import com.labotec.traccar.domain.web.dto.labotec.request.update.BusStopUpdateDTO;
 import org.mapstruct.Mapper;
@@ -14,4 +15,6 @@ public interface BusStopModelMapper {
     // Mapeo inverso de BusStopCreateDTO a BusStop, pasando el Company como parámetro
     BusStop toBusStopModel(BusStopCreateDTO busStopCreateDTO);
     BusStop toBusStopModel(BusStopUpdateDTO busStopDTO);
+
+    BusStop busStopModelToListBusStop(BusStopUpdateListDTO busStopCreateDTO);
 }

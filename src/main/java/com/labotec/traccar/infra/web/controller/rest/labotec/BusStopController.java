@@ -2,6 +2,7 @@ package com.labotec.traccar.infra.web.controller.rest.labotec;
 
 import com.labotec.traccar.app.ports.out.BusStopService;
 import com.labotec.traccar.domain.database.models.BusStop;
+import com.labotec.traccar.domain.database.models.BusStopUpdateListDTO;
 import com.labotec.traccar.domain.web.dto.labotec.request.create.BusStopCreateDTO;
 import com.labotec.traccar.domain.web.dto.labotec.request.update.BusStopUpdateDTO;
 import jakarta.validation.Valid;
@@ -17,6 +18,7 @@ import java.util.Optional;
 
 import static com.labotec.traccar.infra.web.controller.common.API_VERSION_MANAGER.API_VERSION_V1;
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 @RestController
 @RequestMapping(value = API_VERSION_V1 + "bus-stop")
@@ -68,6 +70,14 @@ public class BusStopController {
             @RequestHeader(name = "userId") Long userId) {
         BusStop updatedBusStop = busStopService.update(busStopDTO, resourceId ,userId);
         return ResponseEntity.ok(updatedBusStop);
+    }
+    // Endpoint para actualizar una parada de autobús existente en listas
+    @PutMapping("/list")
+    public ResponseEntity<Void> updateToList(
+            @RequestBody @Valid List<BusStopUpdateListDTO> busStopDTO,
+            @RequestHeader(name = "userId") Long userId) {
+        busStopService.updateListBusStop(busStopDTO, userId);
+        return ResponseEntity.status(NO_CONTENT).build();
     }
 
     // Endpoint para eliminar una parada de autobús por su ID

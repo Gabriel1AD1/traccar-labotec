@@ -6,6 +6,7 @@ import com.labotec.traccar.app.ports.input.repository.CompanyRepository;
 import com.labotec.traccar.app.ports.input.repository.UserRepository;
 import com.labotec.traccar.app.ports.out.BusStopService;
 import com.labotec.traccar.domain.database.models.BusStop;
+import com.labotec.traccar.domain.database.models.BusStopUpdateListDTO;
 import com.labotec.traccar.domain.database.models.User;
 import com.labotec.traccar.domain.enums.STATE;
 import com.labotec.traccar.domain.web.dto.labotec.request.create.BusStopCreateDTO;
@@ -75,4 +76,16 @@ public class BusStopImpl implements BusStopService {
         }
         return idBusStops;
     }
+
+    @Override
+    public void updateListBusStop(List<BusStopUpdateListDTO> busStopUpdateListDTO,Long userId) {
+        for(BusStopUpdateListDTO updateListDTO : busStopUpdateListDTO){
+            BusStop busStop = busStopModelMapper.busStopModelToListBusStop(updateListDTO);
+            User user = userRepository.findByUserId(userId);
+            busStop.setUserId(user);
+            busStop.setCompanyId(user.getCompanyId());
+            busStopRepository.update(busStop);
+        }
+    }
+
 }
