@@ -80,10 +80,12 @@ public class BusStopImpl implements BusStopService {
     @Override
     public void updateListBusStop(List<BusStopUpdateListDTO> busStopUpdateListDTO,Long userId) {
         for(BusStopUpdateListDTO updateListDTO : busStopUpdateListDTO){
-            BusStop busStop = busStopModelMapper.busStopModelToListBusStop(updateListDTO);
-            User user = userRepository.findByUserId(userId);
-            busStop.setUserId(user);
-            busStop.setCompanyId(user.getCompanyId());
+            BusStop busStop = busStopRepository.findById(updateListDTO.getId(),userId);
+            busStop.setName(updateListDTO.getName());
+            busStop.setLongitude(updateListDTO.getLongitude());
+            busStop.setLatitude(updateListDTO.getLatitude());
+            busStop.setStatus(STATE.ACTIVO);
+            busStop.setDescription(updateListDTO.getDescription());
             busStopRepository.update(busStop);
         }
     }
