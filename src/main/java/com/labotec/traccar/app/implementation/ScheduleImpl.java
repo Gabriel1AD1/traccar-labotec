@@ -173,7 +173,7 @@ public class ScheduleImpl implements ScheduleService {
         Vehicle vehicle = vehicleRepository.findByLicencePlate(licencePlate);
         Instant newArrivalTime = reportDelayDTO.getNewETA().toInstant();
         Long vehicleId = vehicle.getTraccarDeviceId();
-        List<ResponseRouteBusStopSegment> getSegments = routeBusStopResponseSegmentRepository.getSegmentsByRouteId();
+        //List<ResponseRouteBusStopSegment> getSegments = routeBusStopResponseSegmentRepository.getSegmentsByRouteId();
 
 
         Instant currentTime = Instant.now();
