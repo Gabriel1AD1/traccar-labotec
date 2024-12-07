@@ -12,7 +12,7 @@ import java.time.ZonedDateTime;
 
 @Getter
 @Setter
-public class ScheduleUpdateDTO {
+public class UpdateScheduleDTO {
 
     @NotNull(message = "Departure time is required")
     @JsonProperty("departure_time")  // Mapea con "departure_time" en el JSON

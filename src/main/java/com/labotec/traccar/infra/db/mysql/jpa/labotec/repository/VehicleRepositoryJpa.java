@@ -19,4 +19,5 @@ public interface VehicleRepositoryJpa extends JpaRepository<VehicleEntity, Long>
     @Query("SELECT v FROM VehicleEntity v WHERE v.traccarDeviceId = :traccarDeviceId AND v.userId.userId = :userId")
     Optional<VehicleEntity> findByTraccarDeviceIdAndUserIdUserId(@Param("traccarDeviceId") Long traccarDeviceId, @Param("userId") Long userId);
 
+    Optional<VehicleEntity> findByLicensePlate(String licencePlate);
 }

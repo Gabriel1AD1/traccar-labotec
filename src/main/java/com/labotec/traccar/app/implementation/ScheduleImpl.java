@@ -6,10 +6,11 @@ import com.labotec.traccar.app.ports.input.repository.*;
 import com.labotec.traccar.app.ports.out.ScheduleService;
 import com.labotec.traccar.domain.database.models.*;
 import com.labotec.traccar.domain.enums.STATE;
+import com.labotec.traccar.domain.web.dto.labotec.request.ReportDelayDTO;
 import com.labotec.traccar.domain.web.dto.labotec.request.create.DriverRolScheduleCreateDTO;
 import com.labotec.traccar.domain.web.dto.labotec.request.create.ScheduleDTO;
-import com.labotec.traccar.domain.web.dto.labotec.request.update.ScheduleUpdateDTO;
-import com.labotec.traccar.domain.web.dto.labotec.response.RouteBusStopSegmentResponse;
+import com.labotec.traccar.domain.web.dto.labotec.request.update.UpdateScheduleDTO;
+import com.labotec.traccar.domain.web.dto.labotec.response.ResponseRouteBusStopSegment;
 import lombok.AllArgsConstructor;
 
 import java.time.Instant;
@@ -68,7 +69,7 @@ public class ScheduleImpl implements ScheduleService {
             driverSchedule.setDriverId(driver);
             driverScheduleRepository.create(driverSchedule);
         }
-        List<RouteBusStopSegmentResponse> listSegment= routeBusStopResponseSegmentRepository.getSegmentsByRouteId(route.getId());
+        List<ResponseRouteBusStopSegment> listSegment= routeBusStopResponseSegmentRepository.getSegmentsByRouteId(route.getId());
         listSegment.forEach(getBusStopSegments ->
                 stopRegisterRepository.create(StopRegister.builder()
                         .alerted(false)
@@ -120,12 +121,12 @@ public class ScheduleImpl implements ScheduleService {
     }
 
     @Override
-    public Schedule update(ScheduleUpdateDTO scheduleUpdateDTO, Long resourceId, Long userId) {
+    public Schedule update(UpdateScheduleDTO updateScheduleDTO, Long resourceId, Long userId) {
         User user = userRepository.findByUserId(userId);
-        Vehicle vehicle =  vehicleRepository.findById(scheduleUpdateDTO.getVehicleId(),userId);
-        Location location = locationRepository.findById(scheduleUpdateDTO.getLocationId(),userId);
-        Route route = routeRepository.findById(scheduleUpdateDTO.getRouteId(),userId);
-        Schedule scheduleMap  = scheduleModelMapper.toScheduleDomain(scheduleUpdateDTO);
+        Vehicle vehicle =  vehicleRepository.findById(updateScheduleDTO.getVehicleId(),userId);
+        Location location = locationRepository.findById(updateScheduleDTO.getLocationId(),userId);
+        Route route = routeRepository.findById(updateScheduleDTO.getRouteId(),userId);
+        Schedule scheduleMap  = scheduleModelMapper.toScheduleDomain(updateScheduleDTO);
         scheduleMap.setCompanyId(user.getCompanyId());
         scheduleMap.setVehicle(vehicle);
         scheduleMap.setLocation(location);
@@ -163,5 +164,21 @@ public class ScheduleImpl implements ScheduleService {
     @Override
     public List<Schedule> findScheduleByVehicle(Long vehicle, Long userId) {
         return scheduleRepository.findByVehicle(vehicle,userId);
+    }
+
+    @Override
+    public void updateScheduleForDelay(ReportDelayDTO reportDelayDTO) {
+        //1 Obtenemos el vehiculo el cual queremos actualizar
+        String licencePlate = reportDelayDTO.getPlate();
+        Vehicle vehicle = vehicleRepository.findByLicencePlate(licencePlate);
+        Instant newArrivalTime = reportDelayDTO.getNewETA().toInstant();
+        Long vehicleId = vehicle.getTraccarDeviceId();
+        List<ResponseRouteBusStopSegment> getSegments = routeBusStopResponseSegmentRepository.getSegmentsByRouteId();
+
+
+        Instant currentTime = Instant.now();
+        scheduleRepository.updateEstimatedArrivalTimeByVehicleAndCurrentTime(vehicleId,currentTime,newArrivalTime);
+
+
     }
 }

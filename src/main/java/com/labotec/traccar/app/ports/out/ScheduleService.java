@@ -3,8 +3,9 @@ package com.labotec.traccar.app.ports.out;
 import com.labotec.traccar.app.utils.common.repository.GenericCrudService;
 import com.labotec.traccar.domain.database.models.Schedule;
 import com.labotec.traccar.domain.enums.STATE;
+import com.labotec.traccar.domain.web.dto.labotec.request.ReportDelayDTO;
 import com.labotec.traccar.domain.web.dto.labotec.request.create.ScheduleDTO;
-import com.labotec.traccar.domain.web.dto.labotec.request.update.ScheduleUpdateDTO;
+import com.labotec.traccar.domain.web.dto.labotec.request.update.UpdateScheduleDTO;
 
 import java.time.Instant;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
  * Esta interfaz proporciona métodos para realizar operaciones de actualización y consulta sobre las programaciones.
  *
  */
-public interface ScheduleService extends GenericCrudService<Schedule , ScheduleDTO , ScheduleUpdateDTO, Long> {
+public interface ScheduleService extends GenericCrudService<Schedule , ScheduleDTO , UpdateScheduleDTO, Long> {
 
     /**
      * Actualiza el estado de una programación en base a su ID y el ID del usuario.
@@ -61,4 +62,7 @@ public interface ScheduleService extends GenericCrudService<Schedule , ScheduleD
      * @return una lista de programaciones asociadas con el vehículo y el usuario dados
      */
     List<Schedule> findScheduleByVehicle(Long vehicle, Long userId);
+
+
+    void updateScheduleForDelay(ReportDelayDTO reportDelayDTO);
 }

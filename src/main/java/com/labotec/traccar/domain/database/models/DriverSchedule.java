@@ -1,6 +1,6 @@
 package com.labotec.traccar.domain.database.models;
 
-import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.ROUTE_ASSIGNMENT_ROLE;
+import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.RouteAssignmentRole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +14,7 @@ public class DriverSchedule {
     private Schedule scheduleId;
     private Driver driverId;
     private User userAllocatorId;
-    private ROUTE_ASSIGNMENT_ROLE routeAssignmentRole;
+    private RouteAssignmentRole routeAssignmentRole;
     private Instant createdDate;
     private Instant lastModifiedDate;
 

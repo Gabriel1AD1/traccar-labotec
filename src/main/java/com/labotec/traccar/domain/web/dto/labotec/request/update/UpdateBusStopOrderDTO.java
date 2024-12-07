@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BusStopOrderUpdateDTO
+public class UpdateBusStopOrderDTO
 {
     @NotNull(message = "Bus Stop Route  ID is required")
     private Long id;

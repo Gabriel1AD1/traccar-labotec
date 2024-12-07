@@ -3,17 +3,21 @@ package com.labotec.traccar.infra.db.mysql.jpa.labotec.impl;
 import com.labotec.traccar.app.ports.input.repository.RouteBusStopRepository;
 import com.labotec.traccar.domain.database.models.Route;
 import com.labotec.traccar.domain.database.models.RouteBusStop;
+import com.labotec.traccar.domain.database.models.read.RouteBusStopInformation;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.RouteBusStopEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.RouteEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.RouteBusStopMapper;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.RouteMapper;
+import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.RouteBusStopInformationProjection;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.RouteBusStopRepositoryJpa;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.RouteRepositoryJpa;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 @AllArgsConstructor
@@ -77,4 +81,19 @@ public class RouteBusStopRepositoryImpl implements RouteBusStopRepository {
         List<RouteBusStopEntity> routeBusStopEntitiesSave = routeBusStopRepositoryJpa.saveAll(routeBusStopEntities);
         return routeBusStopMapper.toModelIterable(routeBusStopEntitiesSave);
     }
+    @Override
+    public List<RouteBusStopInformation> findByRouteId(Long routeId) {
+        // Obtiene las proyecciones del repositorio
+        List<RouteBusStopInformationProjection> findByRoute = routeBusStopRepositoryJpa.findByRouteId(routeId);
+        // Mapea las proyecciones a la entidad RouteBusStopInformation
+        return findByRoute.stream()
+                .map(s -> RouteBusStopInformation.builder()
+                        .firstBusStopId(s.getFirstBusStopId())
+                        .secondBusStopId(s.getSecondBusStopId())
+                        .id(s.getId())
+                        .order(s.getOrder())
+                        .build())
+                .collect(Collectors.toList());  // Usa Collectors.toList() para obtener la lista
+    }
+
 }

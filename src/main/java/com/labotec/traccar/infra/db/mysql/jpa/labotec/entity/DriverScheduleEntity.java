@@ -41,7 +41,7 @@ public class DriverScheduleEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "rol_asignado", nullable = false)
-    private ROUTE_ASSIGNMENT_ROLE routeAssignmentRole;
+    private RouteAssignmentRole routeAssignmentRole;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_asignador")
     private UserEntity userAllocatorId;

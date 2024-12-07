@@ -24,6 +24,6 @@ public class RouteBusUpdateStopIterableDTO {
 
     @NotNull(message = "List of Bus Stops is required")
     @JsonProperty("bus_stops")
-    private List<BusStopOrderUpdateDTO> busStops;
+    private List<UpdateBusStopOrderDTO> busStops;
 
 }

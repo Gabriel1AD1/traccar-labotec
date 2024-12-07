@@ -171,6 +171,8 @@ public interface ScheduleRepositoryJpa extends JpaRepository<ScheduleEntity, Lon
             @Param("vehicleId") Long vehicleId,
             @Param("currentTime") Instant currentTime
     );
+
+
     @Modifying
     @Transactional
     @Query("UPDATE ScheduleEntity s SET s.isProgramCompleted = :isProgramCompleted WHERE s.id = :id")
@@ -195,7 +197,18 @@ public interface ScheduleRepositoryJpa extends JpaRepository<ScheduleEntity, Lon
             @Param("vehicleId") Long vehicleId,
             @Param("currentTime") Instant currentTime
     );
-
+    @Modifying
+    @Transactional
+    @Query("UPDATE ScheduleEntity s " +
+            "SET s.estimatedArrivalTime = :newEstimatedArrivalTime " +
+            "WHERE s.vehicle.traccarDeviceId = :vehicleId " +
+            "AND :currentTime BETWEEN s.estimatedDepartureTime AND s.estimatedArrivalTime " +
+            "AND s.isProgramCompleted = false")
+    int updateEstimatedArrivalTimeByVehicleAndCurrentTime(
+            @Param("vehicleId") Long vehicleId,
+            @Param("currentTime") Instant currentTime,
+            @Param("newEstimatedArrivalTime") Instant newEstimatedArrivalTime
+    );
 
 
     // Actualizar departureTime por ID

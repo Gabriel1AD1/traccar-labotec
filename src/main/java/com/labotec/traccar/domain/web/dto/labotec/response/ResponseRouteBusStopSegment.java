@@ -6,7 +6,7 @@ import lombok.ToString;
 
 @Data
 @ToString
-public class RouteBusStopSegmentResponse {
+public class ResponseRouteBusStopSegment {
     private Long id;
     private Long routeId;
     private Long busStopId;

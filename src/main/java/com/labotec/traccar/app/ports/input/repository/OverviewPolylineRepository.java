@@ -4,6 +4,9 @@ import com.labotec.traccar.app.utils.common.repository.GenericRepository;
 import com.labotec.traccar.domain.database.models.BusStop;
 import com.labotec.traccar.domain.database.models.OverviewPolyline;
 import com.labotec.traccar.domain.database.models.RouteBusStop;
+import com.labotec.traccar.domain.web.dto.labotec.response.ResponseOverviewPolyline;
+
+import java.util.List;
 
 public interface OverviewPolylineRepository  {
 
@@ -12,4 +15,6 @@ public interface OverviewPolylineRepository  {
     OverviewPolyline findByRouteBusStopAndPrimary(RouteBusStop routeBusStopIterable);
 
     OverviewPolyline create(OverviewPolyline entity);
+
+    List<ResponseOverviewPolyline> findByRouteBusStopId(Long routeBusStopId);
 }

@@ -158,6 +158,16 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     }
 
     @Override
+    public void updateEstimatedArrivalTimeByVehicleAndCurrentTime(Long deviceId, Instant currentTime, Instant newArrivalTime) {
+        int rowAffected = scheduleRepositoryJpa.updateEstimatedArrivalTimeByVehicleAndCurrentTime(deviceId,currentTime,newArrivalTime);
+        if(rowAffected > 0 ){
+            logger.info("Se ha actualizado correctamente la programacion");
+        }else {
+            logger.warn("No se ha actualizado correctamente la programacion");
+        }
+    }
+
+    @Override
     public void updateProgramCompletionStatus(Long resourceId, Boolean isComplete) {
         int rowAffected = scheduleRepositoryJpa.updateProgramCompletionStatus(resourceId,isComplete);
         if(rowAffected > 0 ){

@@ -10,7 +10,7 @@ import com.labotec.traccar.domain.enums.TYPE_GEOFENCE;
 import com.labotec.traccar.domain.query.ScheduleProcessPosition;
 import com.labotec.traccar.domain.query.ScheduleRouteBusStopProjection;
 import com.labotec.traccar.domain.web.dto.labotec.response.BusStopResponse;
-import com.labotec.traccar.domain.web.dto.labotec.response.RouteBusStopSegmentResponse;
+import com.labotec.traccar.domain.web.dto.labotec.response.ResponseRouteBusStopSegment;
 import com.labotec.traccar.domain.web.dto.traccar.DeviceRequestDTO;
 import com.labotec.traccar.infra.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
@@ -43,13 +43,9 @@ public class RouteProcess {
     public void validateRoute(DeviceRequestDTO deviceRequestDTO) {
         int engine = (int) deviceRequestDTO.getAttributes().get(ENGINE);
         boolean onEngine = engine == 1;
-        if (onEngine){
-
+        if (!onEngine){
+            return;
         }
-        /*
-        if (deviceRequestDTO.getAttributes().get("Input") == 1){
-
-        }*/
         // Obtenemos la Velocidad del vehiculo
         double speed = deviceRequestDTO.getSpeed();
         boolean isNotMoving = speed == 0.0;
@@ -73,7 +69,7 @@ public class RouteProcess {
         Long lasteIdBusStop = vehiclePosition.getCurrentBusStop();
         logger.info("Pocision del vehiculo relacionado ala programacion {}",vehiclePosition);
         //Nueva generacion de busqueda
-        List<RouteBusStopSegmentResponse> busStopSegments = getSegmentBusStop(routeId);
+        List<ResponseRouteBusStopSegment> busStopSegments = getSegmentBusStop(routeId);
         logger.info("Obteniendo las ruta del vehiculo {} ", busStopSegments);
         //Obtener la lista de paraderos del vehiculo;
         List<BusStopResponse> getListBusStop = getBusStops(busStopSegments);
@@ -106,15 +102,13 @@ public class RouteProcess {
             // Procesar ubicación del vehículo en el último paradero
             boolean isAtLastBusStop = GeoUtils.isWithinGeofence(finalBusStop.getLatitude(), finalBusStop.getLongitude(), deviceRequestDTO.getLatitude(), deviceRequestDTO.getLongitude(), 40);
             //Obtenemos el segmento de donde esta parado el auto
-            RouteBusStopSegmentResponse currentSegment = getBusStopSegmentById(currentBusStopId,busStopSegments);
+            ResponseRouteBusStopSegment currentSegment = getBusStopSegmentById(currentBusStopId,busStopSegments);
             //Verificamos que el tipo de bus stop donde esta parado sea el final
             Long currentOrdenSegment = currentSegment.getOrder();
             Integer minWaitTime = currentSegment.getMinWaitTime();
             Integer maxWaitTime = currentSegment.getMaxWaitTime();
-            Instant nextMaxBusStopTimeBusStop = Instant.now().plus(currentSegment.getMaxWaitTime().longValue(), ChronoUnit.MINUTES)
-                    .plus(currentSegment.getEstimatedTravelTime().longValue(), ChronoUnit.MINUTES);
-            Instant nextMinBusStopTimeBusStop = Instant.now().plus(currentSegment.getMinWaitTime().longValue(), ChronoUnit.MINUTES)
-                    .plus(currentSegment.getEstimatedTravelTime().longValue(), ChronoUnit.MINUTES);
+            Instant nextMaxBusStopTimeBusStop = Instant.now().plus(currentSegment.getMaxWaitTime().longValue(), ChronoUnit.MINUTES).plus(currentSegment.getEstimatedTravelTime().longValue(), ChronoUnit.MINUTES);
+            Instant nextMinBusStopTimeBusStop = Instant.now().plus(currentSegment.getMinWaitTime().longValue(), ChronoUnit.MINUTES).plus(currentSegment.getEstimatedTravelTime().longValue(), ChronoUnit.MINUTES);
             if (!vehiclePosition.isResetRoute()){
                 if (!vehiclePosition.isCompleteRoute()){
                     // Verificar si el tiempo actual (timeCurrent) está dentro del rango entre el tiempo mínimo y máximo de parada
@@ -138,10 +132,9 @@ public class RouteProcess {
 
             }
 
-
             if (!(currentSegment.getTypeBusStop() == FINAL)){
                 Long nexOrderSegment = currentSegment.getOrder() + 1;
-                RouteBusStopSegmentResponse nextSegment = getBusStopSegmentByOrder(nexOrderSegment , busStopSegments);
+                ResponseRouteBusStopSegment nextSegment = getBusStopSegmentByOrder(nexOrderSegment , busStopSegments);
                 Long nextBusStopId = nextSegment.getBusStopId();
                 //Siguiente paradero
                 //Verificamos el paradero si esta parado mucho tiempo sobre el mismo paradero
@@ -305,7 +298,7 @@ public class RouteProcess {
     }
 
 
-    public RouteBusStopSegmentResponse getBusStopSegmentByOrder(Long order, List<RouteBusStopSegmentResponse> busStopSegments) {
+    public ResponseRouteBusStopSegment getBusStopSegmentByOrder(Long order, List<ResponseRouteBusStopSegment> busStopSegments) {
         return busStopSegments.stream()
                 .filter(segment -> segment.getOrder().equals(order))  // Filtra por el campo 'order'
                 .findFirst()  // Devuelve el primer resultado que cumpla con la condición
@@ -315,7 +308,7 @@ public class RouteProcess {
     private boolean isRemainsAtTheSameLocation(Long currentBusStopId, Long lasteIdBusStop) {
         return Objects.equals(currentBusStopId, lasteIdBusStop);
     }
-    private RouteBusStopSegmentResponse getBusStopSegmentById(Long busStopId, List<RouteBusStopSegmentResponse> busStopSegments) {
+    private ResponseRouteBusStopSegment getBusStopSegmentById(Long busStopId, List<ResponseRouteBusStopSegment> busStopSegments) {
         return busStopSegments.stream()
                 .filter(segment -> segment.getBusStopId().equals(busStopId))  // Filtra por busStopId
                 .findFirst()  // Devuelve el primer resultado que cumpla la condición
@@ -330,7 +323,7 @@ public class RouteProcess {
                 .orElse(null);  // Devuelve null si no se encuentra
     }
     // Método para obtener la lista de BusStopResponse a partir de los BusStopIds
-    public List<BusStopResponse> getBusStops(List<RouteBusStopSegmentResponse> busStopSegments) {
+    public List<BusStopResponse> getBusStops(List<ResponseRouteBusStopSegment> busStopSegments) {
         List<BusStopResponse> busStopList = new ArrayList<>();
 
         busStopSegments.forEach(s -> {
@@ -357,7 +350,7 @@ public class RouteProcess {
         return Instant.now();
     }
 
-    private List<RouteBusStopSegmentResponse> getSegmentBusStop(Long routeId){
+    private List<ResponseRouteBusStopSegment> getSegmentBusStop(Long routeId){
         return routeBusStopSegmentRepository.getSegmentsByRouteId(routeId);
     }
 
@@ -385,14 +378,14 @@ public class RouteProcess {
         // TODO: Implementar manejo de geocerca poligonal
     }
     // Método para obtener el primer ID de paradero por el campo 'order'
-    public static Long getFirstBusStopId(List<RouteBusStopSegmentResponse> routeBusStops) {
+    public static Long getFirstBusStopId(List<ResponseRouteBusStopSegment> routeBusStops) {
         // Verificar si la lista no está vacía
         if (routeBusStops != null && !routeBusStops.isEmpty()) {
             // Ordenar la lista por el campo 'order' (de menor a mayor)
-            Collections.sort(routeBusStops, Comparator.comparingLong(RouteBusStopSegmentResponse::getOrder));
+            Collections.sort(routeBusStops, Comparator.comparingLong(ResponseRouteBusStopSegment::getOrder));
 
             // Obtener el primer paradero
-            RouteBusStopSegmentResponse firstBusStop = routeBusStops.get(0);
+            ResponseRouteBusStopSegment firstBusStop = routeBusStops.get(0);
             return firstBusStop.getBusStopId(); // Devuelve el ID del primer paradero
         } else {
             logger.warn("La lista de paraderos está vacía.");
@@ -400,14 +393,14 @@ public class RouteProcess {
         }
     }
     // Método para obtener el último ID de paradero por el campo 'order'
-    public static Long getLastBusStopId(List<RouteBusStopSegmentResponse> routeBusStops) {
+    public static Long getLastBusStopId(List<ResponseRouteBusStopSegment> routeBusStops) {
         // Verificar si la lista no está vacía
         if (routeBusStops != null && !routeBusStops.isEmpty()) {
             // Ordenar la lista por el campo 'order' (de menor a mayor)
-            Collections.sort(routeBusStops, Comparator.comparingLong(RouteBusStopSegmentResponse::getOrder));
+            Collections.sort(routeBusStops, Comparator.comparingLong(ResponseRouteBusStopSegment::getOrder));
 
             // Obtener el último paradero
-            RouteBusStopSegmentResponse lastBusStop = routeBusStops.get(routeBusStops.size() - 1);
+            ResponseRouteBusStopSegment lastBusStop = routeBusStops.get(routeBusStops.size() - 1);
             return lastBusStop.getBusStopId(); // Devuelve el ID del último paradero
         } else {
             logger.warn("La lista de paraderos está vacía.");

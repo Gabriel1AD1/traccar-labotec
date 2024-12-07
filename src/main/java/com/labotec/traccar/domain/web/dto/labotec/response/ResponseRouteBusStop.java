@@ -6,13 +6,10 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class RouteBusStopResponse {
+public class ResponseRouteBusStop {
     private Long id;
     private Long routeId;
     private Long firstBusStopId;
     private Long secondBusStopId;
-    private List<OverviewPolylineResponse> overviewPolylines;
-    private Integer estimatedTravelTime; // En minutos
-    private Integer maxWaitTime; // En minutos
-    private Integer minWaitTime; // En minutos
+    private List<ResponseOverviewPolyline> overviewPolylines;
 }

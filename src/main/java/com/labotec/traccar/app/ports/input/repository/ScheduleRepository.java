@@ -85,6 +85,6 @@ public interface ScheduleRepository extends GenericRepository<Schedule , Long> {
 
     void updateDepartureTime(Long id, Instant now);
     void updateArrivedTime(Long id, Instant now);
-
+    void updateEstimatedArrivalTimeByVehicleAndCurrentTime(Long deviceId, Instant currentTime , Instant newArrivalTime);
     void updateProgramCompletionStatus(Long resourceId , Boolean isComplete);
 }

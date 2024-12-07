@@ -3,10 +3,12 @@ package com.labotec.traccar.infra.db.mysql.jpa.labotec.impl;
 import com.labotec.traccar.app.enums.RouteType;
 import com.labotec.traccar.app.ports.input.repository.RouteRepository;
 import com.labotec.traccar.domain.database.models.Route;
+import com.labotec.traccar.domain.web.dto.labotec.response.ResponseRoute;
 import com.labotec.traccar.domain.web.dto.labotec.response.RouteResponse;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.RouteEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.RouteMapper;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.response.RouteResponseMapper;
+import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.RouteResponseProjection;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.RouteBusStopSegmentRepositoryJpa;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.RouteRepositoryJpa;
 import com.labotec.traccar.infra.exception.EntityNotFoundException;
@@ -14,8 +16,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Repository
@@ -78,4 +82,26 @@ public class RouteRepositoryImpl implements RouteRepository {
         RouteType findByRouteId = routeRepositoryJpa.findRouteTypeByRouteId(routeId).orElse(null);
         return Optional.ofNullable(findByRouteId);
     }
+
+    @Override
+    public List<ResponseRoute> findAllRouteByUserId(Long userId) {
+        List<RouteResponseProjection> findAllRouteByUserId = routeRepositoryJpa.findRoutesByUserId(userId);
+
+        // Usar stream para mapear y recolectar en una lista
+        return findAllRouteByUserId.stream()
+                .map(s -> ResponseRoute.builder()
+                        .id(s.getId())
+                        .routeType(s.getRouteType())
+                        .name(s.getName())
+                        .distanceMaxInKM(s.getDistanceMaxInKM())
+                        .distanceMinInKM(s.getDistanceMinInKM())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean checkRouteAndUserId(Long routeId, Long userId) {
+        return routeRepositoryJpa.existsByRouteIdAndUserId(routeId,userId);
+    }
+
 }

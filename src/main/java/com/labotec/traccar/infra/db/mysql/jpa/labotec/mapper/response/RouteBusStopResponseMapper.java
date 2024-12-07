@@ -1,6 +1,6 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.response;
 
-import com.labotec.traccar.domain.web.dto.labotec.response.RouteBusStopResponse;
+import com.labotec.traccar.domain.web.dto.labotec.response.ResponseRouteBusStop;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.RouteBusStopEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -12,5 +12,5 @@ public interface RouteBusStopResponseMapper {
             @Mapping(source = "firstBusStop.id" , target = "firstBusStopId"),
             @Mapping(source = "secondBusStop.id" , target = "secondBusStopId")
     })
-    RouteBusStopResponse toModel(RouteBusStopEntity entity);
+    ResponseRouteBusStop toModel(RouteBusStopEntity entity);
 }

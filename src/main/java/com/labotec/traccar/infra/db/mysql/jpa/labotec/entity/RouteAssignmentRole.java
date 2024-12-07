@@ -1,6 +1,6 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.entity;
 
-public enum ROUTE_ASSIGNMENT_ROLE {
+public enum RouteAssignmentRole {
     CONDUCTOR_PRINCIPAL,       // El conductor principal de la ruta
     CONDUCTOR_SUPLENTE,        // Conductor de respaldo en caso de emergencia
     AUXILIAR_DE_RUTA,          // Asistente que apoya en tareas logísticas

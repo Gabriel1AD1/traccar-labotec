@@ -6,4 +6,5 @@ import com.labotec.traccar.domain.database.models.Vehicle;
 public interface VehicleRepository extends GenericRepository<Vehicle,Long> {
 
     Vehicle findByDevice(Long id);
+    Vehicle findByLicencePlate(String licencePlate);
 }

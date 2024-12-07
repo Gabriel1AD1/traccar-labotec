@@ -7,12 +7,15 @@ import com.labotec.traccar.app.ports.out.RouteService;
 import com.labotec.traccar.app.usecase.ports.input.repository.RouteBusStopSegmentRepository;
 import com.labotec.traccar.app.utils.RouteUtils;
 import com.labotec.traccar.domain.database.models.*;
-import com.labotec.traccar.domain.enums.TYPE_BUS_STOP;
+import com.labotec.traccar.domain.database.models.read.RouteBusStopInformation;
 import com.labotec.traccar.domain.web.dto.labotec.request.create.RouteBusStopCreateDTO;
 import com.labotec.traccar.domain.web.dto.labotec.request.create.PolylineCreateDTO;
 import com.labotec.traccar.domain.web.dto.labotec.request.create.RouteCreateDTO;
 import com.labotec.traccar.domain.web.dto.labotec.request.create.RouteSegmentCreateDTO;
 import com.labotec.traccar.domain.web.dto.labotec.request.update.RouteUpdateDTO;
+import com.labotec.traccar.domain.web.dto.labotec.response.ResponseRoute;
+import com.labotec.traccar.domain.web.dto.labotec.response.ResponseRouteBusStopInformation;
+import com.labotec.traccar.infra.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 
 import java.util.*;
@@ -147,5 +150,33 @@ public class RouteServiceImpl implements RouteService
     @Override
     public void deleteById(Long resourceId, Long userId) {
         routeRepository.deleteById(resourceId,userId);
+    }
+
+    @Override
+    public List<ResponseRoute> findAllByUserId(Long userId) {
+        return routeRepository.findAllRouteByUserId(userId);
+    }
+
+    @Override
+    public List<ResponseRouteBusStopInformation> findAllByRouteId(Long routeId, Long userId) {
+        checkAccessInformationRoute(routeId,userId);
+        List<RouteBusStopInformation> routeBusStopInformation = routeBusStopRepository.findByRouteId(routeId);
+        List<ResponseRouteBusStopInformation> response = new ArrayList<>();
+        routeBusStopInformation.forEach(s -> response.add(
+                ResponseRouteBusStopInformation.builder()
+                        .order(s.getOrder())
+                        .fistBusStop(busStopRepository.findByResourceId(s.getFirstBusStopId()))
+                        .secondBusStop(busStopRepository.findByResourceId(s.getSecondBusStopId()))
+                        .overviewPolylines(overviewPolylineRepository.findByRouteBusStopId(s.getId()))
+                        .build()
+        ));
+        return response;
+    }
+
+    private void checkAccessInformationRoute(Long routeId, Long userId){
+        boolean checkAccessInformation = routeRepository.checkRouteAndUserId(routeId,userId);
+        if (! checkAccessInformation){
+            throw new EntityNotFoundException("La entitad no ha sido encontrada  " + routeId );
+        }
     }
 }

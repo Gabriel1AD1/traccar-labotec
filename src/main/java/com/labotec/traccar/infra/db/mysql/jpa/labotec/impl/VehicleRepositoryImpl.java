@@ -63,4 +63,12 @@ public class VehicleRepositoryImpl implements VehicleRepository {
     public Vehicle findByDevice(Long id) {
         return null;
     }
+
+    @Override
+    public Vehicle findByLicencePlate(String licencePlate) {
+        VehicleEntity findByLicencePlate = vehicleRepositoryJpa.findByLicensePlate(licencePlate).orElseThrow(
+                () -> new EntityNotFoundException("No existe el vehiculo con el con la licencia " +  licencePlate)
+        );
+        return vehicleMapper.toModel(findByLicencePlate);
+    }
 }
