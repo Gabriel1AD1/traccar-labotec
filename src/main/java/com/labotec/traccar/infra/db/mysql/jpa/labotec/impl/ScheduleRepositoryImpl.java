@@ -186,6 +186,16 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     }
 
     @Override
+    public void updateEstimatedArrivedTime(Long id, Instant now) {
+        int arrowAffected = scheduleRepositoryJpa.updateEstimatedArrivalTimeByScheduleId(id, now);
+        if(arrowAffected > 0 ){
+            logger.info("Se ha actualizado correctamente el campo de estimation de tiempo de llegada la programacion con el id {} ", id);
+        }else {
+            logger.warn("No se ha actualizado correctamente el campo de tiempo de llegada");
+        }
+    }
+
+    @Override
     public List<ScheduleDelayInformation> findAllSchedulesForDelay(Long vehicleId,Instant arrivedTime) {
         List<ScheduleDelayInformationProjection> findAll= scheduleRepositoryJpa.findSchedulesByVehicleAndTimeGreaterThan(vehicleId,arrivedTime);
         List<ScheduleDelayInformation> response = new ArrayList<>();

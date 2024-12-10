@@ -194,7 +194,6 @@ public class ScheduleServiceI implements ScheduleService {
                     .sum();
 
             newArrivalTime = newArrivalTime.plus(totalAdditionalMinutes, ChronoUnit.MINUTES);
-            scheduleRepository.updateArrivedTime(scheduleId,newArrivalTime);
             long minutesDifference = Duration.between(estimatedArrivalTime, newArrivalTime).toMinutes();
 
             // Filtrar y actualizar horarios que no han iniciado
@@ -212,6 +211,7 @@ public class ScheduleServiceI implements ScheduleService {
             }
             listToUpdate.forEach(System.out::println);
             listToUpdate.forEach(s -> scheduleRepository.updateScheduleTimesById(s.getId(),s.getEstimatedDepartureTime(),s.getEstimatedArrivalTime()));
+            scheduleRepository.updateEstimatedArrivedTime(scheduleId,newArrivalTime);
             return;
         }
 
@@ -262,6 +262,7 @@ public class ScheduleServiceI implements ScheduleService {
         System.out.println("Updated Schedules (After First Stop):");
         updatedSchedules.forEach(System.out::println);
         updatedSchedules.forEach(s -> scheduleRepository.updateScheduleTimesById(s.getId(),s.getEstimatedDepartureTime(),s.getEstimatedArrivalTime()));
+        scheduleRepository.updateEstimatedArrivedTime(scheduleId,newArrivalTimePlus);
 
     }
     private List<ResponseRouteBusStopSegment> getSegmentBusStop(Long routeId){

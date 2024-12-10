@@ -89,6 +89,7 @@ public interface ScheduleRepository extends GenericRepository<Schedule , Long> {
     void updateArrivedTime(Long id, Instant now);
     void updateEstimatedArrivalTimeByVehicleAndCurrentTime(Long deviceId, Instant currentTime , Instant newArrivalTime);
     void updateProgramCompletionStatus(Long resourceId , Boolean isComplete);
+    void updateEstimatedArrivedTime(Long id, Instant now);
 
     List<ScheduleDelayInformation> findAllSchedulesForDelay(Long vehicleId,Instant arrivedTime);
     void updateScheduleTimesById(Long id, Instant estimatedDepartureTime, Instant estimatedArrivalTime);

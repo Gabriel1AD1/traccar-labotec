@@ -248,4 +248,8 @@ public interface ScheduleRepositoryJpa extends JpaRepository<ScheduleEntity, Lon
     @Modifying
     @Query("UPDATE ScheduleEntity s SET s.arrivalTime = :arrivalTime WHERE s.id = :id")
     void updateArrivalTimeById(Long id, Instant arrivalTime);
+    @Transactional
+    @Modifying
+    @Query("UPDATE ScheduleEntity s SET s.estimatedArrivalTime = :arrivalTime WHERE s.id = :id")
+    int updateEstimatedArrivalTimeByScheduleId(Long id, Instant now);
 }
