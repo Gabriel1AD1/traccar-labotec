@@ -45,17 +45,17 @@
         private final VehiclePositionRepository vehiclePositionRepository;
         @Bean(name = "busStopService")
         public BusStopService busStop() {
-            return new BusStopImpl(busStopRepository,companyRepository,busStopModelMapper,userRepository);
+            return new BusStopServiceI(busStopRepository,companyRepository,busStopModelMapper,userRepository);
         }
 
         @Bean(name = "companyService")
         public CompanyService company() {
-            return new CompanyImpl(companyRepository,companyModelMapper);
+            return new CompanyServiceI(companyRepository,companyModelMapper);
         }
 
         @Bean(name = "driverService")
         public DriverService driver() {
-            return new DriverImpl(
+            return new DriverServiceI(
                     driverRepository,
                     companyRepository,
                     driverModelMapper,
@@ -65,7 +65,7 @@
 
         @Bean(name = "locationService")
         public LocationService location() {
-            return new LocationImpl(
+            return new LocationServiceI(
                     busStopRepository,
                     locationRepository,
                     companyRepository,
@@ -78,7 +78,7 @@
 
         @Bean(name = "routeService")
         public RouteService route() {
-            return new RouteServiceImpl(
+            return new RouteServiceI(
                     routeRepository,
                     companyRepository,
                     busStopRepository,
@@ -94,7 +94,7 @@
 
         @Bean(name = "scheduleService")
         public ScheduleService schedule() {
-            return new ScheduleImpl(
+            return new ScheduleServiceI(
                     scheduleRepository,
                     vehicleRepository,
                     driverRepository,
@@ -113,7 +113,7 @@
 
         @Bean(name = "vehicleService")
         public VehicleService vehicle() {
-            return new VehicleImpl(
+            return new VehicleServiceI(
                 vehicleRepository,
                 vehicleModelMapper,
                 companyRepository,
@@ -124,7 +124,7 @@
 
         @Bean(name = "geofenceService")
         public GeofencePoligonalService geofencePoligonalService(){
-            return new CircularGeofenceServiceImpl(
+            return new CircularGeofenceServiceI(
                     geofenceCircularRepository,
                     geofencePoligonalModelMapper,
                     userRepository
@@ -145,7 +145,7 @@
         }
         @Bean(name = "userService")
         public UserService userService(){
-            return  new UserServiceImpl(
+            return  new UserServiceI(
                     userRepository,
                     companyRepository
             );

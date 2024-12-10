@@ -9,7 +9,7 @@ import com.labotec.traccar.domain.web.dto.labotec.request.update.CompanyUpdateDT
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class CompanyImpl implements CompanyService {
+public class CompanyServiceI implements CompanyService {
 
     private final CompanyRepository companyRepository;
     private final CompanyModelMapper companyModelMapper;

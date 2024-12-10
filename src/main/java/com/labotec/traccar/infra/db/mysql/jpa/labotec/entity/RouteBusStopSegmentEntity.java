@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.labotec.traccar.domain.database.models.BusStop;
 import com.labotec.traccar.domain.database.models.OverviewPolyline;
 import com.labotec.traccar.domain.database.models.Route;
-import com.labotec.traccar.domain.enums.TYPE_BUS_STOP;
+import com.labotec.traccar.domain.enums.TypeBusStop;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -51,6 +51,6 @@ public class RouteBusStopSegmentEntity
     private Long order;
     @Enumerated(EnumType.STRING)
     @Column(name = "type_bus_stop")
-    private TYPE_BUS_STOP typeBusStop;
+    private TypeBusStop typeBusStop;
 
 }

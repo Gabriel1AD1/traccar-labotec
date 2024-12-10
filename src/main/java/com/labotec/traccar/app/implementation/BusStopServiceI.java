@@ -19,13 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
-
-public class BusStopImpl implements BusStopService {
+public class BusStopServiceI implements BusStopService {
     private final BusStopRepository busStopRepository ;
     private final CompanyRepository companyRepository;
     private final BusStopModelMapper busStopModelMapper;
     private final UserRepository userRepository;
-    private static final Logger logger = LoggerFactory.getLogger(BusStopImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(BusStopServiceI.class);
 
     @Override
     public BusStop create(BusStopCreateDTO busStopCreateDTO, Long userId) {

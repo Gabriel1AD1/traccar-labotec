@@ -1,6 +1,6 @@
 package com.labotec.traccar.domain.web.dto.labotec.response;
 
-import com.labotec.traccar.domain.enums.TYPE_BUS_STOP;
+import com.labotec.traccar.domain.enums.TypeBusStop;
 import lombok.Data;
 import lombok.ToString;
 
@@ -14,5 +14,5 @@ public class ResponseRouteBusStopSegment {
     private Integer maxWaitTime; // En minutos
     private Integer minWaitTime; // En minutos
     private Long order;
-    private TYPE_BUS_STOP typeBusStop;
+    private TypeBusStop typeBusStop;
 }

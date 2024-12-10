@@ -13,7 +13,7 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 
-public class DriverImpl implements DriverService {
+public class DriverServiceI implements DriverService {
 
     private final DriverRepository driverRepository ;
     private final CompanyRepository companyRepository;

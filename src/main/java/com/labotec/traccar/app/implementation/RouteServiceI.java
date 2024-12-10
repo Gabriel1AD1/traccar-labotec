@@ -22,7 +22,7 @@ import java.util.*;
 
 
 @AllArgsConstructor
-public class RouteServiceImpl implements RouteService
+public class RouteServiceI implements RouteService
 {
     private final RouteRepository routeRepository;
     private final CompanyRepository companyRepository;

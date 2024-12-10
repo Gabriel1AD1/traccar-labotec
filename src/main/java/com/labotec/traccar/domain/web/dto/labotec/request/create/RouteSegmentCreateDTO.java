@@ -1,7 +1,7 @@
 package com.labotec.traccar.domain.web.dto.labotec.request.create;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.labotec.traccar.domain.enums.TYPE_BUS_STOP;
+import com.labotec.traccar.domain.enums.TypeBusStop;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
@@ -30,6 +30,6 @@ public class RouteSegmentCreateDTO {
     private Integer maxWaitTime; // En minutos
 
     @JsonProperty("orden_type_bus_stop")
-    private TYPE_BUS_STOP typeBusStop;
+    private TypeBusStop typeBusStop;
 
 }

@@ -5,8 +5,8 @@ import com.labotec.traccar.app.ports.input.repository.*;
 import com.labotec.traccar.app.utils.GeoUtils;
 import com.labotec.traccar.domain.database.models.VehiclePosition;
 import com.labotec.traccar.domain.database.models.read.InformationRoute;
-import com.labotec.traccar.domain.enums.TYPE_BUS_STOP;
 import com.labotec.traccar.domain.enums.TYPE_GEOFENCE;
+import com.labotec.traccar.domain.enums.TypeBusStop;
 import com.labotec.traccar.domain.query.ScheduleProcessPosition;
 import com.labotec.traccar.domain.query.ScheduleRouteBusStopProjection;
 import com.labotec.traccar.domain.web.dto.labotec.response.BusStopResponse;
@@ -25,7 +25,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import static com.labotec.traccar.app.constants.DeviceConstant.ENGINE;
-import static com.labotec.traccar.domain.enums.TYPE_BUS_STOP.FINAL;
+import static com.labotec.traccar.domain.enums.TypeBusStop.*;
 
 @AllArgsConstructor
 @Service
@@ -83,8 +83,6 @@ public class RouteProcess {
         BusStopResponse firstBusStop = getBusStopById(getListBusStop,firstBusStopId);
         //Obtenemos el ultimo Paradero
         BusStopResponse finalBusStop = getBusStopById(getListBusStop,finalBusStopId);
-
-
 
         logger.info("Ulitmo paradero {} " ,finalBusStop);
         boolean isNullBusStop = currentBusStop == null;
@@ -165,7 +163,7 @@ public class RouteProcess {
                 }
 
                 //Paradero inicial
-                if (isAtFirstBusStop || currentSegment.getTypeBusStop()==TYPE_BUS_STOP.INICIO) {
+                if (isAtFirstBusStop || currentSegment.getTypeBusStop()== INICIO) {
                     if (vehiclePosition.isResetRoute()) {
                         stopRegisterRepository.updateEntryTimeForRegisterBuStop(scheduleId,currentBusStopId,Instant.now());
                         scheduleRepository.updateDepartureTime(scheduleProcessPosition.getId(), Instant.now());
@@ -189,7 +187,7 @@ public class RouteProcess {
 
                 }
                 //Paraderos intermedios
-                if (!isAtLastBusStop && !isAtFirstBusStop || currentSegment.getTypeBusStop() == TYPE_BUS_STOP.INTERMEDIO){
+                if (!isAtLastBusStop && !isAtFirstBusStop || currentSegment.getTypeBusStop() == INTERMEDIO){
 
                     stopRegisterRepository.updateEntryTimeForRegisterBuStop(scheduleId,currentBusStopId,Instant.now());
                     updateInitialBusStopForVehicleState(

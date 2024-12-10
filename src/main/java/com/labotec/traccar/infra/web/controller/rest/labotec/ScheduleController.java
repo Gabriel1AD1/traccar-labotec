@@ -3,6 +3,7 @@ package com.labotec.traccar.infra.web.controller.rest.labotec;
 import com.labotec.traccar.app.ports.out.ScheduleService;
 import com.labotec.traccar.domain.database.models.Schedule;
 import com.labotec.traccar.domain.enums.STATE;
+import com.labotec.traccar.domain.web.dto.labotec.request.ReportDelayDTO;
 import com.labotec.traccar.domain.web.dto.labotec.request.create.ScheduleDTO;
 import com.labotec.traccar.domain.web.dto.labotec.request.update.UpdateScheduleDTO;
 import com.labotec.traccar.infra.web.controller.rest.constant.ApiDocumentationConstants;
@@ -78,6 +79,11 @@ public class ScheduleController {
         return ResponseEntity.ok(allSchedules);
     }
 
+    @PutMapping("/delay")
+    public ResponseEntity<Void> updateScheduleForDelay(@Valid @RequestBody ReportDelayDTO reportDelayDTO){
+        scheduleService.updateScheduleForDelay(reportDelayDTO);
+        return ResponseEntity.noContent().build();
+    }
     // Actualizar programación existente
     @Operation(
             summary = ApiDocumentationConstants.UPDATE_SCHEDULE_SUMMARY,

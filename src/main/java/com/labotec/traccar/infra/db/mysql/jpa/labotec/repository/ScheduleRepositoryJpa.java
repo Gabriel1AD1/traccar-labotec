@@ -5,10 +5,12 @@ import com.labotec.traccar.domain.enums.STATE;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.ScheduleEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.VehicleEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.InformationScheduleProjection;
+import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.ScheduleDelayInformationProjection;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.ScheduleProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +28,7 @@ public interface ScheduleRepositoryJpa extends JpaRepository<ScheduleEntity, Lon
      * @param vehicleId el ID del vehículo.
      * @return una lista de programaciones asociadas al usuario y vehículo.
      */
-    @Query("SELECT s FROM ScheduleEntity s WHERE s.userId.userId = :userId AND s.vehicle.id = :vehicleId")
+    @Query("SELECT s FROM ScheduleEntity s WHERE s.userId.userId = :userId AND s.vehicle.traccarDeviceId = :vehicleId")
     List<ScheduleEntity> findByUserIdAndVehicleId(@Param("userId") Long userId, @Param("vehicleId") Long vehicleId);
 
     /**
@@ -118,7 +120,7 @@ public interface ScheduleRepositoryJpa extends JpaRepository<ScheduleEntity, Lon
      * @param userId el ID del usuario.
      * @return la programación más reciente para el vehículo y usuario, si existe.
      */
-    @Query("SELECT s FROM ScheduleEntity s WHERE s.vehicle.id = :vehicleId AND s.userId.userId = :userId ORDER BY s.departureTime DESC")
+    @Query("SELECT s FROM ScheduleEntity s WHERE s.vehicle.traccarDeviceId = :vehicleId AND s.userId.userId = :userId ORDER BY s.departureTime DESC")
     Optional<ScheduleEntity> findTopByVehicleAndUserOrderByDepartureTimeDesc(@Param("vehicleId") Long vehicleId, @Param("userId") Long userId);
 
     /**
@@ -188,7 +190,10 @@ public interface ScheduleRepositoryJpa extends JpaRepository<ScheduleEntity, Lon
             @Param("currentTime") Instant currentTime
     );
 
-    @Query("SELECT s.route.id AS routeId, s.id AS scheduleId " +
+    @Query("SELECT s.route.id AS routeId, " +
+            "s.id AS scheduleId, " +
+            "s.estimatedDepartureTime AS estimatedDepartureTime, " +
+            "s.estimatedArrivalTime AS estimatedArrivalTime " +
             "FROM ScheduleEntity s " +
             "WHERE s.vehicle.traccarDeviceId = :vehicleId " +
             "AND :currentTime BETWEEN s.estimatedDepartureTime AND s.estimatedArrivalTime " +
@@ -196,6 +201,16 @@ public interface ScheduleRepositoryJpa extends JpaRepository<ScheduleEntity, Lon
     Optional<InformationScheduleProjection> findByInformationScheduleIds(
             @Param("vehicleId") Long vehicleId,
             @Param("currentTime") Instant currentTime
+    );
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE ScheduleEntity s SET s.estimatedDepartureTime = :estimatedDepartureTime, " +
+            "s.estimatedArrivalTime = :estimatedArrivalTime WHERE s.id = :id")
+    int updateScheduleTimesById(
+            @Param("id") Long id,
+            @Param("estimatedDepartureTime") Instant estimatedDepartureTime,
+            @Param("estimatedArrivalTime") Instant estimatedArrivalTime
     );
     @Modifying
     @Transactional
@@ -210,12 +225,23 @@ public interface ScheduleRepositoryJpa extends JpaRepository<ScheduleEntity, Lon
             @Param("newEstimatedArrivalTime") Instant newEstimatedArrivalTime
     );
 
-
     // Actualizar departureTime por ID
     @Transactional
     @Modifying
     @Query("UPDATE ScheduleEntity s SET s.departureTime = :departureTime WHERE s.id = :id")
     void updateDepartureTimeById(Long id, Instant departureTime);
+    // Consulta para obtener las programaciones con id mayor que el proporcionado
+    @Query("SELECT s.id AS id, " +
+            "s.estimatedArrivalTime AS estimatedArrivalTime, " +
+            "s.estimatedDepartureTime AS estimatedDepartureTime " +
+            "FROM ScheduleEntity s " +
+            "WHERE s.vehicle.traccarDeviceId = :vehicleId " +
+            "AND s.estimatedDepartureTime > :instant " +
+            "ORDER BY s.id ASC")
+    List<ScheduleDelayInformationProjection> findSchedulesByVehicleAndTimeGreaterThan(
+            @Param("vehicleId") Long vehicleId,
+            @Param("instant") Instant instant
+    );
 
     // Actualizar arrivalTime por ID
     @Transactional

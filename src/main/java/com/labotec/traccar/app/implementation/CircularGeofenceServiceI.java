@@ -11,7 +11,7 @@ import com.labotec.traccar.domain.web.dto.labotec.request.update.GeofencePoligon
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class CircularGeofenceServiceImpl implements GeofencePoligonalService {
+public class CircularGeofenceServiceI implements GeofencePoligonalService {
     private final GeofenceCircularRepository poligonalRepository;
     private final GeofenceCircularModelMapper poligonalModelMapper;
     private final UserRepository userRepository;

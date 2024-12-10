@@ -15,7 +15,7 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 
-public class VehicleImpl  implements VehicleService {
+public class VehicleServiceI implements VehicleService {
     private final VehicleRepository vehicleRepository;
     private final VehicleModelMapper vehicleModelMapper;
     private final CompanyRepository companyRepository;

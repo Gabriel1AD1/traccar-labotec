@@ -9,7 +9,7 @@ import com.labotec.traccar.domain.web.dto.labotec.request.create.UserCreateDTO;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class UserServiceImpl implements UserService {
+public class UserServiceI implements UserService {
     private final UserRepository userRepository;
     private final CompanyRepository companyRepository;
     @Override

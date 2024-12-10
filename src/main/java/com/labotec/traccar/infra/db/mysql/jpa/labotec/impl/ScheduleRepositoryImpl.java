@@ -2,6 +2,7 @@ package com.labotec.traccar.infra.db.mysql.jpa.labotec.impl;
 
 import com.labotec.traccar.app.ports.input.repository.ScheduleRepository;
 import com.labotec.traccar.domain.database.models.Schedule;
+import com.labotec.traccar.domain.database.models.ScheduleDelayInformation;
 import com.labotec.traccar.domain.database.models.read.InformationRoute;
 import com.labotec.traccar.domain.enums.STATE;
 import com.labotec.traccar.domain.query.ScheduleProcessPosition;
@@ -10,6 +11,7 @@ import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.RouteMapper;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.ScheduleMapper;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.VehicleMapper;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.InformationScheduleProjection;
+import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.ScheduleDelayInformationProjection;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.ScheduleProjection;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.mapper.ScheduleProjectionMapper;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.*;
@@ -21,6 +23,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -148,6 +151,11 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     }
 
     @Override
+    public void updateScheduleForDelay(Long vehicleId, Instant newArrivalTime, int totalAdditionalMinutes) {
+    }
+
+
+    @Override
     public void updateDepartureTime(Long id, Instant now) {
         scheduleRepositoryJpa.updateDepartureTimeById(id, now);
     }
@@ -178,13 +186,40 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     }
 
     @Override
+    public List<ScheduleDelayInformation> findAllSchedulesForDelay(Long vehicleId,Instant arrivedTime) {
+        List<ScheduleDelayInformationProjection> findAll= scheduleRepositoryJpa.findSchedulesByVehicleAndTimeGreaterThan(vehicleId,arrivedTime);
+        List<ScheduleDelayInformation> response = new ArrayList<>();
+        findAll.forEach(s -> response.add(ScheduleDelayInformation.builder()
+                .id(s.getId())
+                .estimatedDepartureTime(s.getEstimatedDepartureTime())
+                .estimatedArrivalTime(s.getEstimatedArrivalTime()).build())
+        );
+        return response;
+    }
+
+    @Override
+    public void updateScheduleTimesById(Long id, Instant estimatedDepartureTime, Instant estimatedArrivalTime) {
+        int rowAffected = scheduleRepositoryJpa.updateScheduleTimesById(id,estimatedDepartureTime,estimatedArrivalTime);
+        if(rowAffected > 0 ){
+            logger.info("Se ha actualizado correctamente la programacion con el id {} ", id);
+        }else {
+            logger.warn("No se ha actualizado correctamente la programacion");
+        }
+    }
+
+    @Override
     public Optional<InformationRoute> findByInformationSchedule(long vehicleId, Instant now){
         InformationScheduleProjection scheduleInformation = scheduleRepositoryJpa.findByInformationScheduleIds(vehicleId,now).orElse(null);
+        if (scheduleInformation == null){
+            return Optional.empty();
+        }
         InformationRoute informationRoute = new InformationRoute();
-        assert scheduleInformation != null;
+        informationRoute.setEstimatedArrivedTime(scheduleInformation.getEstimatedArrivalTime());
+        informationRoute.setEstimatedDepartureTime(scheduleInformation.getEstimatedDepartureTime());
         informationRoute.setScheduleId(scheduleInformation.getScheduleId());
         informationRoute.setRouteId(scheduleInformation.getRouteId());
-        return  Optional.of(informationRoute);
+        return Optional.of(informationRoute);
+
 
     }
 }

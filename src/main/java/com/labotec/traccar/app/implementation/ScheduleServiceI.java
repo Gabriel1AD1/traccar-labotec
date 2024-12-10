@@ -5,21 +5,26 @@ import com.labotec.traccar.app.mapper.model.ScheduleModelMapper;
 import com.labotec.traccar.app.ports.input.repository.*;
 import com.labotec.traccar.app.ports.out.ScheduleService;
 import com.labotec.traccar.domain.database.models.*;
+import com.labotec.traccar.domain.database.models.read.InformationRoute;
 import com.labotec.traccar.domain.enums.STATE;
 import com.labotec.traccar.domain.web.dto.labotec.request.ReportDelayDTO;
 import com.labotec.traccar.domain.web.dto.labotec.request.create.DriverRolScheduleCreateDTO;
 import com.labotec.traccar.domain.web.dto.labotec.request.create.ScheduleDTO;
 import com.labotec.traccar.domain.web.dto.labotec.request.update.UpdateScheduleDTO;
 import com.labotec.traccar.domain.web.dto.labotec.response.ResponseRouteBusStopSegment;
+import com.labotec.traccar.infra.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneOffset;
-import java.util.List;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 
-public class ScheduleImpl implements ScheduleService {
+public class ScheduleServiceI implements ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final VehicleRepository vehicleRepository;
     private final DriverRepository driverRepository;
@@ -173,12 +178,118 @@ public class ScheduleImpl implements ScheduleService {
         Vehicle vehicle = vehicleRepository.findByLicencePlate(licencePlate);
         Instant newArrivalTime = reportDelayDTO.getNewETA().toInstant();
         Long vehicleId = vehicle.getTraccarDeviceId();
-        //List<ResponseRouteBusStopSegment> getSegments = routeBusStopResponseSegmentRepository.getSegmentsByRouteId();
-
-
         Instant currentTime = Instant.now();
-        scheduleRepository.updateEstimatedArrivalTimeByVehicleAndCurrentTime(vehicleId,currentTime,newArrivalTime);
+        InformationRoute result = getSchedule(vehicleId,currentTime);
+        Long scheduleId = result.getScheduleId();
+        Instant estimatedArrivalTime = result.getEstimatedArrivedTime();
+        Long routeId = result.getRouteId();
+        List<ResponseRouteBusStopSegment> getSegments = getSegmentBusStop(routeId);
+        VehiclePosition position = vehiclePositionRepository.findByScheduleId(scheduleId);
+        List<ScheduleDelayInformation> findAllSchedule = scheduleRepository.findAllSchedulesForDelay(vehicleId,estimatedArrivalTime);
+        Long currentBusStop = position.getCurrentBusStop();
+        if (position.getCurrentBusStop() == 0L) {
+            // Caso 1: El vehículo no ha llegado al primer paradero
+            int totalAdditionalMinutes = getSegmentBusStop(routeId).stream()
+                    .mapToInt(ResponseRouteBusStopSegment::getMaxWaitTime)
+                    .sum();
 
+            newArrivalTime = newArrivalTime.plus(totalAdditionalMinutes, ChronoUnit.MINUTES);
+            scheduleRepository.updateArrivedTime(scheduleId,newArrivalTime);
+            long minutesDifference = Duration.between(estimatedArrivalTime, newArrivalTime).toMinutes();
 
+            // Filtrar y actualizar horarios que no han iniciado
+            List<ScheduleDelayInformation> listToUpdate = new ArrayList<>();
+            for (ScheduleDelayInformation schedule : findAllSchedule) {
+                if (!schedule.getEstimatedDepartureTime().isBefore(currentTime)) {
+                    listToUpdate.add(
+                            ScheduleDelayInformation.builder()
+                                    .id(schedule.getId())
+                                    .estimatedArrivalTime(schedule.getEstimatedArrivalTime().plus(minutesDifference, ChronoUnit.MINUTES))
+                                    .estimatedDepartureTime(schedule.getEstimatedDepartureTime().plus(minutesDifference, ChronoUnit.MINUTES))
+                                    .build()
+                    );
+                }
+            }
+            listToUpdate.forEach(System.out::println);
+            listToUpdate.forEach(s -> scheduleRepository.updateScheduleTimesById(s.getId(),s.getEstimatedDepartureTime(),s.getEstimatedArrivalTime()));
+            return;
+        }
+
+        // Caso 2: El vehículo ha pasado por un paradero
+        List<ResponseRouteBusStopSegment> segments = getSegmentBusStop(routeId);
+        currentBusStop = position.getCurrentBusStop();
+        List<ResponseRouteBusStopSegment> segmentFilter = getSegmentsFollowingBusStop(segments, currentBusStop);
+
+        int totalAdditionalMinutes = segmentFilter.stream()
+                .mapToInt(ResponseRouteBusStopSegment::getMaxWaitTime)
+                .sum();
+
+        Instant newArrivalTimePlus = newArrivalTime.plus(totalAdditionalMinutes, ChronoUnit.MINUTES);
+        long delayMinutes = Duration.between(estimatedArrivalTime, newArrivalTimePlus).toMinutes();
+
+        List<ScheduleDelayInformation> updatedSchedules = new ArrayList<>();
+
+        for (int i = 0; i < findAllSchedule.size(); i++) {
+            ScheduleDelayInformation currentSchedule = findAllSchedule.get(i);
+
+            if (i == 0) {
+                updatedSchedules.add(
+                        ScheduleDelayInformation.builder()
+                                .id(currentSchedule.getId())
+                                .estimatedArrivalTime(currentSchedule.getEstimatedArrivalTime().plus(delayMinutes, ChronoUnit.MINUTES))
+                                .estimatedDepartureTime(currentSchedule.getEstimatedDepartureTime().plus(delayMinutes, ChronoUnit.MINUTES))
+                                .build()
+                );
+            } else {
+                ScheduleDelayInformation previousSchedule = updatedSchedules.get(i - 1);
+
+                if (!currentSchedule.getEstimatedArrivalTime().isAfter(previousSchedule.getEstimatedDepartureTime())) {
+                    long overlapMinutes = Duration.between(currentSchedule.getEstimatedArrivalTime(), previousSchedule.getEstimatedDepartureTime()).toMinutes();
+                    updatedSchedules.add(
+                            ScheduleDelayInformation.builder()
+                                    .id(currentSchedule.getId())
+                                    .estimatedArrivalTime(currentSchedule.getEstimatedArrivalTime().plus(overlapMinutes, ChronoUnit.MINUTES))
+                                    .estimatedDepartureTime(currentSchedule.getEstimatedDepartureTime().plus(overlapMinutes, ChronoUnit.MINUTES))
+                                    .build()
+                    );
+                } else {
+                    updatedSchedules.add(currentSchedule);
+                }
+            }
+        }
+
+        // Imprimir los horarios ajustados
+        System.out.println("Updated Schedules (After First Stop):");
+        updatedSchedules.forEach(System.out::println);
+        updatedSchedules.forEach(s -> scheduleRepository.updateScheduleTimesById(s.getId(),s.getEstimatedDepartureTime(),s.getEstimatedArrivalTime()));
+
+    }
+    private List<ResponseRouteBusStopSegment> getSegmentBusStop(Long routeId){
+        return routeBusStopResponseSegmentRepository.getSegmentsByRouteId(routeId);
+    }
+    public List<ResponseRouteBusStopSegment> getSegmentsFollowingBusStop(List<ResponseRouteBusStopSegment> segments, Long busStopId) {
+        // Buscar el segmento inicial con el busStopId proporcionado
+        Optional<ResponseRouteBusStopSegment> startingSegment = segments.stream()
+                .filter(segment -> segment.getBusStopId().equals(busStopId))
+                .findFirst();
+
+        // Si se encuentra el segmento, obtenemos este y los siguientes
+        if (startingSegment.isPresent()) {
+            Long orderOfStart = startingSegment.get().getOrder();
+
+            // Filtrar todos los segmentos cuyo orden sea mayor o igual al del segmento inicial
+            return segments.stream()
+                    .filter(segment -> segment.getOrder() > orderOfStart)  // > para obtener los siguientes, no el mismo
+                    .sorted(Comparator.comparingLong(ResponseRouteBusStopSegment::getOrder)) // Ordenamos por el campo 'order'
+                    .collect(Collectors.toList());
+        }
+
+        // Si no se encuentra el segmento con ese busStopId, retornar una lista vacía
+        return Collections.emptyList();
+    }
+    private InformationRoute getSchedule(Long vehicleId , Instant currentTime){
+        return scheduleRepository.findByInformationSchedule(vehicleId,currentTime).orElseThrow(
+                () -> new EntityNotFoundException("No se encontro la ruta")
+        );
     }
 }

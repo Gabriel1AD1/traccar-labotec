@@ -15,7 +15,7 @@ import com.labotec.traccar.domain.web.dto.labotec.request.update.LocationUpdateD
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class LocationImpl implements LocationService {
+public class LocationServiceI implements LocationService {
     private final BusStopRepository busStopRepository;
     private final LocationRepository locationRepository;
     private final CompanyRepository companyRepository;
