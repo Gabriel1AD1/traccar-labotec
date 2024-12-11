@@ -1,10 +1,7 @@
 package com.labotec.traccar.app.implementation;
 
 import com.labotec.traccar.app.mapper.model.VehicleModelMapper;
-import com.labotec.traccar.app.ports.input.repository.CompanyRepository;
-import com.labotec.traccar.app.ports.input.repository.UserRepository;
-import com.labotec.traccar.app.ports.input.repository.VehicleRepository;
-import com.labotec.traccar.app.ports.input.repository.VehicleTypeRepository;
+import com.labotec.traccar.app.ports.input.repository.*;
 import com.labotec.traccar.app.ports.out.VehicleService;
 import com.labotec.traccar.domain.database.models.User;
 import com.labotec.traccar.domain.database.models.Vehicle;
@@ -21,13 +18,13 @@ public class VehicleServiceI implements VehicleService {
     private final CompanyRepository companyRepository;
     private final VehicleTypeRepository vehicleTypeRepository;
     private final UserRepository userRepository;
-
+    private final DeviceTraccarRepository deviceTraccarRepository;
     @Override
     public Vehicle create(VehicleDTO vehicleDTO, Long userId) {
         User user = userRepository.findByUserId(userId);
         Vehicle vehicleMap = vehicleModelMapper.toVehicleModel(vehicleDTO);
         VehicleType vehicleType = vehicleTypeRepository.findById(vehicleDTO.getTypeVehicleId(),userId);
-        System.out.println(vehicleType);
+        vehicleMap.setTraccarDeviceId(deviceTraccarRepository.createDevice(vehicleDTO.getImei(),vehicleDTO.getNameDevice()));
         vehicleMap.setUserId(user);
         vehicleMap.setCompanyId(user.getCompanyId());
         vehicleMap.setTypeVehicle(vehicleType);
@@ -53,7 +50,6 @@ public class VehicleServiceI implements VehicleService {
         vehicle.setStatus(vehicleUpdateDTO.getStatus());
         vehicle.setLicensePlate(vehicleUpdateDTO.getLicensePlate());
         vehicle.setModel(vehicleUpdateDTO.getModel());
-        vehicle.setTraccarDeviceId(vehicleUpdateDTO.getTraccarDeviceId());
         return vehicleRepository.update(vehicle);
     }
 

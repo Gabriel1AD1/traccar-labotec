@@ -1,6 +1,7 @@
 package com.labotec.traccar.app.implementation;
 
 import com.labotec.traccar.app.enums.RouteType;
+import com.labotec.traccar.app.ports.input.annotation.Implementation;
 import com.labotec.traccar.app.ports.input.repository.*;
 import com.labotec.traccar.app.utils.GeoUtils;
 import com.labotec.traccar.domain.database.models.VehiclePosition;
@@ -28,8 +29,7 @@ import static com.labotec.traccar.app.constants.DeviceConstant.ENGINE;
 import static com.labotec.traccar.domain.enums.TypeBusStop.*;
 
 @AllArgsConstructor
-@Service
-public class RouteProcess {
+@Implementation public class RouteProcess {
     private final BusStopRepository busStopRepository;
     private final ScheduleRepository scheduleRepository;
     private final VehiclePositionRepository vehiclePositionRepository;

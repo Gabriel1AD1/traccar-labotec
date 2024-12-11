@@ -35,9 +35,13 @@ public class VehicleDTO {
     @JsonProperty("model")  // Mapea con "model" en el JSON
     private String model;
 
+    @JsonProperty("imei")
+    @NotNull
+    private String imei;
 
-    @JsonProperty("device_traccar_id")  // Mapea con "company_id" en el JSON
-    private Long traccarDeviceId;  // Refers to the company id    @NotNull(message = "Company is required")
+    @JsonProperty("name_device")
+    @NotNull
+    private String nameDevice;
 
     @JsonProperty("type_vehicle_id")  // Mapea con "company_id" en el JSON
     private Long typeVehicleId;  // Refers to the company id
