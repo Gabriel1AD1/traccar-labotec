@@ -1,6 +1,5 @@
-package com.labotec.traccar.infra.config;
+package com.labotec.traccar.infra.websockets;
 
-import com.labotec.traccar.infra.web.controller.ws.LogWebSocketHandler;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -23,6 +22,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
+                .setHandshakeHandler(new CustomHandshakeHandler()) // Configurar HandshakeHandler personalizado
                 .setAllowedOrigins("http://127.0.0.1:5500", "http://localhost:5500")
                 .withSockJS()
                 .setInterceptors(new UserHandshakeInterceptor()); // Registra el interceptor
