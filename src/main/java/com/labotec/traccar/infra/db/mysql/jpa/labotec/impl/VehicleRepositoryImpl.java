@@ -2,15 +2,20 @@ package com.labotec.traccar.infra.db.mysql.jpa.labotec.impl;
 
 import com.labotec.traccar.app.ports.input.repository.VehicleRepository;
 import com.labotec.traccar.domain.database.models.Vehicle;
+import com.labotec.traccar.domain.web.dto.labotec.response.ResponseVehicle;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.VehicleEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.VehicleMapper;
+import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.ResponseVehicleProjection;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.CompanyRepositoryJpa;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.VehicleRepositoryJpa;
 import com.labotec.traccar.infra.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Repository
@@ -42,7 +47,7 @@ public class VehicleRepositoryImpl implements VehicleRepository {
 
     @Override
     public Iterable<Vehicle> findAll(Long userId) {
-        return null;
+        return vehicleMapper.toModelList(vehicleRepositoryJpa.findAllByUserId_UserId(userId));
     }
 
     @Override
@@ -71,4 +76,21 @@ public class VehicleRepositoryImpl implements VehicleRepository {
         );
         return vehicleMapper.toModel(findByLicencePlate);
     }
+
+    @Override
+    public List<ResponseVehicle> findAllByUserId(Long userId) {
+        List<ResponseVehicleProjection> findAllByUserId = vehicleRepositoryJpa.findVehiclesByUserId(userId);
+        return findAllByUserId.stream()
+                .map(s -> ResponseVehicle.builder()
+                        .licensePlate(s.getLicensePlate())
+                        .model(s.getModel())
+                        .brand(s.getBrand())
+                        .status(s.getStatus())
+                        .typeVehicleName(s.getTypeVehicleName())
+                        .registerNumber(s.getRegisterNumber())
+                        .build()
+                )
+                .collect(Collectors.toList());
+    }
+
 }

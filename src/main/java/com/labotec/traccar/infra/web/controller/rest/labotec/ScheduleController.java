@@ -6,6 +6,7 @@ import com.labotec.traccar.domain.enums.STATE;
 import com.labotec.traccar.domain.web.dto.labotec.request.ReportDelayDTO;
 import com.labotec.traccar.domain.web.dto.labotec.request.create.ScheduleDTO;
 import com.labotec.traccar.domain.web.dto.labotec.request.update.UpdateScheduleDTO;
+import com.labotec.traccar.domain.web.dto.labotec.response.ResponseSuggestTimeSchedule;
 import com.labotec.traccar.infra.web.controller.rest.constant.ApiDocumentationConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -188,4 +189,6 @@ public class ScheduleController {
         scheduleService.updateEstimatedArrivalTime(resourceId, userId,estimatedDepartureTime);
         return ResponseEntity.noContent().build();
     }
+    @GetMapping("/route/suggest-time/{id}")
+    public ResponseEntity<ResponseSuggestTimeSchedule> suggestTimeSchedule(@PathVariable("id")Long routeId, @RequestHeader(name = "userId") Long userId) {return ResponseEntity.ok(scheduleService.suggestMinAndMaxTimeForSchedule(routeId, userId));}
 }

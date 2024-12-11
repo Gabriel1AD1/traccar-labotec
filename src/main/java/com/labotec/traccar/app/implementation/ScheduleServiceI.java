@@ -12,6 +12,7 @@ import com.labotec.traccar.domain.web.dto.labotec.request.create.DriverRolSchedu
 import com.labotec.traccar.domain.web.dto.labotec.request.create.ScheduleDTO;
 import com.labotec.traccar.domain.web.dto.labotec.request.update.UpdateScheduleDTO;
 import com.labotec.traccar.domain.web.dto.labotec.response.ResponseRouteBusStopSegment;
+import com.labotec.traccar.domain.web.dto.labotec.response.ResponseSuggestTimeSchedule;
 import com.labotec.traccar.infra.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 
@@ -169,6 +170,17 @@ public class ScheduleServiceI implements ScheduleService {
     @Override
     public List<Schedule> findScheduleByVehicle(Long vehicle, Long userId) {
         return scheduleRepository.findByVehicle(vehicle,userId);
+    }
+
+    @Override
+    public ResponseSuggestTimeSchedule suggestMinAndMaxTimeForSchedule(Long routeId,Long userId) {
+        Route route = routeRepository.findById(routeId,userId);
+        Integer maxTime = route.getSumNexArrivalTIme() + route.getSumMaxWaitTimeForBusStop();
+        Integer minTime = route.getSumNexArrivalTIme() + route.getSunMinWaitTimeForBusStop();
+        return ResponseSuggestTimeSchedule.builder()
+                .maxTimeForSchedule(maxTime)
+                .minTimeForSchedule(minTime)
+                .build();
     }
 
     @Override

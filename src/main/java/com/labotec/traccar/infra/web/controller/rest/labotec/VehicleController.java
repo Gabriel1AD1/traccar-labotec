@@ -4,6 +4,7 @@ import com.labotec.traccar.app.ports.out.VehicleService;
 import com.labotec.traccar.domain.database.models.Vehicle;
 import com.labotec.traccar.domain.web.dto.labotec.request.create.VehicleDTO;
 import com.labotec.traccar.domain.web.dto.labotec.request.update.VehicleUpdateDTO;
+import com.labotec.traccar.domain.web.dto.labotec.response.ResponseVehicle;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -11,6 +12,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.labotec.traccar.infra.web.controller.common.API_VERSION_MANAGER.API_VERSION_V1;
@@ -57,10 +59,10 @@ public class VehicleController {
             summary = "Obtener todos los vehículos",
             description = "Este endpoint permite obtener la lista de todos los vehículos disponibles para el usuario, basándose en el ID del usuario."
     )
-    public ResponseEntity<Iterable<Vehicle>> findAll(
+    public ResponseEntity<List<ResponseVehicle>> findAll(
             @RequestHeader(name = "userId") Long userId
     ) {
-        Iterable<Vehicle> allVehicles = vehicleService.findAll(userId);
+        List<ResponseVehicle> allVehicles = vehicleService.findAllByUserId(userId);
         return ResponseEntity.ok(allVehicles);
     }
 

@@ -52,6 +52,12 @@ public class RouteEntity {
     @Enumerated(value = EnumType.STRING)
     @Column(name = "tipo_ruta" ,nullable = false , length = 30)
     private RouteType routeType;
+    @Column(name = "maximo_tiempo_sobre_paraderos")
+    private Integer sumMaxWaitTimeForBusStop;
+    @Column(name = "minimo_tiempo_sobre_paraderos")
+    private Integer sunMinWaitTimeForBusStop;
+    @Column(name = "suma_maxima_de_tiempo_entre_paraderos")
+    private Integer sumNexArrivalTIme;
 
     @CreatedDate
     @Column(name = "fecha_creacion", updatable = false)

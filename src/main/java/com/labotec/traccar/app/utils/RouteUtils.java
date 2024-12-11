@@ -1,7 +1,10 @@
 package com.labotec.traccar.app.utils;
 
 import com.labotec.traccar.app.enums.RouteType;
+import com.labotec.traccar.domain.web.dto.labotec.request.create.RouteSegmentCreateDTO;
 import jakarta.validation.constraints.NotNull;
+
+import java.util.List;
 
 public class RouteUtils {
 
@@ -28,5 +31,48 @@ public class RouteUtils {
         } else {
             return RouteType.NORMAL; // Ruta de distancia normal
         }
+    }
+    /**
+     * Suma los tiempos mínimos de espera en la lista de segmentos.
+     *
+     * @param segments Lista de segmentos de ruta (RouteSegmentCreateDTO).
+     * @return La suma total de los tiempos mínimos de espera.
+     */
+    public static int sumMinWaitTime(List<RouteSegmentCreateDTO> segments) {
+        if (segments == null || segments.isEmpty()) {
+            return 0; // Devuelve 0 si la lista está vacía o es nula.
+        }
+
+        return segments.stream()
+                .filter(segment -> segment.getMinWaitTime() != null) // Ignora los nulos.
+                .mapToInt(RouteSegmentCreateDTO::getMinWaitTime) // Obtiene el valor.
+                .sum(); // Suma todos los valores.
+    }
+
+    /**
+     * Suma los tiempos máximos de espera en la lista de segmentos.
+     *
+     * @param segments Lista de segmentos de ruta (RouteSegmentCreateDTO).
+     * @return La suma total de los tiempos máximos de espera.
+     */
+    public static int sumMaxWaitTime(List<RouteSegmentCreateDTO> segments) {
+        if (segments == null || segments.isEmpty()) {
+            return 0; // Devuelve 0 si la lista está vacía o es nula.
+        }
+
+        return segments.stream()
+                .filter(segment -> segment.getMaxWaitTime() != null) // Ignora los nulos.
+                .mapToInt(RouteSegmentCreateDTO::getMaxWaitTime) // Obtiene el valor.
+                .sum(); // Suma todos los valores.
+    }
+    public static int sumEstimatedNextTravelTime(List<RouteSegmentCreateDTO> segments) {
+        if (segments == null || segments.isEmpty()) {
+            return 0; // Devuelve 0 si la lista está vacía o es nula.
+        }
+
+        return segments.stream()
+                .filter(segment -> segment.getEstimatedNextTravelTime() != null) // Ignora los nulos.
+                .mapToInt(RouteSegmentCreateDTO::getEstimatedNextTravelTime) // Obtiene el valor.
+                .sum(); // Suma todos los valores.
     }
 }

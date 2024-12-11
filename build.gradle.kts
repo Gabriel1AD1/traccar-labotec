@@ -26,7 +26,6 @@ repositories {
 dependencies {
 	implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
 	implementation("commons-codec:commons-codec:1.15")
-
 	// Dependencia principal de Logback
 	implementation("ch.qos.logback:logback-classic:1.4.11")
 	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-cache

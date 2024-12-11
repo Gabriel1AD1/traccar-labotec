@@ -20,6 +20,9 @@ public class Route {
     private String name;
     private Long distanceMaxInKM;
     private Long distanceMinInKM;
+    private Integer sumNexArrivalTIme;
+    private Integer sunMinWaitTimeForBusStop;
+    private Integer sumMaxWaitTimeForBusStop;
     private RouteType routeType;
     @JsonIgnore
     private Instant lastModifiedDate;

@@ -243,13 +243,14 @@ public interface ScheduleRepositoryJpa extends JpaRepository<ScheduleEntity, Lon
             @Param("instant") Instant instant
     );
 
-    // Actualizar arrivalTime por ID
     @Transactional
     @Modifying
     @Query("UPDATE ScheduleEntity s SET s.arrivalTime = :arrivalTime WHERE s.id = :id")
-    void updateArrivalTimeById(Long id, Instant arrivalTime);
+    void updateArrivalTimeById(@Param("id") Long id, @Param("arrivalTime") Instant arrivalTime);
+
+    // Actualizar estimatedArrivalTime por Schedule ID
     @Transactional
     @Modifying
     @Query("UPDATE ScheduleEntity s SET s.estimatedArrivalTime = :arrivalTime WHERE s.id = :id")
-    int updateEstimatedArrivalTimeByScheduleId(Long id, Instant now);
+    int updateEstimatedArrivalTimeByScheduleId(@Param("id") Long id, @Param("arrivalTime") Instant now);
 }

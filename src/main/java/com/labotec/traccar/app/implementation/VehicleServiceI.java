@@ -8,7 +8,10 @@ import com.labotec.traccar.domain.database.models.Vehicle;
 import com.labotec.traccar.domain.database.models.VehicleType;
 import com.labotec.traccar.domain.web.dto.labotec.request.create.VehicleDTO;
 import com.labotec.traccar.domain.web.dto.labotec.request.update.VehicleUpdateDTO;
+import com.labotec.traccar.domain.web.dto.labotec.response.ResponseVehicle;
 import lombok.AllArgsConstructor;
+
+import java.util.List;
 
 @AllArgsConstructor
 
@@ -57,5 +60,10 @@ public class VehicleServiceI implements VehicleService {
     public void deleteById(Long resourceId, Long userId) {
         vehicleRepository.deleteById(resourceId,userId);
 
+    }
+
+    @Override
+    public List<ResponseVehicle> findAllByUserId(Long userId) {
+        return vehicleRepository.findAllByUserId(userId);
     }
 }

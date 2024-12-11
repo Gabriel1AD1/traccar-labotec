@@ -29,7 +29,8 @@ import static com.labotec.traccar.app.constants.DeviceConstant.ENGINE;
 import static com.labotec.traccar.domain.enums.TypeBusStop.*;
 
 @AllArgsConstructor
-@Implementation public class RouteProcess {
+@Service
+public class RouteProcess {
     private final BusStopRepository busStopRepository;
     private final ScheduleRepository scheduleRepository;
     private final VehiclePositionRepository vehiclePositionRepository;

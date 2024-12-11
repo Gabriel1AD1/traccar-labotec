@@ -16,6 +16,7 @@
     @Transactional
     public class AppConfig {
         private final RouteBusStopResponseSegmentRepository routeBusStopSegmentResponseRepository;
+        private final DeviceTraccarRepository deviceTraccarRepository;
         private final StopRegisterRepository stopRegisterRepository;
         private final BusStopRepository busStopRepository;
         private final CompanyRepository companyRepository;
@@ -118,7 +119,8 @@
                 vehicleModelMapper,
                 companyRepository,
                 vehicleTypeRepository,
-                    userRepository
+                    userRepository,
+                    deviceTraccarRepository
             );}
 
 

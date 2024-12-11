@@ -6,6 +6,7 @@ import com.labotec.traccar.domain.enums.STATE;
 import com.labotec.traccar.domain.web.dto.labotec.request.ReportDelayDTO;
 import com.labotec.traccar.domain.web.dto.labotec.request.create.ScheduleDTO;
 import com.labotec.traccar.domain.web.dto.labotec.request.update.UpdateScheduleDTO;
+import com.labotec.traccar.domain.web.dto.labotec.response.ResponseSuggestTimeSchedule;
 
 import java.time.Instant;
 import java.util.List;
@@ -63,6 +64,7 @@ public interface ScheduleService extends GenericCrudService<Schedule , ScheduleD
      */
     List<Schedule> findScheduleByVehicle(Long vehicle, Long userId);
 
+    ResponseSuggestTimeSchedule suggestMinAndMaxTimeForSchedule(Long routeId,Long userId);
 
     void updateScheduleForDelay(ReportDelayDTO reportDelayDTO);
 }

@@ -50,11 +50,18 @@ public class RouteServiceI implements RouteService
 
         route.setDistanceMaxInKM(routeCreateDTO.getDistanceMaxInKM());
         route.setDistanceMinInKM(routeCreateDTO.getDistanceMinInKM());
-
+        Integer sumEstimatedNextTravelTime = RouteUtils.sumEstimatedNextTravelTime(routeCreateDTO.getSegmentsBusStop());
+        Integer minWaitTimeForBusStop = RouteUtils.sumMinWaitTime(routeCreateDTO.getSegmentsBusStop());
+        Integer maxWaitTimeForBusStop = RouteUtils.sumMaxWaitTime(routeCreateDTO.getSegmentsBusStop());
+        route.setSumNexArrivalTIme(sumEstimatedNextTravelTime);
+        route.setSunMinWaitTimeForBusStop(minWaitTimeForBusStop);
+        route.setSumMaxWaitTimeForBusStop(maxWaitTimeForBusStop);
         RouteType routeType = RouteUtils.checkRouteLength(routeCreateDTO.getDistanceMaxInKM(),routeCreateDTO.getDistanceMinInKM());
         route.setRouteType(routeType);
         //7- Ruta creada
         Route routeSave = routeRepository.create(route);
+
+
         //8- Creamos la tabla intermedia de rutas y paraderos
         for (RouteSegmentCreateDTO routeBusStopSegment : routeCreateDTO.getSegmentsBusStop()){
             RouteBusStopSegment routeBusStopSegmentSave = new RouteBusStopSegment();
@@ -179,4 +186,5 @@ public class RouteServiceI implements RouteService
             throw new EntityNotFoundException("La entitad no ha sido encontrada  " + routeId );
         }
     }
+
 }

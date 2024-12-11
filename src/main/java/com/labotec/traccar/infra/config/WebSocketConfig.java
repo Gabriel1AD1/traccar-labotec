@@ -9,24 +9,22 @@ import org.springframework.web.socket.config.annotation.*;
 @Configuration
 @EnableWebSocketMessageBroker
 @AllArgsConstructor
-public class WebSocketConfig   implements WebSocketMessageBrokerConfigurer , WebSocketConfigurer{
-    private final LogWebSocketHandler logWebSocketHandler;
-
+public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic"); // Broker para enviar mensajes a los clientes
-        config.setApplicationDestinationPrefixes("/app"); // Prefijo para mensajes desde el cliente
+        config.enableSimpleBroker("/topic", "/queue"); // "/queue" para mensajes privados
+        config.setApplicationDestinationPrefixes("/app"); // Prefijo para mensajes enviados desde el cliente
+        config.setUserDestinationPrefix("/user"); // Prefijo para mensajes dirigidos a usuarios específicos
     }
+
+
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
                 .setAllowedOrigins("http://127.0.0.1:5500", "http://localhost:5500")
-                .withSockJS();
-    }
-    @Override
-    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(logWebSocketHandler, "/ws/logs").setAllowedOrigins("*");
+                .withSockJS()
+                .setInterceptors(new UserHandshakeInterceptor()); // Registra el interceptor
     }
 }
