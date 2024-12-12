@@ -1,6 +1,5 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.impl;
 
-import com.labotec.traccar.app.ports.input.repository.DriverRepository;
 import com.labotec.traccar.app.ports.input.repository.DriverScheduleRepository;
 import com.labotec.traccar.domain.database.models.DriverSchedule;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.DriverScheduleEntity;

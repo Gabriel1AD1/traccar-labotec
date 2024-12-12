@@ -10,8 +10,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
 
-import static com.labotec.traccar.infra.db.mysql.jpa.labotec.constant.CONFIG_SCHEMA.SCHEMA;
-
 @Entity
 @Data
 @AllArgsConstructor

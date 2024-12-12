@@ -2,19 +2,12 @@ package com.labotec.traccar.infra.db.mysql.jpa.labotec.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.labotec.traccar.domain.database.models.BusStop;
-import com.labotec.traccar.domain.database.models.OverviewPolyline;
-import com.labotec.traccar.domain.database.models.Route;
 import com.labotec.traccar.domain.enums.TypeBusStop;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.util.List;
 
 @Data
 @Builder

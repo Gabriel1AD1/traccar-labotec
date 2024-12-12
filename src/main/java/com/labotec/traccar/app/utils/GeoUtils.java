@@ -1,7 +1,6 @@
 package com.labotec.traccar.app.utils;
 
 import com.labotec.traccar.app.enums.RouteType;
-import com.labotec.traccar.domain.query.ScheduleBusStopProjection;
 import com.labotec.traccar.domain.web.dto.labotec.response.BusStopResponse;
 
 import java.util.List;

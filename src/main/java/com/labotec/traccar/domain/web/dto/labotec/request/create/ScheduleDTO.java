@@ -1,13 +1,14 @@
 package com.labotec.traccar.domain.web.dto.labotec.request.create;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.AssertTrue;
-import java.time.ZonedDateTime;
-import java.util.List;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.labotec.traccar.domain.enums.TYPE_GEOFENCE;
+import com.labotec.traccar.domain.enums.TypeGeofence;
+import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+
+import java.time.ZonedDateTime;
+import java.util.List;
 
 @Data
 public class ScheduleDTO {
@@ -25,7 +26,7 @@ public class ScheduleDTO {
 
     @JsonProperty("type_geofence")
     @NotNull
-    private TYPE_GEOFENCE geofenceType;
+    private TypeGeofence geofenceType;
 
     @NotNull
     @JsonProperty("geofence_id")

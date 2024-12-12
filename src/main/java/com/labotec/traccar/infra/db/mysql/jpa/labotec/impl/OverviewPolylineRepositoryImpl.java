@@ -1,6 +1,7 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.impl;
 
 import com.labotec.traccar.app.ports.input.repository.OverviewPolylineRepository;
+import com.labotec.traccar.domain.query.OptimizedOverviewPolyline;
 import com.labotec.traccar.domain.database.models.BusStop;
 import com.labotec.traccar.domain.database.models.OverviewPolyline;
 import com.labotec.traccar.domain.database.models.RouteBusStop;
@@ -9,6 +10,7 @@ import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.OverviewPolylineEnt
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.RouteBusStopEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.OverviewPolylineMapper;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.RouteBusStopMapper;
+import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.OptimizedOverviewPolylineProjection;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.OverviewPolylineProjection;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.OverviewPolylineRepositoryJpa;
 import com.labotec.traccar.infra.exception.EntityNotFoundException;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 @AllArgsConstructor
@@ -60,6 +63,20 @@ public class OverviewPolylineRepositoryImpl implements OverviewPolylineRepositor
                 .build()) );
         return map;
     }
+
+    @Override
+    public List<OptimizedOverviewPolyline> findPrimaryPolylinesByRouteId(Long routeId) {
+        // Llamamos al repositorio para obtener las proyecciones
+        List<OptimizedOverviewPolylineProjection> getPolyline = overviewPolylineRepositoryJpa.findPrimaryPolylinesByRouteIdWithProjection(routeId);
+
+        // Usamos stream() y map() para transformar las proyecciones en los objetos OptimizedOverviewPolyline
+        return getPolyline.stream()
+                .map(s -> OptimizedOverviewPolyline.builder()
+                        .polyline(s.getPolyline())
+                        .build())
+                .collect(Collectors.toList()); // Recolectamos en una lista
+    }
+
 
 
 }

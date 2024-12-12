@@ -3,10 +3,12 @@ package com.labotec.traccar.domain.web.dto.labotec.request.create;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.labotec.traccar.app.Validations.ConsistentBusStops;
 import com.labotec.traccar.app.Validations.SinglePrimaryPolyline;
-import com.labotec.traccar.domain.enums.TYPE_GEOFENCE;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 

@@ -5,16 +5,17 @@
     import com.labotec.traccar.app.ports.input.email.GoogleEmail;
     import com.labotec.traccar.app.ports.input.repository.*;
     import com.labotec.traccar.app.ports.out.*;
-    import com.labotec.traccar.app.usecase.ports.input.repository.RouteBusStopSegmentRepository;
+    import com.labotec.traccar.app.ports.input.repository.RouteBusStopSegmentRepository;
+    import lombok.AllArgsConstructor;
     import org.springframework.context.annotation.Bean;
     import org.springframework.context.annotation.Configuration;
-    import lombok.AllArgsConstructor;
     import org.springframework.transaction.annotation.Transactional;
 
     @Configuration
     @AllArgsConstructor
     @Transactional
     public class AppConfig {
+        private final AlertRepository alertRepository;
         private final RouteBusStopResponseSegmentRepository routeBusStopSegmentResponseRepository;
         private final DeviceTraccarRepository deviceTraccarRepository;
         private final StopRegisterRepository stopRegisterRepository;
@@ -48,7 +49,10 @@
         public BusStopService busStop() {
             return new BusStopServiceI(busStopRepository,companyRepository,busStopModelMapper,userRepository);
         }
-
+        @Bean(name = "alertService")
+        public AlertService alertService(){
+            return  new AlertServiceI(alertRepository);
+        }
         @Bean(name = "companyService")
         public CompanyService company() {
             return new CompanyServiceI(companyRepository,companyModelMapper);

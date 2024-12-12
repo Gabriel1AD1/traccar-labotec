@@ -1,8 +1,7 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.impl;
 
-import com.labotec.traccar.app.usecase.ports.input.repository.RouteBusStopSegmentRepository;
+import com.labotec.traccar.app.ports.input.repository.RouteBusStopSegmentRepository;
 import com.labotec.traccar.domain.database.models.RouteBusStopSegment;
-import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.RouteBusStopSegmentEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.RouteBusStopSegmentMapper;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.RouteBusStopSegmentRepositoryJpa;
 import lombok.AllArgsConstructor;

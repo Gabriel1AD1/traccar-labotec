@@ -1,4 +1,4 @@
-package com.labotec.traccar.app.usecase.ports.input.repository;
+package com.labotec.traccar.app.ports.input.repository;
 
 import com.labotec.traccar.domain.database.models.RouteBusStopSegment;
 

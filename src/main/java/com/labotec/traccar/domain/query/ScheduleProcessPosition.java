@@ -1,19 +1,16 @@
 package com.labotec.traccar.domain.query;
 
 import com.labotec.traccar.domain.enums.STATE;
-import com.labotec.traccar.domain.enums.TYPE_GEOFENCE;
+import com.labotec.traccar.domain.enums.TypeGeofence;
 import lombok.Data;
-
-import java.util.List;
 
 @Data
 public class ScheduleProcessPosition {
     private Long id;
     private ScheduleRouteProjection route;
-    private TYPE_GEOFENCE typeGeofence;
+    private TypeGeofence typeGeofence;
     private Long geofenceId;
     private Long radiusValidatePolyline;
     private Boolean validateRouteExplicit;
     private STATE state;
-
 }

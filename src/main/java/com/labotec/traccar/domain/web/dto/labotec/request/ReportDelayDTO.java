@@ -1,19 +1,12 @@
 package com.labotec.traccar.domain.web.dto.labotec.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.DecimalMax;
-
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
-
-import jakarta.validation.constraints.AssertTrue;
 
 @Data
 @AllArgsConstructor

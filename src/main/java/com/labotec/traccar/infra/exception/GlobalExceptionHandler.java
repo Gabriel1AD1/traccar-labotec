@@ -2,7 +2,6 @@ package com.labotec.traccar.infra.exception;
 
 import com.labotec.traccar.app.exception.AlreadyAssignedVehicleSchedule;
 import com.labotec.traccar.infra.common.ApiError;
-import com.labotec.traccar.infra.web.controller.rest.traccar.exception.EntityAllReadyException;
 import com.labotec.traccar.infra.web.controller.rest.traccar.exception.Unauthorised;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;

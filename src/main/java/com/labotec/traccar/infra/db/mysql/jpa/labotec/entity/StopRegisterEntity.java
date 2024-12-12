@@ -2,7 +2,6 @@ package com.labotec.traccar.infra.db.mysql.jpa.labotec.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import java.time.Instant;
 

@@ -2,8 +2,10 @@ package com.labotec.traccar.infra.db.mysql.jpa.labotec.impl;
 
 import com.labotec.traccar.app.ports.input.repository.GeofenceCircularRepository;
 import com.labotec.traccar.domain.database.models.CircularGeofence;
+import com.labotec.traccar.domain.web.dto.labotec.response.ResponseCircularGeofence;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.CircularGeofenceEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.GeofenceCircularMapper;
+import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.ResponseCircularGeofenceProjection;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.GeofenceCircularRepositoryJpa;
 import com.labotec.traccar.infra.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
@@ -58,4 +60,16 @@ public class GeofenceCircularRepositoryImpl implements GeofenceCircularRepositor
         geofenceCircularRepositoryJpa.deleteByIdAndUserId(resourceId,userId);
     }
 
+    @Override
+    public ResponseCircularGeofence findByResourceId(Long resourceId) {
+        ResponseCircularGeofenceProjection getById = geofenceCircularRepositoryJpa.findByResourceId(resourceId).orElseThrow(
+                () -> new EntityNotFoundException("La entidad no ha sido encontrada")
+        );
+        return ResponseCircularGeofence.builder()
+                .name(getById.getName())
+                .latitude(getById.getLatitude())
+                .longitude(getById.getLongitude())
+                .radius(getById.getRadius())
+                .build();
+    }
 }

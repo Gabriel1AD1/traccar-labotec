@@ -1,6 +1,7 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.process;
 
 import jakarta.persistence.Embeddable;
+
 import java.io.Serializable;
 import java.util.Objects;
 

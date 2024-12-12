@@ -1,6 +1,6 @@
 package com.labotec.traccar.app.ports.input.repository;
 
-import com.labotec.traccar.app.utils.common.repository.GenericRepository;
+import com.labotec.traccar.domain.query.OptimizedOverviewPolyline;
 import com.labotec.traccar.domain.database.models.BusStop;
 import com.labotec.traccar.domain.database.models.OverviewPolyline;
 import com.labotec.traccar.domain.database.models.RouteBusStop;
@@ -17,4 +17,6 @@ public interface OverviewPolylineRepository  {
     OverviewPolyline create(OverviewPolyline entity);
 
     List<ResponseOverviewPolyline> findByRouteBusStopId(Long routeBusStopId);
+
+    List<OptimizedOverviewPolyline> findPrimaryPolylinesByRouteId(Long routeId);
 }

@@ -9,14 +9,14 @@ import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.RouteEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.RouteMapper;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.response.RouteResponseMapper;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.RouteResponseProjection;
-import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.RouteBusStopSegmentRepositoryJpa;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.RouteRepositoryJpa;
 import com.labotec.traccar.infra.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,6 +28,7 @@ public class RouteRepositoryImpl implements RouteRepository {
     private final RouteMapper routeMapper;
     private final RouteRepositoryJpa routeRepositoryJpa;
     private final RouteResponseMapper routeResponseMapper;
+    private final Logger logger = LoggerFactory.getLogger(RouteRepositoryImpl.class);
     @Override
     public Route create(Route entity) {
         RouteEntity routeEntity = routeMapper.toEntity(entity);
@@ -55,13 +56,19 @@ public class RouteRepositoryImpl implements RouteRepository {
 
     @Override
     public Iterable<Route> findAll(Long userId) {
-        return null;
+        return List.of() ;
     }
 
 
     @Override
     public void deleteById(Long resourceId, Long userId) {
-
+        boolean permissionCheck = routeRepositoryJpa.existsByRouteIdAndUserId(resourceId,userId);
+        if(permissionCheck) {
+            routeRepositoryJpa.deleteById(resourceId);
+            logger.info("Se eliminado una ruta");
+        }else {
+            logger.warn("No se encontró o no se elimino la ruta ");
+        }
     }
 
     @Override
@@ -78,7 +85,7 @@ public class RouteRepositoryImpl implements RouteRepository {
     }
 
     @Override
-    public Optional<RouteType> getRouteTypeByRouteId(long routeId) {
+    public Optional<RouteType> getRouteTypeByRouteId(Long routeId) {
         RouteType findByRouteId = routeRepositoryJpa.findRouteTypeByRouteId(routeId).orElse(null);
         return Optional.ofNullable(findByRouteId);
     }

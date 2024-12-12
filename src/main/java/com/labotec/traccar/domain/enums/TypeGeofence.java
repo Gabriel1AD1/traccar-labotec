@@ -1,6 +1,6 @@
 package com.labotec.traccar.domain.enums;
 
-public enum TYPE_GEOFENCE {
+public enum TypeGeofence {
     POLIGONAL,
     CIRCULAR,
     CUADRANGULAR

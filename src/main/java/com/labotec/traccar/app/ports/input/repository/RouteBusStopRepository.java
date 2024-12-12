@@ -6,7 +6,6 @@ import com.labotec.traccar.domain.database.models.RouteBusStop;
 import com.labotec.traccar.domain.database.models.read.RouteBusStopInformation;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface RouteBusStopRepository extends GenericRepository<RouteBusStop , Long>  {
 

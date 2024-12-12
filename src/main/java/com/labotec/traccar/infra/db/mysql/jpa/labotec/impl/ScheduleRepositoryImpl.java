@@ -5,16 +5,18 @@ import com.labotec.traccar.domain.database.models.Schedule;
 import com.labotec.traccar.domain.database.models.ScheduleDelayInformation;
 import com.labotec.traccar.domain.database.models.read.InformationRoute;
 import com.labotec.traccar.domain.enums.STATE;
+import com.labotec.traccar.domain.query.OptimizedSchedule;
 import com.labotec.traccar.domain.query.ScheduleProcessPosition;
-import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.*;
+import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.ScheduleEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.RouteMapper;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.ScheduleMapper;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.VehicleMapper;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.InformationScheduleProjection;
+import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.OptimizedScheduleProjection;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.ScheduleDelayInformationProjection;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.ScheduleProjection;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.mapper.ScheduleProjectionMapper;
-import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.*;
+import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.ScheduleRepositoryJpa;
 import com.labotec.traccar.infra.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -196,6 +198,20 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     }
 
     @Override
+    public OptimizedSchedule findDeviceIdAndCurrentTime(Long deviceId, Instant currentTime) {
+        OptimizedScheduleProjection optimizedScheduleProjection  = scheduleRepositoryJpa.findOptimizedScheduleById(deviceId,currentTime).orElseThrow(
+                () -> new EntityNotFoundException("La programacion del vehiculo: "+ deviceId + " No se encontro")
+        );
+        return OptimizedSchedule.builder()
+                .state(optimizedScheduleProjection.getStatus())
+                .geofenceId(optimizedScheduleProjection.getGeofenceId())
+                .radiusValidatePolyline(optimizedScheduleProjection.getRadiusValidateRoutePolyline())
+                .validateRouteExplicit(optimizedScheduleProjection.getValidateRouteExplicit())
+                .typeGeofence(optimizedScheduleProjection.getGeofenceType())
+                .build();
+    }
+
+    @Override
     public List<ScheduleDelayInformation> findAllSchedulesForDelay(Long vehicleId,Instant arrivedTime) {
         List<ScheduleDelayInformationProjection> findAll= scheduleRepositoryJpa.findSchedulesByVehicleAndTimeGreaterThan(vehicleId,arrivedTime);
         List<ScheduleDelayInformation> response = new ArrayList<>();
@@ -218,12 +234,23 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     }
 
     @Override
+    public void updateCompletionPercentageByScheduleId(Long scheduleId, Double percentageCompleted) {
+        int arrowAffected = scheduleRepositoryJpa.updatePercentageCompletedByScheduleId(scheduleId,percentageCompleted);
+        if (arrowAffected > 0){
+            logger.info("El porcentaje de la programacion se ha actualizado en un {}",percentageCompleted);
+        }else {
+            logger.info("No se ha podido actualizar el porcentaje dela programacion");
+        }
+    }
+
+    @Override
     public Optional<InformationRoute> findByInformationSchedule(long vehicleId, Instant now){
         InformationScheduleProjection scheduleInformation = scheduleRepositoryJpa.findByInformationScheduleIds(vehicleId,now).orElse(null);
         if (scheduleInformation == null){
             return Optional.empty();
         }
         InformationRoute informationRoute = new InformationRoute();
+        informationRoute.setUserId(scheduleInformation.getUserId());
         informationRoute.setEstimatedArrivedTime(scheduleInformation.getEstimatedArrivalTime());
         informationRoute.setEstimatedDepartureTime(scheduleInformation.getEstimatedDepartureTime());
         informationRoute.setScheduleId(scheduleInformation.getScheduleId());

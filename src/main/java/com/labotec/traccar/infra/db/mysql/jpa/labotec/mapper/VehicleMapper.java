@@ -1,7 +1,6 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper;
 
 import com.labotec.traccar.domain.database.models.Vehicle;
-import com.labotec.traccar.domain.database.models.VehicleType;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.VehicleEntity;
 import org.mapstruct.Mapper;
 

@@ -1,6 +1,9 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.process;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 

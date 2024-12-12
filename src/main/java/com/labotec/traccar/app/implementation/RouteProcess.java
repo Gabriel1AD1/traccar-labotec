@@ -1,16 +1,24 @@
 package com.labotec.traccar.app.implementation;
 
+import com.labotec.traccar.TraccarApplication;
 import com.labotec.traccar.app.enums.RouteType;
-import com.labotec.traccar.app.ports.input.annotation.Implementation;
+import com.labotec.traccar.app.lib.GpsLibDecoded;
+import com.labotec.traccar.app.ports.input.notification.NotificationTraccar;
 import com.labotec.traccar.app.ports.input.repository.*;
 import com.labotec.traccar.app.utils.GeoUtils;
+import com.labotec.traccar.app.utils.JsonUtils;
+import com.labotec.traccar.domain.database.models.Alert;
 import com.labotec.traccar.domain.database.models.VehiclePosition;
 import com.labotec.traccar.domain.database.models.read.InformationRoute;
-import com.labotec.traccar.domain.enums.TYPE_GEOFENCE;
-import com.labotec.traccar.domain.enums.TypeBusStop;
-import com.labotec.traccar.domain.query.ScheduleProcessPosition;
+import com.labotec.traccar.domain.enums.AlertType;
+import com.labotec.traccar.domain.enums.TypeGeofence;
+import com.labotec.traccar.domain.query.OptimizedOverviewPolyline;
+import com.labotec.traccar.domain.query.OptimizedSchedule;
 import com.labotec.traccar.domain.query.ScheduleRouteBusStopProjection;
+import com.labotec.traccar.domain.web.dto.labotec.notify.NotificationDTO;
 import com.labotec.traccar.domain.web.dto.labotec.response.BusStopResponse;
+import com.labotec.traccar.domain.web.dto.labotec.response.ResponseAlert;
+import com.labotec.traccar.domain.web.dto.labotec.response.ResponseCircularGeofence;
 import com.labotec.traccar.domain.web.dto.labotec.response.ResponseRouteBusStopSegment;
 import com.labotec.traccar.domain.web.dto.traccar.DeviceRequestDTO;
 import com.labotec.traccar.infra.exception.EntityNotFoundException;
@@ -26,46 +34,63 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import static com.labotec.traccar.app.constants.DeviceConstant.ENGINE;
+import static com.labotec.traccar.domain.enums.AlertType.GEOFENCE_VIOLATION;
+import static com.labotec.traccar.domain.enums.AlertType.TIME_NOT_COMPLETED;
 import static com.labotec.traccar.domain.enums.TypeBusStop.*;
 
 @AllArgsConstructor
 @Service
 public class RouteProcess {
+    private final NotificationTraccar notificationTraccar;
     private final BusStopRepository busStopRepository;
     private final ScheduleRepository scheduleRepository;
     private final VehiclePositionRepository vehiclePositionRepository;
     private final VehicleRepository vehicleRepository;
+    private final OverviewPolylineRepository overviewPolylineRepository;
     private final RouteRepository routeRepository;
     private final StopRegisterRepository stopRegisterRepository;
     private final GeofenceCircularRepository geofenceCircularRepository;
     private final StateVehiclePositionRepository stateVehiclePositionRepository;
     private final RouteBusStopResponseSegmentRepository routeBusStopSegmentRepository;
+    private final ConfigurationRouteProcessServerRepository configurationRouteProcessServerRepository;
     private static final Logger logger = LoggerFactory.getLogger(RouteProcess.class);
+    private final AlertRepository alertRepository;
+    private final TraccarApplication traccarApplication;
+
     public void validateRoute(DeviceRequestDTO deviceRequestDTO) {
         int engine = (int) deviceRequestDTO.getAttributes().get(ENGINE);
         boolean onEngine = engine == 1;
         if (!onEngine){
             return;
         }
+        Double validateRadiusBusStopRoute = configurationRouteProcessServerRepository.getConfiguration().getRadiusValidateBusStop();
         // Obtenemos la Velocidad del vehiculo
         double speed = deviceRequestDTO.getSpeed();
         boolean isNotMoving = speed == 0.0;
-
         // Obtener la hora actual en Instant
         Instant timeCurrent =  getTimeCurrent();
-        Double deviceLatitude = deviceRequestDTO.getLatitude();;
+        Double deviceLatitude = deviceRequestDTO.getLatitude();
         Double deviceLongitude = deviceRequestDTO.getLongitude();
         // Obtener la programación asociada al vehículo y hora actual
-        ScheduleProcessPosition scheduleProcessPosition = scheduleRepository.findByScheduleProjectionVehicleIdAndInstantNow(deviceRequestDTO.getDeviceId(), timeCurrent).orElseThrow(() -> new IllegalArgumentException("Programación no encontrada"));
+        OptimizedSchedule optimizedSchedule = scheduleRepository.findDeviceIdAndCurrentTime(deviceRequestDTO.getDeviceId(),timeCurrent);
         InformationRoute informationRoute = getInformationRoute(deviceRequestDTO.getDeviceId(),timeCurrent);
-        long routeId = informationRoute.getRouteId();
+        Long userId = informationRoute.getUserId();
+        Long radiusValidatePolyline = optimizedSchedule.getRadiusValidatePolyline();
+        Long routeId = informationRoute.getRouteId();
         Long scheduleId  = informationRoute.getScheduleId();
+        List<OptimizedOverviewPolyline> overviewPolylines = overviewPolylineRepository.findPrimaryPolylinesByRouteId(routeId);
+        List<String> listOverViewPolylines = overviewPolylines.stream()
+                .map(OptimizedOverviewPolyline::getPolyline)
+                .toList();
+
         RouteType routeType = getTypeRoute(routeRepository.getRouteTypeByRouteId(routeId));
+
         //Si no se esta moviendo pues se actualiza el tiempo parado
         if (isNotMoving){
             vehiclePositionRepository.updateTimeStopByRouteId(scheduleId,deviceLatitude,deviceLongitude,timeCurrent);
         }
         VehiclePosition vehiclePosition = vehiclePositionRepository.findByScheduleId(scheduleId);
+        Long deviceId = vehiclePosition.getDeviceId();
         Long idVehiclePosition = vehiclePosition.getId();
         Long lasteIdBusStop = vehiclePosition.getCurrentBusStop();
         logger.info("Pocision del vehiculo relacionado ala programacion {}",vehiclePosition);
@@ -75,7 +100,7 @@ public class RouteProcess {
         //Obtener la lista de paraderos del vehiculo;
         List<BusStopResponse> getListBusStop = getBusStops(busStopSegments);
         //Obtener el paradero actual del vehiculo
-        BusStopResponse currentBusStop = getCurrentBusStop(deviceRequestDTO.getLatitude(), deviceRequestDTO.getLongitude(),getListBusStop,routeType);
+        BusStopResponse currentBusStop = getCurrentBusStop(validateRadiusBusStopRoute,deviceRequestDTO.getLatitude(), deviceRequestDTO.getLongitude(),getListBusStop,routeType);
         //Obtenemos el id del paradero de inicio  ;
         Long firstBusStopId  = getFirstBusStopId(busStopSegments);
         //Obtenemos el id del paradero final
@@ -84,22 +109,21 @@ public class RouteProcess {
         BusStopResponse firstBusStop = getBusStopById(getListBusStop,firstBusStopId);
         //Obtenemos el ultimo Paradero
         BusStopResponse finalBusStop = getBusStopById(getListBusStop,finalBusStopId);
-
         logger.info("Ulitmo paradero {} " ,finalBusStop);
+        double[] position = {deviceLatitude,deviceLongitude};
+        GpsLibDecoded gpsLibDecoded = new GpsLibDecoded(listOverViewPolylines,position,radiusValidatePolyline,5.0);
+
         boolean isNullBusStop = currentBusStop == null;
         //EN PARADERO
         if (!isNullBusStop){
-
-
+            Double percentageCompleted = gpsLibDecoded.getCompletionPercentage();
             Long currentBusStopId = currentBusStop.getId();
-
-
-
+            scheduleRepository.updateCompletionPercentageByScheduleId(scheduleId,percentageCompleted);
             // Procesar ubicación del vehículo en el primer paradero
-            boolean isAtFirstBusStop = GeoUtils.isWithinGeofence(firstBusStop.getLatitude(), firstBusStop.getLongitude(), deviceRequestDTO.getLatitude(), deviceRequestDTO.getLongitude(), 40);
+            boolean isAtFirstBusStop = GeoUtils.isWithinGeofence(firstBusStop.getLatitude(), firstBusStop.getLongitude(), deviceRequestDTO.getLatitude(), deviceRequestDTO.getLongitude(), validateRadiusBusStopRoute);
 
             // Procesar ubicación del vehículo en el último paradero
-            boolean isAtLastBusStop = GeoUtils.isWithinGeofence(finalBusStop.getLatitude(), finalBusStop.getLongitude(), deviceRequestDTO.getLatitude(), deviceRequestDTO.getLongitude(), 40);
+            boolean isAtLastBusStop = GeoUtils.isWithinGeofence(finalBusStop.getLatitude(), finalBusStop.getLongitude(), deviceRequestDTO.getLatitude(), deviceRequestDTO.getLongitude(), validateRadiusBusStopRoute);
             //Obtenemos el segmento de donde esta parado el auto
             ResponseRouteBusStopSegment currentSegment = getBusStopSegmentById(currentBusStopId,busStopSegments);
             //Verificamos que el tipo de bus stop donde esta parado sea el final
@@ -117,13 +141,13 @@ public class RouteProcess {
                     // Si el tiempo está dentro del rango de la parada (inclusive)
                     if (!isAtFirstBusStop || !isAtLastBusStop){
                         if (arriveOnTime) {
-                            timeComplete(scheduleId,currentBusStopId,true);
+                            timeComplete(userId,scheduleId);
                         }
 
                         // Si el tiempo no está dentro del rango de la parada
                         if (!arriveOnTime) {
                             // Lógica que se ejecuta si el tiempo no está dentro del rango permitido
-                            noTimeComplete(scheduleId, currentBusStopId, false);
+                            noTimeComplete(userId,deviceId,deviceLatitude,deviceLongitude);
                         }
 
                     }
@@ -145,10 +169,11 @@ public class RouteProcess {
                         boolean isLastedPosition = checkMaxWaitTime(vehiclePosition.getMaxWaitTimeForBusStop(),timeWaited);
                         logger.info("TIEMPO EXECEDIDO : {}", timeWaited);
                         if (isLastedPosition){
+
                             stopRegisterRepository.updateMaxTimeExcess(scheduleId,vehiclePosition.getCurrentBusStop(),timeWaited);
                             stopRegisterRepository.updateAlertSend(scheduleId,vehiclePosition.getCurrentBusStop(),true);
                             stopRegisterRepository.updateTimeExceeded(scheduleId,vehiclePosition.getCurrentBusStop(),true);
-                            sendAlertForExceedingWaitTimeForSegment(currentBusStop.getName(),currentBusStopId);
+                            sendAlertForExceedingWaitTimeForSegment(userId,deviceId, (long) timeWaited,deviceLatitude,deviceLongitude);
                         }
                     }
                     if(!remainsAtTheSameLocation){
@@ -158,7 +183,7 @@ public class RouteProcess {
                             stopRegisterRepository.updateMinTimeShortfall(scheduleId,vehiclePosition.getCurrentBusStop(),timeWaited);
                             stopRegisterRepository.updateMinimumTimeMet(scheduleId,vehiclePosition.getCurrentBusStop(),false);
                             stopRegisterRepository.updateAlertSend(scheduleId,vehiclePosition.getCurrentBusStop(),true);
-                            sendAlertForExceedingWaitTimeForSegment("EL VEHICULO HA SALIDO ANTES DEL TIEMPO DEL PARADERO QUE SE LAESTIPULADO" , finalBusStopId);
+                            sendAlertForExceedingWaitTimeForSegment(userId,deviceId, (long) timeWaited,deviceLatitude,deviceLongitude);
                         }
                     }
                 }
@@ -167,7 +192,7 @@ public class RouteProcess {
                 if (isAtFirstBusStop || currentSegment.getTypeBusStop()== INICIO) {
                     if (vehiclePosition.isResetRoute()) {
                         stopRegisterRepository.updateEntryTimeForRegisterBuStop(scheduleId,currentBusStopId,Instant.now());
-                        scheduleRepository.updateDepartureTime(scheduleProcessPosition.getId(), Instant.now());
+                        scheduleRepository.updateDepartureTime(scheduleId, Instant.now());
                         updateInitialBusStopForVehicleState(
                                 currentBusStopId,
                                 nextBusStopId,
@@ -229,7 +254,7 @@ public class RouteProcess {
                         idVehiclePosition
                 );
                 vehiclePositionRepository.updateCompleteRouteById(idVehiclePosition,true);
-                scheduleRepository.updateArrivedTime(scheduleProcessPosition.getId(),Instant.now());
+                scheduleRepository.updateArrivedTime(scheduleId,Instant.now());
             }
 
         }
@@ -238,66 +263,97 @@ public class RouteProcess {
 
         if (!vehiclePosition.isResetRoute()){
             if (isNullBusStop){
-                //Actualizar la pocision dle vehiculo
-                vehiclePosition.setWhereaboutsStatus(false);
-                vehiclePositionRepository.save(vehiclePosition);
-                scheduleRepository.updateProgramCompletionStatus(scheduleId,true);
+                boolean isFinalBusStop= Objects.equals(vehiclePosition.getCurrentBusStop(), finalBusStopId);
+                if (isFinalBusStop){
+                    //Actualizar la pocision dle vehiculo
+                    vehiclePosition.setWhereaboutsStatus(false);
+                    vehiclePositionRepository.save(vehiclePosition);
+                    scheduleRepository.updateProgramCompletionStatus(scheduleId,true);
+                }
 
                 boolean isBusStop = vehiclePosition.isWhereaboutsStatus();
                 if (!isBusStop){
                     stopRegisterRepository.updateExitTimeForRegisterBusStop(scheduleId,vehiclePosition.getCurrentBusStop(), Instant.now());
                     int timeWaited = getTimeExceded(vehiclePosition.getCurrentTimeStoppedForBusStop());
                     boolean haveYouLeftTheBusStop = checkMinWaitTime(vehiclePosition.getMinWaitTimeForBusStop(),timeWaited);
-
-
                     if (haveYouLeftTheBusStop){
                         stopRegisterRepository.updateMinTimeShortfall(scheduleId,vehiclePosition.getCurrentBusStop(),timeWaited);
                         stopRegisterRepository.updateMinimumTimeMet(scheduleId, vehiclePosition.getCurrentBusStop(),false);
                         stopRegisterRepository.updateAlertSend(scheduleId,vehiclePosition.getCurrentBusStop(),true);
-                        sendAlertForExceedingWaitTimeForSegment("EL VEHICULO HA SALIDO ANTES DEL TIEMPO DEL PARADERO QUE SE LAESTIPULADO" , 2);
+                        sendAlertForNotExceedingWaitTimeForSegment(userId,deviceId, (long) timeWaited,deviceRequestDTO);
                     }
-                    logger.warn("no se encuentra en un parametro");
+                    logger.info("no se encuentra en un parametro");
                 }
             }
         }
 
-
-
-
         // Obtener el tipo de geocerca de la programación
-        TYPE_GEOFENCE geofenceType = scheduleProcessPosition.getTypeGeofence();
+        TypeGeofence geofenceType = optimizedSchedule.getTypeGeofence();
 
         // Manejar el tipo de geocerca
         switch (geofenceType) {
-            case CIRCULAR -> handlerGeofenceCircular(deviceRequestDTO, scheduleProcessPosition);
-            case CUADRANGULAR -> handlerGeofenceCuadrangular(deviceRequestDTO, scheduleProcessPosition);
-            case POLIGONAL -> handlerGeofencePoligonal(deviceRequestDTO, scheduleProcessPosition);
+            case CIRCULAR -> handlerGeofenceCircular(deviceRequestDTO, optimizedSchedule,userId);
+            case CUADRANGULAR -> handlerGeofenceCuadrangular(deviceRequestDTO, optimizedSchedule);
+            case POLIGONAL -> handlerGeofencePoligonal(deviceRequestDTO, optimizedSchedule);
         }
 
         // Validar ruta explícitamente si está configurado
-        if (scheduleProcessPosition.getValidateRouteExplicit()) {
-            // TODO: Implementar validación de polilíneas
+        if (optimizedSchedule.getValidateRouteExplicit()) {
+            boolean offRoute = gpsLibDecoded.isOffRoute();
+            if (offRoute){
+                String licencePlate = vehicleRepository.getLicencePlateByDeviceId(deviceId);
+                String description = "El vehiculo con la matricula "+licencePlate+" se ha salido del la ruta programada";
+                Alert alert = createAlert(TIME_NOT_COMPLETED , description,deviceId,userId,deviceLatitude,deviceLongitude);
+                ResponseAlert responseAlert = responseAlert(alert);
+                alertRepository.create(alert);
+                String informationJson = JsonUtils.toJson(responseAlert);
+                notificationTraccar.sendNotification(createNotificationDTO(userId, String.valueOf(TIME_NOT_COMPLETED), informationJson));
+            }
+
         }
 
     }
 
-    private void noTimeComplete(Long scheduleId, Long currentBusStopId, boolean b) {
+    private void noTimeComplete(Long userId,Long deviceId,Double latitude,Double longitude) {
+        String licencePlate = vehicleRepository.getLicencePlateByDeviceId(deviceId);
+        String description = "El vehiculo con la matricula "+licencePlate+" no ha completado el tiempo sobre un paradero";
+        Alert alert = createAlert(TIME_NOT_COMPLETED , description,deviceId,userId,latitude,longitude);
+        ResponseAlert responseAlert = responseAlert(alert);
+        alertRepository.create(alert);
+        String informationJson = JsonUtils.toJson(responseAlert);
+        notificationTraccar.sendNotification(createNotificationDTO(userId, String.valueOf(TIME_NOT_COMPLETED), informationJson));
         logger.warn("TIEMPO NO COMPLETADO D:");
     }
 
-    private void timeComplete(Long scheduleId, Long currentBusStopId, boolean b) {
+    private void timeComplete(Long userId, Long deviceId) {
         logger.info("TIEMPO COMPLETADO :D");
     }
-
+    private NotificationDTO createNotificationDTO(Long userId, String title , String description){
+        return NotificationDTO.builder()
+                .userId(userId)
+                .title(title)
+                .message(description).build();
+    }
     private RouteType getTypeRoute(Optional<RouteType> routeTypeByRouteId) {
         logger.info("Buscando el tipo de ruta");
         return routeTypeByRouteId.orElseThrow(
                 () -> new EntityNotFoundException("La entidad no ha sido encontrada")
         );
     }
+    private Alert createAlert(AlertType alertType, String description, Long vehicleId, Long userId,
+                              Double latitude, Double longitude) {
+        return Alert.builder()
+                .alertType(alertType) // Tipo de alerta (requerido)
+                .description(description) // Descripción de la alerta (requerido)
+                .vehicleId(vehicleId) // ID del vehículo asociado
+                .userId(userId) // ID del usuario asociado
+                .latitude(latitude) // Latitud de la ubicación
+                .longitude(longitude) // Longitud de la ubicación
+                .createdAt(Instant.now()) // Fecha y hora de creación
+                .build();
+    }
 
-
-    public ResponseRouteBusStopSegment getBusStopSegmentByOrder(Long order, List<ResponseRouteBusStopSegment> busStopSegments) {
+    private ResponseRouteBusStopSegment getBusStopSegmentByOrder(Long order, List<ResponseRouteBusStopSegment> busStopSegments) {
         return busStopSegments.stream()
                 .filter(segment -> segment.getOrder().equals(order))  // Filtra por el campo 'order'
                 .findFirst()  // Devuelve el primer resultado que cumpla con la condición
@@ -354,26 +410,58 @@ public class RouteProcess {
     }
 
     // Enviar alerta si se excede el tiempo máximo de espera
-    private void sendAlertForExceedingWaitTimeForSegment(String busStop, long timeSpent) {
-        // Lógica para enviar alerta (por ejemplo, log o notificación)
-        logger.warn("AlertaA: El vehículo ha excedido el tiempo de espera en {}. Tiempo transcurrido: {} minutos.", busStop, timeSpent);
+    private void sendAlertForExceedingWaitTimeForSegment(Long userId, Long deviceId,Long timeStopped,Double latitude, Double longitude) {
+        String licencePlate = vehicleRepository.getLicencePlateByDeviceId(deviceId);
+
+        String description = "El vehiculo con matricula "+licencePlate+" ha estado mas tiempo  en el paradero paradero el total fue : " + timeStopped;
+        Alert alert = createAlert(TIME_NOT_COMPLETED , description,deviceId,userId,latitude,longitude);
+        ResponseAlert responseAlert = responseAlert(alert);
+
+        alertRepository.create(alert);
+        String informationJson = JsonUtils.toJson(responseAlert);
+        notificationTraccar.sendNotification(createNotificationDTO(userId, String.valueOf(TIME_NOT_COMPLETED), informationJson));
+        logger.warn("Alerta: El vehículo ha excedido el tiempo de espera en {}. minutos",timeStopped);
     }
-    private BusStopResponse getCurrentBusStop(Double vehicleLatitude,Double vehicleLongitude,List<BusStopResponse> listBusStop , RouteType type){
-        double radiusApplicateForBusStop = 30.0;
-        return GeoUtils.getBusStopResponseIdIfWithinProximity(vehicleLatitude,vehicleLongitude,listBusStop,radiusApplicateForBusStop, type);
+    // Enviar alerta si se excede el tiempo máximo de espera
+    private void sendAlertForNotExceedingWaitTimeForSegment(Long userId, Long deviceId,Long timeStopped,DeviceRequestDTO deviceRequestDTO) {
+        String licencePlate = vehicleRepository.getLicencePlateByDeviceId(deviceId);
+
+        String description = "El vehiculo con matricula "+licencePlate+" ha estado menos tiempo  en el paradero paradero el total fue : " + timeStopped;
+        Alert alert = createAlert(TIME_NOT_COMPLETED , description,deviceId,userId, deviceRequestDTO.getLatitude(), deviceRequestDTO.getLongitude());
+        ResponseAlert responseAlert = responseAlert(alert);
+        alertRepository.create(alert);
+        String informationJson = JsonUtils.toJson(responseAlert);
+        notificationTraccar.sendNotification(createNotificationDTO(userId, String.valueOf(TIME_NOT_COMPLETED), informationJson));
+        logger.warn("Alerta: El vehículo ha excedido el tiempo de espera en {},{}. Tiempo transcurrido: {} minutos.", deviceRequestDTO.getLatitude(),deviceRequestDTO.getLongitude(), timeStopped);
+    }
+    private BusStopResponse getCurrentBusStop(Double radiusApplicateForBusStop,Double vehicleLatitude,Double vehicleLongitude,List<BusStopResponse> listBusStop , RouteType type){
+        return GeoUtils.getBusStopResponseIdIfWithinProximity(vehicleLatitude,vehicleLongitude,listBusStop, radiusApplicateForBusStop, type);
     }
     // Manejador para geocerca circular
-    private void handlerGeofenceCircular(DeviceRequestDTO deviceRequestDTO, ScheduleProcessPosition schedule) {
-        // TODO: Implementar manejo de geocerca circular
+    private void handlerGeofenceCircular(DeviceRequestDTO deviceRequestDTO, OptimizedSchedule schedule, Long userId) {
+        ResponseCircularGeofence geofence =  geofenceCircularRepository.findByResourceId(schedule.getGeofenceId());
+        boolean isWhitGeofence = GeoUtils.isWithinGeofence(geofence.getLatitude(),geofence.getLongitude(),deviceRequestDTO.getLatitude(),deviceRequestDTO.getLongitude(),geofence.getRadius());
+        String licencePlate = vehicleRepository.getLicencePlateByDeviceId(deviceRequestDTO.getDeviceId());
+
+        String description = "El vehiculo con matricula "+licencePlate+" ha salido de la geocerca dela programacion";
+        Alert alert = createAlert(TIME_NOT_COMPLETED , description, deviceRequestDTO.getDeviceId(), userId, deviceRequestDTO.getLatitude(), deviceRequestDTO.getLongitude());
+        ResponseAlert responseAlert = responseAlert(alert);
+        alertRepository.create(alert);
+        String informationJson = JsonUtils.toJson(responseAlert);
+        notificationTraccar.sendNotification(createNotificationDTO(userId, String.valueOf(TIME_NOT_COMPLETED), informationJson));
+        logger.warn("Alerta: El vehículo ha salido de la geocerca");
+        if (!isWhitGeofence) {
+            notificationTraccar.sendNotification(createNotificationDTO(userId, String.valueOf(GEOFENCE_VIOLATION), informationJson));
+        }
     }
 
     // Manejador para geocerca cuadrangular
-    private void handlerGeofenceCuadrangular(DeviceRequestDTO deviceRequestDTO, ScheduleProcessPosition schedule) {
+    private void handlerGeofenceCuadrangular(DeviceRequestDTO deviceRequestDTO, OptimizedSchedule schedule) {
         // TODO: Implementar manejo de geocerca cuadrangular
     }
 
     // Manejador para geocerca poligonal
-    private void handlerGeofencePoligonal(DeviceRequestDTO deviceRequestDTO, ScheduleProcessPosition schedule) {
+    private void handlerGeofencePoligonal(DeviceRequestDTO deviceRequestDTO, OptimizedSchedule schedule) {
         // TODO: Implementar manejo de geocerca poligonal
     }
     // Método para obtener el primer ID de paradero por el campo 'order'
@@ -445,6 +533,16 @@ public class RouteProcess {
     public static boolean checkMaxWaitTime(Integer maxWaitTime , Integer timeWaited) {
         // Verificar si está dentro del rango
         return timeWaited > maxWaitTime;
+    }
+    public ResponseAlert responseAlert(Alert alert){
+        return ResponseAlert.builder()
+                .alertType(alert.getAlertType())
+                .latitude(alert.getLatitude())
+                .description(alert.getDescription())
+                .longitude(alert.getLongitude())
+                .createdAt(Instant.now())
+
+                .build();
     }
     public static int getTimeExceded(Instant arrivalTime){
         Instant currentTime = Instant.now();

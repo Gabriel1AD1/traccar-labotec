@@ -14,7 +14,6 @@ import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.RouteRepository
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;

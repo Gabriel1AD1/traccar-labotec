@@ -1,10 +1,9 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.entity;
 
-import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.BusStopEntity;
-import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.VehicleEntity;
-import jakarta.persistence.*;
 import com.labotec.traccar.domain.enums.STATE_VEHICLE;
+import jakarta.persistence.*;
 import lombok.Data;
+
 import java.time.Instant;
 
 @Data

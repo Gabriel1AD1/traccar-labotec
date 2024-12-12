@@ -1,7 +1,6 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.repository;
 
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.StateVehiclePositionEntity;
-import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.VehicleEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

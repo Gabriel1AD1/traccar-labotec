@@ -2,7 +2,6 @@ package com.labotec.traccar.app.lib;
 
 import net.sf.geographiclib.Geodesic;
 import net.sf.geographiclib.GeodesicData;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;

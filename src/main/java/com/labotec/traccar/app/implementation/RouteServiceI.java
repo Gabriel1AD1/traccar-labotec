@@ -4,12 +4,12 @@ import com.labotec.traccar.app.enums.RouteType;
 import com.labotec.traccar.app.mapper.model.RouteModelMapper;
 import com.labotec.traccar.app.ports.input.repository.*;
 import com.labotec.traccar.app.ports.out.RouteService;
-import com.labotec.traccar.app.usecase.ports.input.repository.RouteBusStopSegmentRepository;
+import com.labotec.traccar.app.ports.input.repository.RouteBusStopSegmentRepository;
 import com.labotec.traccar.app.utils.RouteUtils;
 import com.labotec.traccar.domain.database.models.*;
 import com.labotec.traccar.domain.database.models.read.RouteBusStopInformation;
-import com.labotec.traccar.domain.web.dto.labotec.request.create.RouteBusStopCreateDTO;
 import com.labotec.traccar.domain.web.dto.labotec.request.create.PolylineCreateDTO;
+import com.labotec.traccar.domain.web.dto.labotec.request.create.RouteBusStopCreateDTO;
 import com.labotec.traccar.domain.web.dto.labotec.request.create.RouteCreateDTO;
 import com.labotec.traccar.domain.web.dto.labotec.request.create.RouteSegmentCreateDTO;
 import com.labotec.traccar.domain.web.dto.labotec.request.update.RouteUpdateDTO;
@@ -18,7 +18,8 @@ import com.labotec.traccar.domain.web.dto.labotec.response.ResponseRouteBusStopI
 import com.labotec.traccar.infra.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @AllArgsConstructor

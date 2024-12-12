@@ -6,6 +6,7 @@ import java.time.Instant;
 
 @Data
 public class InformationRoute {
+    private long userId;
     private long routeId;
     private long scheduleId;
     private Instant estimatedDepartureTime;

@@ -2,7 +2,6 @@ package com.labotec.traccar.infra.db.mysql.jpa.labotec.repository;
 
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.BusStopEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.BusStopProjection;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

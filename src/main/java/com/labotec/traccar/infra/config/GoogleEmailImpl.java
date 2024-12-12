@@ -1,14 +1,13 @@
 package com.labotec.traccar.infra.config;
 
 import com.labotec.traccar.app.ports.input.email.GoogleEmail;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
-
-import org.springframework.beans.factory.annotation.Value;
 
 @Component
 public class GoogleEmailImpl implements GoogleEmail {

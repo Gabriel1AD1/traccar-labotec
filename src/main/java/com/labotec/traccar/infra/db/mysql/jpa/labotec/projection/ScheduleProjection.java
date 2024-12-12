@@ -1,13 +1,12 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.projection;
 
-import com.labotec.traccar.app.enums.RouteType;
 import com.labotec.traccar.domain.enums.STATE;
-import com.labotec.traccar.domain.enums.TYPE_GEOFENCE;
+import com.labotec.traccar.domain.enums.TypeGeofence;
 
 public interface ScheduleProjection {
     Long getId();
     RouteProjection getRoute();
-    TYPE_GEOFENCE getGeofenceType();
+    TypeGeofence getGeofenceType();
     Long getGeofenceId();
     Long getRadiusValidateRoutePolyline();
     Boolean getValidateRouteExplicit();

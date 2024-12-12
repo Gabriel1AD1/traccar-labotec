@@ -1,13 +1,12 @@
 package com.labotec.traccar.app.ports.input.repository;
 
 import com.labotec.traccar.app.utils.common.repository.GenericRepository;
-import com.labotec.traccar.domain.database.models.Route;
 import com.labotec.traccar.domain.database.models.Schedule;
 import com.labotec.traccar.domain.database.models.ScheduleDelayInformation;
 import com.labotec.traccar.domain.database.models.read.InformationRoute;
 import com.labotec.traccar.domain.enums.STATE;
+import com.labotec.traccar.domain.query.OptimizedSchedule;
 import com.labotec.traccar.domain.query.ScheduleProcessPosition;
-import org.springframework.data.repository.query.Param;
 
 import java.time.Instant;
 import java.util.List;
@@ -90,7 +89,8 @@ public interface ScheduleRepository extends GenericRepository<Schedule , Long> {
     void updateEstimatedArrivalTimeByVehicleAndCurrentTime(Long deviceId, Instant currentTime , Instant newArrivalTime);
     void updateProgramCompletionStatus(Long resourceId , Boolean isComplete);
     void updateEstimatedArrivedTime(Long id, Instant now);
-
+    OptimizedSchedule findDeviceIdAndCurrentTime(Long deviceId, Instant currentTime);
     List<ScheduleDelayInformation> findAllSchedulesForDelay(Long vehicleId,Instant arrivedTime);
     void updateScheduleTimesById(Long id, Instant estimatedDepartureTime, Instant estimatedArrivalTime);
+    void updateCompletionPercentageByScheduleId (Long scheduleId,Double percentageCompleted);
 }

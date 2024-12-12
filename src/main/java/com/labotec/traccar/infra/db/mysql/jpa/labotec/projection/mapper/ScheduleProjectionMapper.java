@@ -2,10 +2,8 @@ package com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.mapper;
 
 import com.labotec.traccar.domain.query.*;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.*;
-
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -58,10 +56,6 @@ public class ScheduleProjectionMapper {
         ScheduleRouteBusStopProjection scheduleRouteBusStopProjection = new ScheduleRouteBusStopProjection();
         scheduleRouteBusStopProjection.setId(routeBusStopProjection.getId());
         scheduleRouteBusStopProjection.setOrder(routeBusStopProjection.getOrder());
-        scheduleRouteBusStopProjection.setMinWaitTime(routeBusStopProjection.getMinWaitTime());
-        scheduleRouteBusStopProjection.setMaxWaitTime(routeBusStopProjection.getMaxWaitTime());
-        scheduleRouteBusStopProjection.setEstimatedTravelTime(routeBusStopProjection.getEstimatedTravelTime());
-
         // Mapear el primer y segundo paradero
         if (routeBusStopProjection.getFirstBusStop() != null) {
             scheduleRouteBusStopProjection.setFirstBusStop(mapBusStopProjection(routeBusStopProjection.getFirstBusStop()));

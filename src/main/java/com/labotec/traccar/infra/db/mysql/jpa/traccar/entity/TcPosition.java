@@ -1,7 +1,5 @@
 package com.labotec.traccar.infra.db.mysql.jpa.traccar.entity;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.labotec.traccar.infra.db.mysql.jpa.traccar.entity.Attributes;
 import com.labotec.traccar.infra.db.mysql.jpa.traccar.mapper.AttributesConverter;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

@@ -1,6 +1,5 @@
 package com.labotec.traccar.domain.database.models;
 
-import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.CompanyEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

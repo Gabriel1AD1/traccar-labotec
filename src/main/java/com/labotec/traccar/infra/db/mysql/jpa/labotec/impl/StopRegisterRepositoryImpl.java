@@ -1,6 +1,5 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.impl;
 
-import com.labotec.traccar.app.implementation.RouteProcess;
 import com.labotec.traccar.app.ports.input.repository.StopRegisterRepository;
 import com.labotec.traccar.domain.database.models.StopRegister;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.StopRegisterEntity;

@@ -15,8 +15,8 @@
         <appender-ref ref="STDOUT"/>
     </root>
 
-    <!-- Logger para un paquete específico, por ejemplo: com.labotec -->
-    <logger name="com.labotec" level="DEBUG">
+    <!-- Logger para un paquete específico, sin propagación al logger raíz -->
+    <logger name="com.labotec.traccar" level="DEBUG" additivity="false">
         <appender-ref ref="STDOUT"/>
     </logger>
 

@@ -1,8 +1,6 @@
     package com.labotec.traccar.domain.web.dto.labotec.request.create;
 
     import com.fasterxml.jackson.annotation.JsonProperty;
-    import com.labotec.traccar.app.Validations.SinglePrimaryPolyline;
-    import jakarta.validation.Valid;
     import jakarta.validation.constraints.NotNull;
     import jakarta.validation.constraints.Positive;
     import lombok.AllArgsConstructor;

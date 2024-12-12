@@ -3,10 +3,13 @@ package com.labotec.traccar.infra.db.mysql.jpa.labotec.repository;
 import com.labotec.traccar.app.enums.RouteType;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.RouteEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.RouteResponseProjection;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
@@ -59,16 +62,23 @@ public interface RouteRepositoryJpa extends JpaRepository<RouteEntity, Long> {
             "FROM RouteEntity r WHERE r.userId.userId = :userId")
     List<RouteResponseProjection> findRoutesByUserId(@Param("userId") Long userId);
 
-    /**
-     * Verifica si existe una ruta específica asociada a un usuario determinado.
-     *
-     * @param routeId El ID de la ruta a verificar.
-     * @param userId El ID del usuario para verificar si está asociado a la ruta.
-     * @return {@code true} si existe la ruta asociada al usuario, {@code false} si no existe.
-     */
-    @Query("select (count(r) > 0) from RouteEntity r where r.id = :routeId and r.userId.userId = :userId")
-    boolean existsByRouteIdAndUserId(@Param("routeId") Long routeId, @Param("userId") Long userId);
-
 
     boolean existsByIdAndUserId_UserId(Long routeId, Long userId);
+
+    /**
+     * Elimina una ruta por su ID y el ID del usuario.
+     *
+     * @param resourceId El ID de la ruta a eliminar.
+     * @param userId El ID del usuario asociado.
+     */
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM RouteEntity r WHERE r.id = :resourceId AND r.userId.userId = :userId")
+    int deleteByIdAndUserId(@Param("resourceId") Long resourceId, @Param("userId") Long userId);
+
+    @EntityGraph(attributePaths = {"userId"})
+    @Query("SELECT CASE WHEN COUNT(r) > 0 THEN true ELSE false END " +
+            "FROM RouteEntity r " +
+            "WHERE r.id = :routeId AND r.userId.userId = :userId")
+    Boolean existsByRouteIdAndUserId(@Param("routeId") Long routeId, @Param("userId") Long userId);
 }

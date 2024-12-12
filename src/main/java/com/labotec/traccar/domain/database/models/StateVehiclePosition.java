@@ -3,8 +3,6 @@ package com.labotec.traccar.domain.database.models;
 import com.labotec.traccar.domain.enums.STATE_VEHICLE;
 import lombok.Data;
 
-import java.time.Instant;
-
 @Data
 public class StateVehiclePosition {
     private Long vehicleAssociate;

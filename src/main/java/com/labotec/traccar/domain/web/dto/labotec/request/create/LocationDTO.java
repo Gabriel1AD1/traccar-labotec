@@ -1,8 +1,6 @@
 package com.labotec.traccar.domain.web.dto.labotec.request.create;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.labotec.traccar.domain.database.models.Company;
-import com.labotec.traccar.domain.database.models.User;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;

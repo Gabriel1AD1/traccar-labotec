@@ -1,14 +1,14 @@
 package com.labotec.traccar.domain.database.models;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.labotec.traccar.app.enums.RouteType;
 import com.labotec.traccar.domain.enums.STATE;
-import com.labotec.traccar.domain.enums.TYPE_GEOFENCE;
+import com.labotec.traccar.domain.enums.TypeGeofence;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Max;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 import java.util.List;
@@ -38,7 +38,7 @@ public class Schedule {
     private Long radiusValidateRoutePolyline;
     private Boolean validateRouteExplicit;
     private List<DriverSchedule> drivers;
-    private TYPE_GEOFENCE geofenceType;
+    private TypeGeofence geofenceType;
 
     private Instant estimatedDepartureTime;
 

@@ -11,6 +11,6 @@ public interface VehicleRepository extends GenericRepository<Vehicle,Long> {
 
     Vehicle findByDevice(Long id);
     Vehicle findByLicencePlate(String licencePlate);
-
+    String getLicencePlateByDeviceId(Long traccarDeviceId);
     List<ResponseVehicle> findAllByUserId(@NotNull Long userId);
 }

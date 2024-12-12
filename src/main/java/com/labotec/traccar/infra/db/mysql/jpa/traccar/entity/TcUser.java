@@ -1,7 +1,6 @@
 package com.labotec.traccar.infra.db.mysql.jpa.traccar.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.labotec.traccar.infra.web.controller.rest.traccar.helper.Hashing;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

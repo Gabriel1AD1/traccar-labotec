@@ -16,11 +16,10 @@ public class VehicleType {
     @JsonIgnore
     private Company companyId;
     private String name;
-
+    private String description;
     @JsonIgnore
     private Instant createdDate;
 
-    private String description;
     @JsonIgnore
     private Instant lastModifiedDate;
 }

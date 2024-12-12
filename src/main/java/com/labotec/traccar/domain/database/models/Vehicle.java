@@ -2,7 +2,10 @@ package com.labotec.traccar.domain.database.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.labotec.traccar.domain.enums.STATE;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 

@@ -16,7 +16,7 @@ public interface RouteRepository extends GenericRepository<Route,  Long> {
 
     Optional<RouteResponse> routeResponse(long resourceId);
 
-    Optional<RouteType> getRouteTypeByRouteId(long routeId);
+    Optional<RouteType> getRouteTypeByRouteId(Long routeId);
 
     List<ResponseRoute> findAllRouteByUserId(Long userId);
 

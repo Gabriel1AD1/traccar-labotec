@@ -2,9 +2,8 @@ package com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper;
 
 import com.labotec.traccar.domain.database.models.RouteBusStopSegment;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.RouteBusStopSegmentEntity;
-import org.mapstruct.*;
-
-import java.util.List;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingConstants;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING,uses = {
         BusStopMapper.class,

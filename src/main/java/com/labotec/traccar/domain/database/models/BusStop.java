@@ -2,7 +2,6 @@ package com.labotec.traccar.domain.database.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.labotec.traccar.domain.enums.STATE;
-import com.labotec.traccar.domain.enums.STATE_BUS_STOP;
 import lombok.*;
 
 import java.time.Instant;

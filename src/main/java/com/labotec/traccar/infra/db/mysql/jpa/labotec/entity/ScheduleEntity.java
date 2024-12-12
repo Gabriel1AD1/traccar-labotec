@@ -1,10 +1,12 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.entity;
 
-import com.labotec.traccar.app.enums.RouteType;
 import com.labotec.traccar.domain.enums.STATE;
-import com.labotec.traccar.domain.enums.TYPE_GEOFENCE;
+import com.labotec.traccar.domain.enums.TypeGeofence;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -89,7 +91,7 @@ public class ScheduleEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo_geocerca", nullable = false, length = 30)
-    private TYPE_GEOFENCE geofenceType; // Almacena el tipo de geocerca
+    private TypeGeofence geofenceType; // Almacena el tipo de geocerca
     @CreatedDate
     @Column(name = "fecha_creacion", updatable = false)
     private Instant createdDate;

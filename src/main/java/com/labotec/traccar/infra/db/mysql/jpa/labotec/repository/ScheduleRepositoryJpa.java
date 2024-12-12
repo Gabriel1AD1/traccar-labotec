@@ -1,16 +1,15 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.repository;
 
-import com.labotec.traccar.domain.database.models.Vehicle;
 import com.labotec.traccar.domain.enums.STATE;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.ScheduleEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.VehicleEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.InformationScheduleProjection;
+import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.OptimizedScheduleProjection;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.ScheduleDelayInformationProjection;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.ScheduleProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -174,7 +173,10 @@ public interface ScheduleRepositoryJpa extends JpaRepository<ScheduleEntity, Lon
             @Param("currentTime") Instant currentTime
     );
 
-
+    @Modifying
+    @Transactional
+    @Query("UPDATE ScheduleEntity s SET s.percentageTraveled = :percentageCompleted WHERE s.id = :scheduleId")
+    int updatePercentageCompletedByScheduleId(@Param("scheduleId") Long scheduleId, @Param("percentageCompleted") Double percentageCompleted);
     @Modifying
     @Transactional
     @Query("UPDATE ScheduleEntity s SET s.isProgramCompleted = :isProgramCompleted WHERE s.id = :id")
@@ -192,6 +194,7 @@ public interface ScheduleRepositoryJpa extends JpaRepository<ScheduleEntity, Lon
 
     @Query("SELECT s.route.id AS routeId, " +
             "s.id AS scheduleId, " +
+            "s.userId.userId as userId,"+
             "s.estimatedDepartureTime AS estimatedDepartureTime, " +
             "s.estimatedArrivalTime AS estimatedArrivalTime " +
             "FROM ScheduleEntity s " +
@@ -253,4 +256,17 @@ public interface ScheduleRepositoryJpa extends JpaRepository<ScheduleEntity, Lon
     @Modifying
     @Query("UPDATE ScheduleEntity s SET s.estimatedArrivalTime = :arrivalTime WHERE s.id = :id")
     int updateEstimatedArrivalTimeByScheduleId(@Param("id") Long id, @Param("arrivalTime") Instant now);
+    @Query("SELECT s.geofenceType AS geofenceType, " +
+            "s.geofenceId AS geofenceId, " +
+            "s.radiusValidateRoutePolyline AS radiusValidateRoutePolyline, " +
+            "s.validateRouteExplicit AS validateRouteExplicit, " +
+            "s.status AS status " +
+            "FROM ScheduleEntity s " +
+            "WHERE s.vehicle.traccarDeviceId = :deviceId " +  // Usamos el ID de la programación como condición
+            "AND s.isProgramCompleted = false " + // Verificamos que la programación no esté completada
+            "AND :currentTime BETWEEN s.estimatedDepartureTime AND s.estimatedArrivalTime")  // Filtramos por el tiempo actual
+    Optional<OptimizedScheduleProjection> findOptimizedScheduleById(
+            @Param("deviceId") Long deviceId,
+            @Param("currentTime") Instant currentTime);
+
 }

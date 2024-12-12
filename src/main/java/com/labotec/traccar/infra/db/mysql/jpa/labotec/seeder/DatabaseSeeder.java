@@ -1,8 +1,11 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.seeder;
 
+import com.labotec.traccar.app.ports.input.repository.ConfigurationRouteProcessServerRepository;
 import com.labotec.traccar.app.ports.out.BusStopService;
 import com.labotec.traccar.app.ports.out.CompanyService;
 import com.labotec.traccar.app.ports.out.UserService;
+import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.ConfigurationRouteProcessServerEntity;
+import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.ConfigurationRouteProcessServerEntityRepositoryJpa;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -13,6 +16,7 @@ public class DatabaseSeeder implements CommandLineRunner {
     private final CompanyService companyService;
     private final BusStopService busStopService;
     private final UserService userService;
+    private final ConfigurationRouteProcessServerEntityRepositoryJpa processServerEntityRepositoryJpa;
     @Override
     public void run(String... args) throws Exception {
         /*
@@ -34,5 +38,13 @@ public class DatabaseSeeder implements CommandLineRunner {
         userService.deleteUserById(10000L);
         companyService.deleteCompanyById(10000L);
         busStopService.deleteById(10000L , 10000L);*/
+
+       if (processServerEntityRepositoryJpa.count() == 0 ){
+           processServerEntityRepositoryJpa.save(ConfigurationRouteProcessServerEntity
+                   .builder()
+                           .radiusValidateBusStop(15.0)
+                           .configurationPrimary(true)
+                   .build());
+       }
     }
 }

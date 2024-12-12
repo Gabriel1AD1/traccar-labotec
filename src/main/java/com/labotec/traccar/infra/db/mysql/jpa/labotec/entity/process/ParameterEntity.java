@@ -2,7 +2,6 @@ package com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.process;
 
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.TYPE_SENSOR;
 import jakarta.persistence.*;
-import jakarta.persistence.GenerationType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

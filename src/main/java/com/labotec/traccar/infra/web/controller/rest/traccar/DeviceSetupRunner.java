@@ -1,9 +1,9 @@
 package com.labotec.traccar.infra.web.controller.rest.traccar;
 
+import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.TYPE_SENSOR;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.process.DeviceEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.process.ParameterEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.process.RuleEntity;
-import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.TYPE_SENSOR;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.DeviceRepositoryJpa;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;

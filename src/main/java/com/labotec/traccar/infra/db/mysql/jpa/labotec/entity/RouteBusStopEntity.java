@@ -4,8 +4,6 @@ package com.labotec.traccar.infra.db.mysql.jpa.labotec.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.labotec.traccar.domain.database.models.BusStop;
-import com.labotec.traccar.domain.database.models.OverviewPolyline;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

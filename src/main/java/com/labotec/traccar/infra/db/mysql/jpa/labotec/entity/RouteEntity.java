@@ -2,9 +2,11 @@ package com.labotec.traccar.infra.db.mysql.jpa.labotec.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.labotec.traccar.app.enums.RouteType;
-import com.labotec.traccar.domain.enums.STATE;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -46,9 +48,6 @@ public class RouteEntity {
     private Long distanceMinInKM;
     @Column(name = "nombre", nullable = false, length = 250)
     private String name;
-    @OneToMany(mappedBy = "route", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    @JsonManagedReference
-    private List<RouteBusStopEntity> busStopsList;
     @Enumerated(value = EnumType.STRING)
     @Column(name = "tipo_ruta" ,nullable = false , length = 30)
     private RouteType routeType;
@@ -58,12 +57,20 @@ public class RouteEntity {
     private Integer sunMinWaitTimeForBusStop;
     @Column(name = "suma_maxima_de_tiempo_entre_paraderos")
     private Integer sumNexArrivalTIme;
-
     @CreatedDate
     @Column(name = "fecha_creacion", updatable = false)
     private Instant createdDate;
-
     @LastModifiedDate
     @Column(name = "fecha_actualizacion")
     private Instant lastModifiedDate;
+
+    @OneToMany(mappedBy = "route", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JsonManagedReference
+    private List<RouteBusStopEntity> busStopsList;
+    @OneToMany(mappedBy = "route", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JsonManagedReference
+    private List<ScheduleEntity> schedules;
+    @OneToMany(mappedBy = "route", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JsonManagedReference
+    private List<RouteBusStopSegmentEntity> routeBusStopSegments;
 }
