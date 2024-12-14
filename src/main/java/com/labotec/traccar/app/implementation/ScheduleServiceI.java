@@ -3,7 +3,7 @@ package com.labotec.traccar.app.implementation;
 import com.labotec.traccar.app.exception.AlreadyAssignedVehicleSchedule;
 import com.labotec.traccar.app.mapper.model.ScheduleModelMapper;
 import com.labotec.traccar.app.ports.input.repository.*;
-import com.labotec.traccar.app.ports.out.ScheduleService;
+import com.labotec.traccar.app.ports.out.services.ScheduleService;
 import com.labotec.traccar.domain.database.models.*;
 import com.labotec.traccar.domain.database.models.read.InformationRoute;
 import com.labotec.traccar.domain.enums.STATE;

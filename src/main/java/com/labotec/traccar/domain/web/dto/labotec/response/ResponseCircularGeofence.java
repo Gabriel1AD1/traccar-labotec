@@ -1,8 +1,8 @@
 package com.labotec.traccar.domain.web.dto.labotec.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Data
 @Builder

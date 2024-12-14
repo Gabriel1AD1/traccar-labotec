@@ -4,7 +4,7 @@ import com.labotec.traccar.app.mapper.model.DriverModelMapper;
 import com.labotec.traccar.app.ports.input.repository.CompanyRepository;
 import com.labotec.traccar.app.ports.input.repository.DriverRepository;
 import com.labotec.traccar.app.ports.input.repository.UserRepository;
-import com.labotec.traccar.app.ports.out.DriverService;
+import com.labotec.traccar.app.ports.out.services.DriverService;
 import com.labotec.traccar.domain.database.models.Driver;
 import com.labotec.traccar.domain.database.models.User;
 import com.labotec.traccar.domain.web.dto.labotec.request.create.DriverDTO;

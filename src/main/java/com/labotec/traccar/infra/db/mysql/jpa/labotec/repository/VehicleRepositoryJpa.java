@@ -15,10 +15,10 @@ import java.util.Optional;
 @Repository
 public interface VehicleRepositoryJpa extends JpaRepository<VehicleEntity, Long> {
     // Consultas personalizadas si es necesario
-    @Query("SELECT v.traccarDeviceId FROM VehicleEntity v")
+    @Query("SELECT v.deviceId FROM VehicleEntity v")
     List<Integer> findTraccarDeviceIdBy();
 
-    @Query("SELECT v FROM VehicleEntity v WHERE v.traccarDeviceId = :traccarDeviceId AND v.userId.userId = :userId")
+    @Query("SELECT v FROM VehicleEntity v WHERE v.deviceId = :traccarDeviceId AND v.userId.userId = :userId")
     Optional<VehicleEntity> findByTraccarDeviceIdAndUserIdUserId(@Param("traccarDeviceId") Long traccarDeviceId, @Param("userId") Long userId);
 
     Optional<VehicleEntity> findByLicensePlate(String licencePlate);
@@ -27,7 +27,7 @@ public interface VehicleRepositoryJpa extends JpaRepository<VehicleEntity, Long>
 
     @Query("""
     SELECT
-        v.traccarDeviceId AS traccarDeviceId,
+        v.deviceId AS traccarDeviceId,
         v.licensePlate AS licensePlate,
         vt.name AS typeVehicleName,
         v.status AS status,
@@ -42,7 +42,7 @@ public interface VehicleRepositoryJpa extends JpaRepository<VehicleEntity, Long>
     List<ResponseVehicleProjection> findVehiclesByUserId(@Param("userId") Long userId);
     @Transactional
     @Modifying
-    @Query("DELETE FROM VehicleEntity v WHERE v.userId.userId = :userId AND v.traccarDeviceId = :deviceId")
+    @Query("DELETE FROM VehicleEntity v WHERE v.userId.userId = :userId AND v.deviceId = :deviceId")
     int deleteByUserIdAndDeviceId(@Param("userId") Long userId, @Param("deviceId") Long deviceId);
 
     /**
@@ -51,7 +51,12 @@ public interface VehicleRepositoryJpa extends JpaRepository<VehicleEntity, Long>
      * @param traccarDeviceId ID del dispositivo Traccar.
      * @return La placa del vehículo (licensePlate).
      */
-    @Query("SELECT v.licensePlate FROM VehicleEntity v WHERE v.traccarDeviceId = :traccarDeviceId")
+    @Query("SELECT v.licensePlate FROM VehicleEntity v WHERE v.deviceId = :traccarDeviceId")
     String findLicensePlateByTraccarDeviceId(@Param("traccarDeviceId") Long traccarDeviceId);
-
+    // Consulta para verificar si existe un vehículo asociado a un usuario
+    // Consulta que verifica si existe un vehículo asociado al userId y traccarDeviceId
+    @Query("SELECT CASE WHEN COUNT(v) > 0 THEN true ELSE false END " +
+            "FROM VehicleEntity v " +
+            "WHERE v.userId.userId = :userId AND v.deviceId = :deviceId")
+    Boolean existsByUserIdAndDeviceId(@Param("userId") Long userId, @Param("deviceId") Long deviceId);
 }

@@ -4,8 +4,7 @@
     import com.labotec.traccar.app.mapper.model.*;
     import com.labotec.traccar.app.ports.input.email.GoogleEmail;
     import com.labotec.traccar.app.ports.input.repository.*;
-    import com.labotec.traccar.app.ports.out.*;
-    import com.labotec.traccar.app.ports.input.repository.RouteBusStopSegmentRepository;
+    import com.labotec.traccar.app.ports.out.services.*;
     import lombok.AllArgsConstructor;
     import org.springframework.context.annotation.Bean;
     import org.springframework.context.annotation.Configuration;

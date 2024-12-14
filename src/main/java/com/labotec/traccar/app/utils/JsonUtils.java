@@ -20,4 +20,21 @@ public class JsonUtils {
             throw new RuntimeException("Error al convertir el objeto a JSON", e);
         }
     }
+
+    /**
+     * Convierte una cadena JSON en un objeto de tipo T.
+     *
+     * @param json La cadena JSON.
+     * @param clazz El tipo de objeto al que se desea convertir.
+     * @param <T> El tipo de objeto.
+     * @return El objeto convertido.
+     * @throws RuntimeException Si ocurre un error durante la conversión.
+     */
+    public static <T> T toObject(String json, Class<T> clazz) {
+        try {
+            return objectMapper.readValue(json, clazz);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al convertir el JSON a objeto", e);
+        }
+    }
 }

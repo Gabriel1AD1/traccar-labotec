@@ -4,7 +4,7 @@ import com.labotec.traccar.app.mapper.model.BusStopModelMapper;
 import com.labotec.traccar.app.ports.input.repository.BusStopRepository;
 import com.labotec.traccar.app.ports.input.repository.CompanyRepository;
 import com.labotec.traccar.app.ports.input.repository.UserRepository;
-import com.labotec.traccar.app.ports.out.BusStopService;
+import com.labotec.traccar.app.ports.out.services.BusStopService;
 import com.labotec.traccar.domain.database.models.BusStop;
 import com.labotec.traccar.domain.database.models.BusStopUpdateListDTO;
 import com.labotec.traccar.domain.database.models.User;

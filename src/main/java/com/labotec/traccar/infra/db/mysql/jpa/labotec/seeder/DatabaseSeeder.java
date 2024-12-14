@@ -1,9 +1,8 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.seeder;
 
-import com.labotec.traccar.app.ports.input.repository.ConfigurationRouteProcessServerRepository;
-import com.labotec.traccar.app.ports.out.BusStopService;
-import com.labotec.traccar.app.ports.out.CompanyService;
-import com.labotec.traccar.app.ports.out.UserService;
+import com.labotec.traccar.app.ports.out.services.BusStopService;
+import com.labotec.traccar.app.ports.out.services.CompanyService;
+import com.labotec.traccar.app.ports.out.services.UserService;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.ConfigurationRouteProcessServerEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.ConfigurationRouteProcessServerEntityRepositoryJpa;
 import lombok.AllArgsConstructor;

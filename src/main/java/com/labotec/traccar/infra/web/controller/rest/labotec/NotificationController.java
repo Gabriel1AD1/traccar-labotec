@@ -1,9 +1,7 @@
 package com.labotec.traccar.infra.web.controller.rest.labotec;
 
-import com.labotec.traccar.app.ports.out.AlertService;
+import com.labotec.traccar.app.ports.out.services.AlertService;
 import com.labotec.traccar.domain.web.dto.labotec.response.ResponseAlert;
-import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.NotificationEntityRepository;
-import com.labotec.traccar.infra.web.controller.ws.NotificationService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

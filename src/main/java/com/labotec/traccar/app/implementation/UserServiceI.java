@@ -2,7 +2,7 @@ package com.labotec.traccar.app.implementation;
 
 import com.labotec.traccar.app.ports.input.repository.CompanyRepository;
 import com.labotec.traccar.app.ports.input.repository.UserRepository;
-import com.labotec.traccar.app.ports.out.UserService;
+import com.labotec.traccar.app.ports.out.services.UserService;
 import com.labotec.traccar.domain.database.models.Company;
 import com.labotec.traccar.domain.database.models.User;
 import com.labotec.traccar.domain.web.dto.labotec.request.create.UserCreateDTO;

@@ -27,7 +27,7 @@ public interface ScheduleRepositoryJpa extends JpaRepository<ScheduleEntity, Lon
      * @param vehicleId el ID del vehículo.
      * @return una lista de programaciones asociadas al usuario y vehículo.
      */
-    @Query("SELECT s FROM ScheduleEntity s WHERE s.userId.userId = :userId AND s.vehicle.traccarDeviceId = :vehicleId")
+    @Query("SELECT s FROM ScheduleEntity s WHERE s.userId.userId = :userId AND s.vehicle.deviceId = :vehicleId")
     List<ScheduleEntity> findByUserIdAndVehicleId(@Param("userId") Long userId, @Param("vehicleId") Long vehicleId);
 
     /**
@@ -119,7 +119,7 @@ public interface ScheduleRepositoryJpa extends JpaRepository<ScheduleEntity, Lon
      * @param userId el ID del usuario.
      * @return la programación más reciente para el vehículo y usuario, si existe.
      */
-    @Query("SELECT s FROM ScheduleEntity s WHERE s.vehicle.traccarDeviceId = :vehicleId AND s.userId.userId = :userId ORDER BY s.departureTime DESC")
+    @Query("SELECT s FROM ScheduleEntity s WHERE s.vehicle.deviceId = :vehicleId AND s.userId.userId = :userId ORDER BY s.departureTime DESC")
     Optional<ScheduleEntity> findTopByVehicleAndUserOrderByDepartureTimeDesc(@Param("vehicleId") Long vehicleId, @Param("userId") Long userId);
 
     /**
@@ -139,7 +139,7 @@ public interface ScheduleRepositoryJpa extends JpaRepository<ScheduleEntity, Lon
      */
     @Query("SELECT COUNT(s) > 0 " +
             "FROM ScheduleEntity s " +
-            "WHERE s.vehicle.traccarDeviceId = :vehicleId " +
+            "WHERE s.vehicle.deviceId = :vehicleId " +
             "AND s.estimatedDepartureTime < :newArrivalTime " +
             "AND s.estimatedArrivalTime > :newDepartureTime")
     boolean existsOverlappingSchedule(
@@ -149,7 +149,7 @@ public interface ScheduleRepositoryJpa extends JpaRepository<ScheduleEntity, Lon
     );
 
     @Query("SELECT s FROM ScheduleEntity s " +
-            "WHERE s.vehicle.traccarDeviceId = :vehicleId " +
+            "WHERE s.vehicle.deviceId = :vehicleId " +
             "AND :currentTime BETWEEN s.estimatedDepartureTime AND s.estimatedArrivalTime " +
             "ORDER BY s.estimatedDepartureTime ASC")
     Optional<ScheduleEntity> findScheduleByVehicleAndCurrentTime(
@@ -164,7 +164,7 @@ public interface ScheduleRepositoryJpa extends JpaRepository<ScheduleEntity, Lon
             "s.validateRouteExplicit AS validateRouteExplicit, " +
             "s.status AS status " +
             "FROM ScheduleEntity s " +
-            "WHERE s.vehicle.traccarDeviceId = :vehicleId " +
+            "WHERE s.vehicle.deviceId = :vehicleId " +
             "AND :currentTime BETWEEN s.estimatedDepartureTime AND s.estimatedArrivalTime " +
             "AND s.isProgramCompleted = false " +  // Añadir esta condición para verificar si la programación no está completada
             "ORDER BY s.estimatedDepartureTime ASC")
@@ -184,7 +184,7 @@ public interface ScheduleRepositoryJpa extends JpaRepository<ScheduleEntity, Lon
 
     @Query("SELECT s.route.id " +
             "FROM ScheduleEntity s " +
-            "WHERE s.vehicle.traccarDeviceId = :vehicleId " +
+            "WHERE s.vehicle.deviceId = :vehicleId " +
             "AND :currentTime BETWEEN s.estimatedDepartureTime AND s.estimatedArrivalTime " +
             "ORDER BY s.estimatedDepartureTime ASC")
     Optional<Long> findRouteIdByScheduleForVehicleIdAndCurrentTime(
@@ -198,7 +198,7 @@ public interface ScheduleRepositoryJpa extends JpaRepository<ScheduleEntity, Lon
             "s.estimatedDepartureTime AS estimatedDepartureTime, " +
             "s.estimatedArrivalTime AS estimatedArrivalTime " +
             "FROM ScheduleEntity s " +
-            "WHERE s.vehicle.traccarDeviceId = :vehicleId " +
+            "WHERE s.vehicle.deviceId = :vehicleId " +
             "AND :currentTime BETWEEN s.estimatedDepartureTime AND s.estimatedArrivalTime " +
             "ORDER BY s.estimatedDepartureTime ASC")
     Optional<InformationScheduleProjection> findByInformationScheduleIds(
@@ -219,7 +219,7 @@ public interface ScheduleRepositoryJpa extends JpaRepository<ScheduleEntity, Lon
     @Transactional
     @Query("UPDATE ScheduleEntity s " +
             "SET s.estimatedArrivalTime = :newEstimatedArrivalTime " +
-            "WHERE s.vehicle.traccarDeviceId = :vehicleId " +
+            "WHERE s.vehicle.deviceId = :vehicleId " +
             "AND :currentTime BETWEEN s.estimatedDepartureTime AND s.estimatedArrivalTime " +
             "AND s.isProgramCompleted = false")
     int updateEstimatedArrivalTimeByVehicleAndCurrentTime(
@@ -238,7 +238,7 @@ public interface ScheduleRepositoryJpa extends JpaRepository<ScheduleEntity, Lon
             "s.estimatedArrivalTime AS estimatedArrivalTime, " +
             "s.estimatedDepartureTime AS estimatedDepartureTime " +
             "FROM ScheduleEntity s " +
-            "WHERE s.vehicle.traccarDeviceId = :vehicleId " +
+            "WHERE s.vehicle.deviceId = :vehicleId " +
             "AND s.estimatedDepartureTime > :instant " +
             "ORDER BY s.id ASC")
     List<ScheduleDelayInformationProjection> findSchedulesByVehicleAndTimeGreaterThan(
@@ -262,7 +262,7 @@ public interface ScheduleRepositoryJpa extends JpaRepository<ScheduleEntity, Lon
             "s.validateRouteExplicit AS validateRouteExplicit, " +
             "s.status AS status " +
             "FROM ScheduleEntity s " +
-            "WHERE s.vehicle.traccarDeviceId = :deviceId " +  // Usamos el ID de la programación como condición
+            "WHERE s.vehicle.deviceId = :deviceId " +  // Usamos el ID de la programación como condición
             "AND s.isProgramCompleted = false " + // Verificamos que la programación no esté completada
             "AND :currentTime BETWEEN s.estimatedDepartureTime AND s.estimatedArrivalTime")  // Filtramos por el tiempo actual
     Optional<OptimizedScheduleProjection> findOptimizedScheduleById(

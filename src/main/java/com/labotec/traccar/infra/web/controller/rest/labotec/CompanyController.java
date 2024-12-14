@@ -1,6 +1,6 @@
 package com.labotec.traccar.infra.web.controller.rest.labotec;
 
-import com.labotec.traccar.app.ports.out.CompanyService;
+import com.labotec.traccar.app.ports.out.services.CompanyService;
 import com.labotec.traccar.domain.database.models.Company;
 import com.labotec.traccar.domain.web.dto.labotec.request.create.CompanyDTO;
 import jakarta.validation.Valid;

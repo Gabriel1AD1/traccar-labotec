@@ -1,6 +1,6 @@
 package com.labotec.traccar.infra.web.controller.rest.labotec;
 
-import com.labotec.traccar.app.ports.out.ScheduleService;
+import com.labotec.traccar.app.ports.out.services.ScheduleService;
 import com.labotec.traccar.domain.database.models.Schedule;
 import com.labotec.traccar.domain.enums.STATE;
 import com.labotec.traccar.domain.web.dto.labotec.request.ReportDelayDTO;

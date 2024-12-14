@@ -103,4 +103,9 @@ public class VehicleRepositoryImpl implements VehicleRepository {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public Boolean checkPermission(Long userId, Long deviceId) {
+        return vehicleRepositoryJpa.existsByUserIdAndDeviceId(userId,deviceId);
+    }
+
 }

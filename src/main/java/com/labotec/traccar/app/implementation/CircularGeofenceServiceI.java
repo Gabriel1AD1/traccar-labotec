@@ -3,7 +3,7 @@ package com.labotec.traccar.app.implementation;
 import com.labotec.traccar.app.mapper.model.GeofenceCircularModelMapper;
 import com.labotec.traccar.app.ports.input.repository.GeofenceCircularRepository;
 import com.labotec.traccar.app.ports.input.repository.UserRepository;
-import com.labotec.traccar.app.ports.out.GeofencePoligonalService;
+import com.labotec.traccar.app.ports.out.services.GeofencePoligonalService;
 import com.labotec.traccar.domain.database.models.CircularGeofence;
 import com.labotec.traccar.domain.database.models.User;
 import com.labotec.traccar.domain.web.dto.labotec.request.create.CircularGeofenceDTO;

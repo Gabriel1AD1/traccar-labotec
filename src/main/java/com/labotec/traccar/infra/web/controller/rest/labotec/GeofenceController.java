@@ -1,6 +1,6 @@
 package com.labotec.traccar.infra.web.controller.rest.labotec;
 
-import com.labotec.traccar.app.ports.out.GeofencePoligonalService;
+import com.labotec.traccar.app.ports.out.services.GeofencePoligonalService;
 import com.labotec.traccar.domain.database.models.CircularGeofence;
 import com.labotec.traccar.domain.web.dto.labotec.request.create.CircularGeofenceDTO;
 import com.labotec.traccar.domain.web.dto.labotec.request.update.GeofencePoligonalUpdateDTO;

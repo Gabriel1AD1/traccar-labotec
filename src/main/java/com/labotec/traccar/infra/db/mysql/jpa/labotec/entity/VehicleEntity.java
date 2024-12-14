@@ -31,7 +31,7 @@ import java.time.Instant;
 public class VehicleEntity {
     @Id
     @Column(name = "id_device_traccar", nullable = false, unique = true)
-    private Long traccarDeviceId;
+    private Long deviceId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id")

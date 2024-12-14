@@ -1,6 +1,6 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.entity;
 
-public enum TYPE_SENSOR {
+public enum TypeSensor {
     DOOR,           // Sensor de puerta (útil para rastreo de apertura/cierre en vehículos)
     SPEED,          // Sensor de velocidad
     BATTERY,        // Sensor de batería del dispositivo GPS

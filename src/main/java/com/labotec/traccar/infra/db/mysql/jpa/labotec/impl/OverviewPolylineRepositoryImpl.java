@@ -1,10 +1,10 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.impl;
 
 import com.labotec.traccar.app.ports.input.repository.OverviewPolylineRepository;
-import com.labotec.traccar.domain.query.OptimizedOverviewPolyline;
 import com.labotec.traccar.domain.database.models.BusStop;
 import com.labotec.traccar.domain.database.models.OverviewPolyline;
 import com.labotec.traccar.domain.database.models.RouteBusStop;
+import com.labotec.traccar.domain.query.OptimizedOverviewPolyline;
 import com.labotec.traccar.domain.web.dto.labotec.response.ResponseOverviewPolyline;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.OverviewPolylineEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.RouteBusStopEntity;

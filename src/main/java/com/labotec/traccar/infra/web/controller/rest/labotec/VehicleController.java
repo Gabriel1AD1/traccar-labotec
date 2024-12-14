@@ -1,6 +1,6 @@
 package com.labotec.traccar.infra.web.controller.rest.labotec;
 
-import com.labotec.traccar.app.ports.out.VehicleService;
+import com.labotec.traccar.app.ports.out.services.VehicleService;
 import com.labotec.traccar.domain.database.models.Vehicle;
 import com.labotec.traccar.domain.web.dto.labotec.request.create.VehicleDTO;
 import com.labotec.traccar.domain.web.dto.labotec.request.update.VehicleUpdateDTO;

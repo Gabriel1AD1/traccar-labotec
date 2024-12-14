@@ -1,6 +1,6 @@
 package com.labotec.traccar.infra.web.controller.rest.labotec;
 
-import com.labotec.traccar.app.ports.out.BusStopService;
+import com.labotec.traccar.app.ports.out.services.BusStopService;
 import com.labotec.traccar.domain.database.models.BusStop;
 import com.labotec.traccar.domain.database.models.BusStopUpdateListDTO;
 import com.labotec.traccar.domain.web.dto.labotec.request.create.BusStopCreateDTO;

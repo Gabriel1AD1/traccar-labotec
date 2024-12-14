@@ -36,7 +36,7 @@ public interface RouteRepositoryJpa extends JpaRepository<RouteEntity, Long> {
      * @return Un {@link Optional<RouteEntity>} que contiene la ruta si está activa en el tiempo proporcionado, o {@link Optional#empty()} si no.
      */
     @Query("SELECT s.route FROM ScheduleEntity s " +
-            "WHERE s.vehicle.traccarDeviceId = :vehicleId " +
+            "WHERE s.vehicle.deviceId = :vehicleId " +
             "AND :currentTime BETWEEN s.estimatedDepartureTime AND s.estimatedArrivalTime")
     Optional<RouteEntity> findRouteByVehicleAndCurrentTime(
             @Param("vehicleId") Long vehicleId,

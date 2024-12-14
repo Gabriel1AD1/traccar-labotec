@@ -3,7 +3,7 @@ package com.labotec.traccar.app.implementation;
 import com.labotec.traccar.app.mapper.model.RouteModelMapper;
 import com.labotec.traccar.app.ports.input.email.GoogleEmail;
 import com.labotec.traccar.app.ports.input.repository.*;
-import com.labotec.traccar.app.ports.out.IntegrationTraccarService;
+import com.labotec.traccar.app.ports.out.services.IntegrationTraccarService;
 import com.labotec.traccar.domain.database.models.Route;
 import com.labotec.traccar.domain.database.models.Schedule;
 import com.labotec.traccar.domain.database.models.Vehicle;

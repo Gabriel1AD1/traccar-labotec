@@ -1,4 +1,4 @@
-package com.labotec.traccar.app.ports.out;
+package com.labotec.traccar.app.ports.out.services;
 
 import com.labotec.traccar.app.utils.common.repository.GenericCrudService;
 import com.labotec.traccar.domain.database.models.Location;

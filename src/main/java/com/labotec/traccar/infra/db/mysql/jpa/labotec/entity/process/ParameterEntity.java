@@ -1,6 +1,6 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.process;
 
-import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.TYPE_SENSOR;
+import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.TypeSensor;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,7 +21,7 @@ public class ParameterEntity {
     private Long id;
 
     private String name;
-    private TYPE_SENSOR typeSensors;
+    private TypeSensor typeSensors;
     private String description;
     private String dataType;
     private boolean required;
@@ -33,7 +33,7 @@ public class ParameterEntity {
     @OneToMany(mappedBy = "parameter", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<RuleEntity> rules = new ArrayList<>();
 
-    public ParameterEntity(String name, TYPE_SENSOR typeSensors, String description, String dataType, boolean required) {
+    public ParameterEntity(String name, TypeSensor typeSensors, String description, String dataType, boolean required) {
         this.name = name;
         this.typeSensors = typeSensors;
         this.description = description;

@@ -1,6 +1,6 @@
 package com.labotec.traccar.infra.web.controller.rest.labotec;
 
-import com.labotec.traccar.app.ports.out.LocationService;
+import com.labotec.traccar.app.ports.out.services.LocationService;
 import com.labotec.traccar.domain.database.models.Location;
 import com.labotec.traccar.domain.web.dto.labotec.request.create.LocationDTO;
 import com.labotec.traccar.domain.web.dto.labotec.request.update.LocationUpdateDTO;

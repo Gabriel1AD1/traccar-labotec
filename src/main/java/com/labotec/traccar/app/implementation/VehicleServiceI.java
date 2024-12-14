@@ -2,7 +2,7 @@ package com.labotec.traccar.app.implementation;
 
 import com.labotec.traccar.app.mapper.model.VehicleModelMapper;
 import com.labotec.traccar.app.ports.input.repository.*;
-import com.labotec.traccar.app.ports.out.VehicleService;
+import com.labotec.traccar.app.ports.out.services.VehicleService;
 import com.labotec.traccar.domain.database.models.User;
 import com.labotec.traccar.domain.database.models.Vehicle;
 import com.labotec.traccar.domain.database.models.VehicleType;
