@@ -2,8 +2,14 @@ package com.labotec.traccar.infra.exception;
 
 import com.labotec.traccar.app.exception.AlreadyAssignedVehicleSchedule;
 import com.labotec.traccar.app.exception.BadRequestValidateValueException;
+import com.labotec.traccar.app.ports.input.repository.VehiclePositionRepository;
 import com.labotec.traccar.infra.common.ApiError;
+import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.ErrorLogEntity;
+import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.ErrorLogEntityRepository;
 import com.labotec.traccar.infra.web.controller.rest.traccar.exception.Unauthorised;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -18,13 +24,14 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 import com.labotec.traccar.app.exception.EntityNotFoundException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.labotec.traccar.infra.exception.constant.ERROR_DUPLICATE.UNIQUE_CONSTRAINT_MESSAGES;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace;
+import static org.springframework.http.HttpStatus.*;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -32,7 +39,8 @@ public class GlobalExceptionHandler {
     // Leer la propiedad desde application.properties
     @Value("${app.debug.enabled:false}")
     private boolean debugEnabled;
-
+    @Autowired
+    private ErrorLogEntityRepository errorLogRepository;
     private static final String NO_DEBUG_MESSAGE = "Details not available";
 
     // Maneja la excepción personalizada EntityNotFoundException
@@ -114,20 +122,42 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiError, HttpStatus.METHOD_NOT_ALLOWED);
     }
 
-    // Maneja cualquier otra excepción general
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiError> handleGlobalException(Exception ex) {
+    public ResponseEntity<ApiError> handleGlobalException(Exception ex, HttpServletRequest request) {
         // Mensaje de depuración opcional
         String debugMessage = debugEnabled ? ex.getLocalizedMessage() : null;
 
+        // Crear ApiError
         ApiError apiError = new ApiError(
                 HttpStatus.INTERNAL_SERVER_ERROR,
                 "An unexpected error occurred",
                 debugMessage,
                 Map.of("ERROR", ex.getMessage())
         );
+
+        // Obtener detalles de la solicitud
+        String method = request.getMethod(); // Obtener método HTTP
+        String endpoint = request.getRequestURI(); // Obtener URI
+        String params = request.getParameterMap().toString(); // Convertir parámetros a String
+        String pathVariables = ""; // Variables de ruta pueden extraerse del controlador o RequestAttributes
+        String body = (String) request.getAttribute("body"); // Obtener cuerpo capturado por el filtro
+        String stackTrace = getStackTrace(ex); // Convertir stack trace a String
+
+        // Registrar error
+        logError(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                ex.getMessage(),
+                method,
+                endpoint,
+                stackTrace,
+                body != null ? body : "Body not captured",
+                params,
+                pathVariables
+        );
+
         return new ResponseEntity<>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ApiError> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex, WebRequest request) {
         // Extraer mensaje de depuración si está habilitado
@@ -245,5 +275,27 @@ public class GlobalExceptionHandler {
         int start = message.indexOf("Duplicate entry") + 16;
         int end = message.indexOf("for key");
         return message.substring(start, end).trim();
+    }
+
+    private void logError(
+            HttpStatus status,
+            String message,
+            String method,
+            String endpoint,
+            String stackTrace,
+            Object body,
+            String params,
+            String pathVariables) {
+        ErrorLogEntity errorLog = new ErrorLogEntity();
+        errorLog.setPathVariables(pathVariables);
+        errorLog.setParams(params);
+        errorLog.setBody(body.toString());
+        errorLog.setTimestamp(LocalDateTime.now());
+        errorLog.setStatusCode(status.value());
+        errorLog.setMethod(method);
+        errorLog.setErrorMessage(message);
+        errorLog.setEndpoint(endpoint);
+        errorLog.setStackTrace(stackTrace); // Convertir detalles a String
+        errorLogRepository.save(errorLog);
     }
 }
