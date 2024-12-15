@@ -1,5 +1,6 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.entity;
 
+import com.labotec.traccar.domain.database.models.TypeSensor;
 import com.labotec.traccar.domain.enums.DataType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -15,27 +16,28 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "tbl_sensor_dispositivo")
-@SqlResultSetMapping(name = "MSensorDeviceEntity", classes =
-@ConstructorResult(targetClass = SensorDeviceEntity.class, columns = {
-        @ColumnResult(name = "id", type = Long.class),
-        @ColumnResult(name = "dispositivo_id", type = Long.class),
-        @ColumnResult(name = "nombre_sensor", type = String.class),
-        @ColumnResult(name = "tipo_sensor", type = String.class),
-        @ColumnResult(name = "tipo_dato", type = String.class),
-        @ColumnResult(name = "estado_actual", type = String.class),
-        @ColumnResult(name = "inicio_estado_actual", type = java.time.Instant.class),
-        @ColumnResult(name = "tiempo_acumulado", type = Long.class)
-}))
-@NamedStoredProcedureQuery(
-        name = "UpdateSensorStateAndReturn",
-        resultSetMappings = "MSensorDeviceEntity",
-        procedureName = "UpdateSensorStateAndReturn",
-        parameters = {
-                @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_dispositivo_id", type = Long.class),
-                @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_nombre_sensor", type = String.class),
-                @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_estado_nuevo", type = String.class)
-        }
+@SqlResultSetMapping(
+        name = "SensorDeviceMapping",
+        entities = @EntityResult(
+                entityClass = SensorDeviceEntity.class,
+                fields = {
+                        @FieldResult(name = "id", column = "id"),
+                        @FieldResult(name = "deviceId", column = "dispositivo_id"),
+                        @FieldResult(name = "sensorName", column = "nombre_sensor"),
+                        @FieldResult(name = "typeSensor", column = "tipo_sensor"),
+                        @FieldResult(name = "dataType", column = "tipo_dato"),
+                        @FieldResult(name = "stateCurrent", column = "estado_actual"),
+                        @FieldResult(name = "initStateCurrent", column = "inicio_estado_actual"),
+                        @FieldResult(name = "timeAcumulated", column = "tiempo_acumulado")
+                }
+        )
 )
+@NamedNativeQuery(
+        name = "UpdateSensorStateAndReturn",
+        resultSetMapping = "SensorDeviceMapping",
+        query = "CALL UpdateSensorStateAndReturn(:p_dispositivo_id, :p_nombre_sensor, :p_estado_nuevo)"
+)
+
 public class SensorDeviceEntity {
 
     @Id

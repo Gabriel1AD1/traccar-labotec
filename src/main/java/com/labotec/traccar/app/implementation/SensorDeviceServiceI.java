@@ -4,8 +4,8 @@ import com.labotec.traccar.app.ports.input.repository.SensorDeviceRepository;
 import com.labotec.traccar.app.ports.input.repository.VehicleRepository;
 import com.labotec.traccar.app.ports.out.services.SensorDeviceService;
 import com.labotec.traccar.domain.database.models.SensorDevice;
-import com.labotec.traccar.domain.web.dto.labotec.request.create.CreateSensorDeviceDTO;
-import com.labotec.traccar.infra.exception.EntityNotFoundException;
+import com.labotec.traccar.domain.web.labotec.request.create.CreateSensorDeviceDTO;
+import com.labotec.traccar.app.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

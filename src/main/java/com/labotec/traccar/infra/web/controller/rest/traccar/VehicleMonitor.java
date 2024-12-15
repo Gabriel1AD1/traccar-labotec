@@ -1,7 +1,7 @@
 package com.labotec.traccar.infra.web.controller.rest.traccar;
 
 import com.labotec.traccar.app.ports.input.email.GoogleEmail;
-import com.labotec.traccar.domain.web.dto.traccar.DeviceRequestDTO;
+import com.labotec.traccar.domain.web.traccar.DeviceRequestDTO;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.NotificationEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.process.DoorStatusEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.process.DoorStatusId;

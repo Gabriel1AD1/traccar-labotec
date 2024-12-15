@@ -1,7 +1,7 @@
 package com.labotec.traccar.app.ports.out.services;
 
 import com.labotec.traccar.domain.database.models.User;
-import com.labotec.traccar.domain.web.dto.labotec.request.create.UserCreateDTO;
+import com.labotec.traccar.domain.web.labotec.request.create.UserCreateDTO;
 
 public interface UserService
 {

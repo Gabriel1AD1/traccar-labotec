@@ -2,7 +2,7 @@ package com.labotec.traccar.infra.web.controller.rest.traccar.service;
 
 import com.labotec.traccar.infra.db.mysql.jpa.traccar.entity.TcUser;
 import com.labotec.traccar.infra.db.mysql.jpa.traccar.repository.TcUserRepository;
-import com.labotec.traccar.infra.exception.EntityNotFoundException;
+import com.labotec.traccar.app.exception.EntityNotFoundException;
 import com.labotec.traccar.infra.web.controller.rest.traccar.dto.UserCreateNotAdministratorDTO;
 import com.labotec.traccar.infra.web.controller.rest.traccar.exception.Unauthorised;
 import lombok.AllArgsConstructor;

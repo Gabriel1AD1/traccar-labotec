@@ -17,6 +17,7 @@ public class SensorValidationConfig {
     private String nameSensor;  // Nombre del sensor (puede ser 'puerta', 'temperatura', etc.)
     private String operator;    // Operador para comparar el valor (por ejemplo, '=', '>', '<', '>=', etc.)
     private String value;
+    private TypeSensor typeSensor;
     private TypeValidation typeValidation;
     private String messageAlert;
     private DataType dataType;

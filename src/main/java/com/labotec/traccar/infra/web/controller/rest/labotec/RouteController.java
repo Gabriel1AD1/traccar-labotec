@@ -2,10 +2,10 @@ package com.labotec.traccar.infra.web.controller.rest.labotec;
 
 import com.labotec.traccar.app.ports.out.services.RouteService;
 import com.labotec.traccar.domain.database.models.Route;
-import com.labotec.traccar.domain.web.dto.labotec.request.create.RouteCreateDTO;
-import com.labotec.traccar.domain.web.dto.labotec.request.update.RouteUpdateDTO;
-import com.labotec.traccar.domain.web.dto.labotec.response.ResponseRoute;
-import com.labotec.traccar.domain.web.dto.labotec.response.ResponseRouteBusStopInformation;
+import com.labotec.traccar.domain.web.labotec.request.create.RouteCreateDTO;
+import com.labotec.traccar.domain.web.labotec.request.update.RouteUpdateDTO;
+import com.labotec.traccar.domain.web.labotec.response.ResponseRoute;
+import com.labotec.traccar.domain.web.labotec.response.ResponseRouteBusStopInformation;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;

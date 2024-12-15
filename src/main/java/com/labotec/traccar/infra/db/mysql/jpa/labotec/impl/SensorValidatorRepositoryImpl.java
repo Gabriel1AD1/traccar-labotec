@@ -2,12 +2,14 @@ package com.labotec.traccar.infra.db.mysql.jpa.labotec.impl;
 
 import com.labotec.traccar.app.ports.input.repository.SensorValidatorRepository;
 import com.labotec.traccar.domain.database.models.SensorValidationConfig;
-import com.labotec.traccar.domain.web.dto.labotec.response.ResponseSensorValidatorConfig;
+import com.labotec.traccar.domain.database.models.optimized.OptimizedSensorValidationConfig;
+import com.labotec.traccar.domain.web.labotec.response.ResponseSensorValidatorConfig;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.SensorValidationConfigEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.SensorValidationMapper;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.ResponseSensorValidatorConfigProjection;
+import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.SensorValidationConfigProjection;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.SensorValidationConfigEntityRepositoryJpa;
-import com.labotec.traccar.infra.exception.EntityNotFoundException;
+import com.labotec.traccar.app.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,4 +76,20 @@ public class SensorValidatorRepositoryImpl implements SensorValidatorRepository 
                         .build())
                 .collect(Collectors.toList()); // Recolectar los resultados en una lista
     }
+
+    @Override
+    public List<OptimizedSensorValidationConfig> findAllByDeviceId(Long deviceId) {
+        List<SensorValidationConfigProjection> listConfig = repositoryJpa.findValidationConfigsByDeviceId(deviceId);
+        return listConfig.stream()
+                .map(s -> OptimizedSensorValidationConfig.builder()
+                        .userId(s.getUserId())
+                        .id(s.getId())
+                        .messageError(s.getMessageAlert())
+                        .nameSensor(s.getNameSensor())
+                        .operator(s.getOperator())
+                        .value(s.getValue())
+                        .dataType(s.getDataType())
+                        .typeValidation(s.getTypeValidation())
+                        .build())
+                .collect(Collectors.toList());    }
 }

@@ -1,7 +1,7 @@
 package com.labotec.traccar.app.ports.input.repository;
 
 import com.labotec.traccar.domain.database.models.Alert;
-import com.labotec.traccar.domain.web.dto.labotec.response.ResponseAlert;
+import com.labotec.traccar.domain.web.labotec.response.ResponseAlert;
 
 import java.util.List;
 

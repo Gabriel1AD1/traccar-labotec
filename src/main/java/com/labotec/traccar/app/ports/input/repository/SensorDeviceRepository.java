@@ -1,7 +1,7 @@
 package com.labotec.traccar.app.ports.input.repository;
 
 import com.labotec.traccar.domain.database.models.SensorDevice;
-import com.labotec.traccar.domain.web.dto.labotec.response.ResponseSensorDevice;
+import com.labotec.traccar.domain.web.labotec.response.ResponseSensorDevice;
 
 import java.util.List;
 

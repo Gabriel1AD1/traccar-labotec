@@ -2,10 +2,10 @@ package com.labotec.traccar.app.ports.out.services;
 
 import com.labotec.traccar.app.utils.common.repository.GenericCrudService;
 import com.labotec.traccar.domain.database.models.Route;
-import com.labotec.traccar.domain.web.dto.labotec.request.create.RouteCreateDTO;
-import com.labotec.traccar.domain.web.dto.labotec.request.update.RouteUpdateDTO;
-import com.labotec.traccar.domain.web.dto.labotec.response.ResponseRoute;
-import com.labotec.traccar.domain.web.dto.labotec.response.ResponseRouteBusStopInformation;
+import com.labotec.traccar.domain.web.labotec.request.create.RouteCreateDTO;
+import com.labotec.traccar.domain.web.labotec.request.update.RouteUpdateDTO;
+import com.labotec.traccar.domain.web.labotec.response.ResponseRoute;
+import com.labotec.traccar.domain.web.labotec.response.ResponseRouteBusStopInformation;
 
 import java.util.List;
 

@@ -5,7 +5,6 @@ import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.OptimizedSensor
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.ResponseSensorDeviceProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
@@ -15,12 +14,13 @@ public interface SensorDeviceEntityRepositoryJpa extends JpaRepository<SensorDev
     @Query("SELECT s.deviceId AS sensorName, s.typeSensor AS typeSensor " +
             "FROM SensorDeviceEntity s WHERE s.deviceId = :deviceId")
     List<OptimizedSensorDeviceProjection> findSensorNamesAndTypesByDeviceId(@Param("deviceId") Long deviceId);
-    @Procedure(name = "UpdateSensorStateAndReturn")
+    @Query(name = "UpdateSensorStateAndReturn")
     Optional<SensorDeviceEntity> updateSensorStateAndReturn(
             @Param("p_dispositivo_id") Long deviceId,
             @Param("p_nombre_sensor") String nameSensor,
             @Param("p_estado_nuevo") String stateCurrent
     );
+
     // Consulta personalizada que devuelve la proyección como una interfaz
     @Query("SELECT sd.sensorName AS sensorName, " +
             "sd.stateCurrent AS stateCurrent, " +

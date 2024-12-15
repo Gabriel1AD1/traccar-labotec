@@ -2,8 +2,8 @@ package com.labotec.traccar.infra.web.controller.rest.labotec;
 
 import com.labotec.traccar.app.ports.out.services.GeofencePoligonalService;
 import com.labotec.traccar.domain.database.models.CircularGeofence;
-import com.labotec.traccar.domain.web.dto.labotec.request.create.CircularGeofenceDTO;
-import com.labotec.traccar.domain.web.dto.labotec.request.update.GeofencePoligonalUpdateDTO;
+import com.labotec.traccar.domain.web.labotec.request.create.CircularGeofenceDTO;
+import com.labotec.traccar.domain.web.labotec.request.update.GeofencePoligonalUpdateDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;

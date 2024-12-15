@@ -1,6 +1,7 @@
 package com.labotec.traccar.infra.exception;
 
 import com.labotec.traccar.app.exception.AlreadyAssignedVehicleSchedule;
+import com.labotec.traccar.app.exception.BadRequestValidateValueException;
 import com.labotec.traccar.infra.common.ApiError;
 import com.labotec.traccar.infra.web.controller.rest.traccar.exception.Unauthorised;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
+import com.labotec.traccar.app.exception.EntityNotFoundException;
 
 import java.util.List;
 import java.util.Map;
@@ -124,9 +126,6 @@ public class GlobalExceptionHandler {
                 debugMessage,
                 Map.of("ERROR", ex.getMessage())
         );
-        System.out.println(ex.getMessage());
-        System.out.println(ex.getLocalizedMessage());
-        System.out.println(ex.getCause().toString());
         return new ResponseEntity<>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
     }
     @ExceptionHandler(HttpMessageNotReadableException.class)
@@ -181,6 +180,24 @@ public class GlobalExceptionHandler {
         );
 
         return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
+    }
+    @ExceptionHandler(BadRequestValidateValueException.class)
+    public ResponseEntity<ApiError> handleBadRequestValidateValueException(BadRequestValidateValueException ex, WebRequest request){
+        // Mensaje de depuración opcional
+        String debugMessage = debugEnabled ? ex.getLocalizedMessage() : null;
+
+        // Mensaje amigable para el usuario
+        String userMessage = "The provided value does not match the expected type.";
+
+        // Crear un ApiError con los detalles del error
+        ApiError apiError = new ApiError(
+                HttpStatus.NOT_FOUND,
+                userMessage,
+                debugMessage,
+                Map.of("ERROR", ex.getMessage()) // Información adicional si es necesario
+        );
+
+        return new ResponseEntity<>(apiError, BAD_REQUEST);
     }
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ApiError> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {

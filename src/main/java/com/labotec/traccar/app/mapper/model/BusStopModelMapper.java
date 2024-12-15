@@ -2,8 +2,8 @@ package com.labotec.traccar.app.mapper.model;
 
 import com.labotec.traccar.domain.database.models.BusStop;
 import com.labotec.traccar.domain.database.models.BusStopUpdateListDTO;
-import com.labotec.traccar.domain.web.dto.labotec.request.create.BusStopCreateDTO;
-import com.labotec.traccar.domain.web.dto.labotec.request.update.BusStopUpdateDTO;
+import com.labotec.traccar.domain.web.labotec.request.create.BusStopCreateDTO;
+import com.labotec.traccar.domain.web.labotec.request.update.BusStopUpdateDTO;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

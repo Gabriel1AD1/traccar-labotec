@@ -1,6 +1,6 @@
 package com.labotec.traccar.infra.web.controller.rest.traccar;
 
-import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.TypeSensor;
+import com.labotec.traccar.domain.database.models.TypeSensor;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.process.DeviceEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.process.ParameterEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.process.RuleEntity;

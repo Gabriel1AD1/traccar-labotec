@@ -1,26 +1,36 @@
 package com.labotec.traccar.infra.web.controller.rest.labotec;
 
 import com.labotec.traccar.app.ports.out.services.SensorValidatorService;
-import com.labotec.traccar.domain.web.dto.labotec.request.create.CreateSensorStaticValidationConfigDTO;
-import com.labotec.traccar.domain.web.dto.labotec.request.create.CreateSensorTimeValidationConfigDTO;
-import com.labotec.traccar.domain.web.dto.labotec.request.update.UpdateSensorStaticValidationConfigDTO;
-import com.labotec.traccar.domain.web.dto.labotec.request.update.UpdateSensorTimeValidationConfigDTO;
+import com.labotec.traccar.domain.web.labotec.request.create.CreateSensorExistValidationConfigDTO;
+import com.labotec.traccar.domain.web.labotec.request.create.CreateSensorRangeValidationConfigDTO;
+import com.labotec.traccar.domain.web.labotec.request.create.CreateSensorStaticValidationConfigDTO;
+import com.labotec.traccar.domain.web.labotec.request.create.CreateSensorTimeValidationConfigDTO;
+import com.labotec.traccar.domain.web.labotec.request.update.UpdateSensorStaticValidationConfigDTO;
+import com.labotec.traccar.domain.web.labotec.request.update.UpdateSensorTimeValidationConfigDTO;
+import com.labotec.traccar.domain.web.labotec.response.ResponseSensorValidatorConfig;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 import static com.labotec.traccar.infra.web.controller.common.API_VERSION_MANAGER.API_VERSION_V1;
-import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
-@RequestMapping(value = API_VERSION_V1 + "validator/sensor")
+@RequestMapping(value = API_VERSION_V1 + "validator-sensor")
 @AllArgsConstructor
 public class SensorValidatorController {
     private final SensorValidatorService sensorValidatorService;
-
+    
+    @GetMapping("/{deviceId}")
+    public ResponseEntity<List<ResponseSensorValidatorConfig>> findAllByDevice(
+            @RequestHeader("userId")Long userId,
+            @PathVariable("deviceId") Long deviceId
+            ){
+        return ResponseEntity.ok(sensorValidatorService.findAllByDeviceId(userId,deviceId));
+    }
     @PostMapping("/static")
     public ResponseEntity<Void> createValidatorStaticSensor(
             @RequestHeader("userId")Long userId,
@@ -37,6 +47,25 @@ public class SensorValidatorController {
 
         return ResponseEntity.created(URI.create("/api/validator/sensor/time/"+resourceId)).build();
     }
+    @PostMapping("/exist")
+    public ResponseEntity<Void> createValidatorExist(
+            @RequestHeader("userId")Long userId,
+            @RequestBody @Valid CreateSensorExistValidationConfigDTO dto
+            ){
+        Long resourceId = sensorValidatorService.createValidatorExist(userId,dto).getId();
+
+        return ResponseEntity.created(URI.create("/api/validator/sensor/exist/"+resourceId)).build();
+    }
+    @PostMapping("/range")
+    public ResponseEntity<Void> createValidatorRange(
+            @RequestHeader("userId")Long userId,
+            @RequestBody @Valid CreateSensorRangeValidationConfigDTO dto
+    ){
+        Long resourceId = sensorValidatorService.createValidatorRange(userId,dto).getId();
+
+        return ResponseEntity.created(URI.create("/api/validator/sensor/exist/"+resourceId)).build();
+    }
+
     @PutMapping("/time/{id}")
     public ResponseEntity<Void> updateValidatorTimeSensor(
             @RequestHeader("userId")Long userId,

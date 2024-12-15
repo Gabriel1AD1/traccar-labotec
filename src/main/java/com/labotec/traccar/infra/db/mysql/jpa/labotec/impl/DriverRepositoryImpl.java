@@ -5,7 +5,7 @@ import com.labotec.traccar.domain.database.models.Driver;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.DriverEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.DriverMapper;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.DriverRepositoryJpa;
-import com.labotec.traccar.infra.exception.EntityNotFoundException;
+import com.labotec.traccar.app.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 

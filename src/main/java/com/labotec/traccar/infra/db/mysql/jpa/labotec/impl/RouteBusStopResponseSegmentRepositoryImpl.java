@@ -1,7 +1,7 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.impl;
 
 import com.labotec.traccar.app.ports.input.repository.RouteBusStopResponseSegmentRepository;
-import com.labotec.traccar.domain.web.dto.labotec.response.ResponseRouteBusStopSegment;
+import com.labotec.traccar.domain.web.labotec.response.ResponseRouteBusStopSegment;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.RouteBusStopSegmentEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.response.RouteBusStopSegmentResponseMapper;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.RouteBusStopSegmentRepositoryJpa;

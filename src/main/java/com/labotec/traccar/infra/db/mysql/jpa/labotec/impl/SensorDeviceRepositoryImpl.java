@@ -2,12 +2,12 @@ package com.labotec.traccar.infra.db.mysql.jpa.labotec.impl;
 
 import com.labotec.traccar.app.ports.input.repository.SensorDeviceRepository;
 import com.labotec.traccar.domain.database.models.SensorDevice;
-import com.labotec.traccar.domain.web.dto.labotec.response.ResponseSensorDevice;
+import com.labotec.traccar.domain.web.labotec.response.ResponseSensorDevice;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.SensorDeviceEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.SensorDeviceMapper;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.ResponseSensorDeviceProjection;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.SensorDeviceEntityRepositoryJpa;
-import com.labotec.traccar.infra.exception.EntityNotFoundException;
+import com.labotec.traccar.app.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

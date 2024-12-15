@@ -1,7 +1,7 @@
 package com.labotec.traccar.app.mapper.model;
 
 import com.labotec.traccar.domain.database.models.CircularGeofence;
-import com.labotec.traccar.domain.web.dto.labotec.request.create.CircularGeofenceDTO;
+import com.labotec.traccar.domain.web.labotec.request.create.CircularGeofenceDTO;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

@@ -17,7 +17,7 @@ import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.ScheduleDelayIn
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.ScheduleProjection;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.mapper.ScheduleProjectionMapper;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.ScheduleRepositoryJpa;
-import com.labotec.traccar.infra.exception.EntityNotFoundException;
+import com.labotec.traccar.app.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,7 +1,7 @@
 package com.labotec.traccar.app.utils;
 
 import com.labotec.traccar.app.enums.RouteType;
-import com.labotec.traccar.domain.web.dto.labotec.request.create.RouteSegmentCreateDTO;
+import com.labotec.traccar.domain.web.labotec.request.create.RouteSegmentCreateDTO;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.List;

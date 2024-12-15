@@ -1,7 +1,7 @@
 package com.labotec.traccar.infra.web.controller.rest.traccar;
 
 
-import com.labotec.traccar.domain.web.dto.traccar.DeviceRequestDTO;
+import com.labotec.traccar.domain.web.traccar.DeviceRequestDTO;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.VehicleRepositoryJpa;
 import com.labotec.traccar.infra.db.mysql.jpa.traccar.projections.TcDeviceBasicProjection;
 import com.labotec.traccar.infra.db.mysql.jpa.traccar.repository.TcDeviceRepository;

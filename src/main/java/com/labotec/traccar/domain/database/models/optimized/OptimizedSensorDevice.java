@@ -1,6 +1,6 @@
 package com.labotec.traccar.domain.database.models.optimized;
 
-import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.TypeSensor;
+import com.labotec.traccar.domain.database.models.TypeSensor;
 import lombok.Builder;
 import lombok.Data;
 

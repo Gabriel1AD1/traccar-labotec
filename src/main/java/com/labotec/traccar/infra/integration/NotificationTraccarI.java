@@ -1,7 +1,7 @@
 package com.labotec.traccar.infra.integration;
 
 import com.labotec.traccar.app.ports.input.notification.NotificationTraccar;
-import com.labotec.traccar.domain.web.dto.labotec.notify.NotificationDTO;
+import com.labotec.traccar.domain.web.labotec.notify.NotificationDTO;
 import com.labotec.traccar.infra.websockets.WebSocketService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

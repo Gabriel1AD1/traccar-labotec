@@ -1,7 +1,6 @@
 package com.labotec.traccar.domain.database.models;
 
 import com.labotec.traccar.domain.enums.DataType;
-import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.TypeSensor;
 import lombok.Builder;
 import lombok.Data;
 

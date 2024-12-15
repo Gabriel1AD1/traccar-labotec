@@ -5,7 +5,7 @@ import com.labotec.traccar.domain.database.models.Company;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.CompanyEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.CompanyMapper;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.CompanyRepositoryJpa;
-import com.labotec.traccar.infra.exception.EntityNotFoundException;
+import com.labotec.traccar.app.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 

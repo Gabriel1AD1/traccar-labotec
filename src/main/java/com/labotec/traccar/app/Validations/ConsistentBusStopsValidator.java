@@ -1,7 +1,7 @@
 package com.labotec.traccar.app.Validations;
 
-import com.labotec.traccar.domain.web.dto.labotec.request.create.RouteBusStopCreateDTO;
-import com.labotec.traccar.domain.web.dto.labotec.request.create.RouteCreateDTO;
+import com.labotec.traccar.domain.web.labotec.request.create.RouteBusStopCreateDTO;
+import com.labotec.traccar.domain.web.labotec.request.create.RouteCreateDTO;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 

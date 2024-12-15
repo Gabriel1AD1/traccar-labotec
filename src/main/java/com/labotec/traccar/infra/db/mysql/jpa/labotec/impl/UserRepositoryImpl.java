@@ -5,7 +5,7 @@ import com.labotec.traccar.domain.database.models.User;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.UserEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.UserMapper;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.UserRepositoryJpa;
-import com.labotec.traccar.infra.exception.EntityNotFoundException;
+import com.labotec.traccar.app.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;

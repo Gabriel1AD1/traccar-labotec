@@ -1,7 +1,7 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.response;
 
 
-import com.labotec.traccar.domain.web.dto.labotec.response.ResponseRouteBusStopSegment;
+import com.labotec.traccar.domain.web.labotec.response.ResponseRouteBusStopSegment;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.RouteBusStopSegmentEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

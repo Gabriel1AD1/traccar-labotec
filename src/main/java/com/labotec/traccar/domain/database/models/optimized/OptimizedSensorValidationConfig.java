@@ -2,6 +2,7 @@ package com.labotec.traccar.domain.database.models.optimized;
 
 
 import com.labotec.traccar.app.utils.JsonUtils;
+import com.labotec.traccar.domain.embebed.RangeValue;
 import com.labotec.traccar.domain.embebed.ValidatorTime;
 import com.labotec.traccar.domain.enums.DataType;
 import lombok.Builder;
@@ -10,6 +11,8 @@ import lombok.Data;
 @Data
 @Builder
 public class OptimizedSensorValidationConfig {
+    private Long id;
+    private Long userId;
     private String nameSensor;  // Nombre del sensor (puede ser 'puerta', 'temperatura', etc.)
     private String operator;    // Operador para comparar el valor (por ejemplo, '=', '>', '<', '>=', etc.)
     private String value;
@@ -21,7 +24,12 @@ public class OptimizedSensorValidationConfig {
         // Usar el JsonUtils para convertir el objeto ValidatorTime a un JSON String
         this.value = JsonUtils.toJson(validatorTime);
     }
-
+    public void setRangeValue(RangeValue rangeValue){
+        this.value = JsonUtils.toJson(rangeValue);
+    }
+    public RangeValue getRangeValue(){
+        return JsonUtils.toObject(this.value,RangeValue.class);
+    }
     // funcion para obtener el objeto ValidatorTime a partir del JSON almacenado en 'value'
     public ValidatorTime getValidatorTime() {
             // Convertir el JSON de 'value' de nuevo a un objeto ValidatorTime

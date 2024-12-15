@@ -4,7 +4,7 @@ import com.labotec.traccar.domain.database.models.BusStop;
 import com.labotec.traccar.domain.database.models.OverviewPolyline;
 import com.labotec.traccar.domain.database.models.RouteBusStop;
 import com.labotec.traccar.domain.query.OptimizedOverviewPolyline;
-import com.labotec.traccar.domain.web.dto.labotec.response.ResponseOverviewPolyline;
+import com.labotec.traccar.domain.web.labotec.response.ResponseOverviewPolyline;
 
 import java.util.List;
 

@@ -2,7 +2,7 @@ package com.labotec.traccar.infra.db.mysql.jpa.labotec.impl;
 
 import com.labotec.traccar.app.ports.input.repository.AlertRepository;
 import com.labotec.traccar.domain.database.models.Alert;
-import com.labotec.traccar.domain.web.dto.labotec.response.ResponseAlert;
+import com.labotec.traccar.domain.web.labotec.response.ResponseAlert;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.AlertEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.AlertMapper;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.ResponseAlertProjection;

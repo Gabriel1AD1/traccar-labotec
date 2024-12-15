@@ -10,8 +10,8 @@ import com.labotec.traccar.domain.database.models.BusStop;
 import com.labotec.traccar.domain.database.models.Location;
 import com.labotec.traccar.domain.database.models.User;
 import com.labotec.traccar.domain.enums.STATE;
-import com.labotec.traccar.domain.web.dto.labotec.request.create.LocationDTO;
-import com.labotec.traccar.domain.web.dto.labotec.request.update.LocationUpdateDTO;
+import com.labotec.traccar.domain.web.labotec.request.create.LocationDTO;
+import com.labotec.traccar.domain.web.labotec.request.update.LocationUpdateDTO;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor

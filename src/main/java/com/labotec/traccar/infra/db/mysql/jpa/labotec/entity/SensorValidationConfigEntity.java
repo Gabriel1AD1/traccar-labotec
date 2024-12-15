@@ -1,6 +1,6 @@
 package com.labotec.traccar.infra.db.mysql.jpa.labotec.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.labotec.traccar.domain.database.models.TypeSensor;
 import com.labotec.traccar.domain.database.models.optimized.TypeValidation;
 import com.labotec.traccar.domain.enums.DataType;
 import jakarta.persistence.*;
@@ -29,6 +29,8 @@ public class SensorValidationConfigEntity {
     private String operator;    // Operador para comparar el valor (por ejemplo, '=', '>', '<', '>=', etc.)
     @Column(name = "valor")
     private String value;
+    @Column(name = "tipo_sensor")
+    private TypeSensor typeSensor;
     @Column(name = "mensaje_alerta")
     private String messageAlert;
     @Column(name = "tipo_validacion")

@@ -2,13 +2,13 @@ package com.labotec.traccar.infra.db.mysql.jpa.labotec.impl;
 
 import com.labotec.traccar.app.ports.input.repository.BusStopRepository;
 import com.labotec.traccar.domain.database.models.BusStop;
-import com.labotec.traccar.domain.web.dto.labotec.response.BusStopResponse;
+import com.labotec.traccar.domain.web.labotec.response.BusStopResponse;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.BusStopEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.BusStopMapper;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.response.BusStopResponseMapper;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.BusStopProjection;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.BusStopRepositoryJpa;
-import com.labotec.traccar.infra.exception.EntityNotFoundException;
+import com.labotec.traccar.app.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 

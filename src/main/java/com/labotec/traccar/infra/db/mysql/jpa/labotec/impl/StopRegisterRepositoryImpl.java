@@ -18,7 +18,7 @@ import java.util.List;
 public class StopRegisterRepositoryImpl implements StopRegisterRepository {
     private final StopRegisterRepositoryJpa repositoryJpa;
     private final StopRegisterMapper mapper;
-    private static final Logger logger = LoggerFactory.getLogger(StopRegisterRepositoryImpl.class);
+    private  final Logger logger = LoggerFactory.getLogger(StopRegisterRepositoryImpl.class);
 
     @Override
     public StopRegister create(StopRegister stopRegister) {

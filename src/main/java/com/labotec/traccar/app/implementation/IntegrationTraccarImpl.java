@@ -7,8 +7,8 @@ import com.labotec.traccar.app.ports.out.services.IntegrationTraccarService;
 import com.labotec.traccar.domain.database.models.Route;
 import com.labotec.traccar.domain.database.models.Schedule;
 import com.labotec.traccar.domain.database.models.Vehicle;
-import com.labotec.traccar.domain.web.dto.traccar.DeviceRequestDTO;
-import com.labotec.traccar.domain.web.dto.traccar.LastedInformationVehicle;
+import com.labotec.traccar.domain.web.traccar.DeviceRequestDTO;
+import com.labotec.traccar.domain.web.traccar.LastedInformationVehicle;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor

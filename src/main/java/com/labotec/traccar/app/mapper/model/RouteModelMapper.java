@@ -1,7 +1,7 @@
 package com.labotec.traccar.app.mapper.model;
 
 import com.labotec.traccar.domain.database.models.Route;
-import com.labotec.traccar.domain.web.dto.labotec.request.create.RouteCreateDTO;
+import com.labotec.traccar.domain.web.labotec.request.create.RouteCreateDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

@@ -1,6 +1,6 @@
 package com.labotec.traccar.app.ports.input.repository;
 
-import com.labotec.traccar.domain.web.dto.labotec.response.ResponseRouteBusStopSegment;
+import com.labotec.traccar.domain.web.labotec.response.ResponseRouteBusStopSegment;
 
 import java.util.List;
 

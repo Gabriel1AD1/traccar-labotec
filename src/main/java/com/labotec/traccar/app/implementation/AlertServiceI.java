@@ -2,7 +2,7 @@ package com.labotec.traccar.app.implementation;
 
 import com.labotec.traccar.app.ports.input.repository.AlertRepository;
 import com.labotec.traccar.app.ports.out.services.AlertService;
-import com.labotec.traccar.domain.web.dto.labotec.response.ResponseAlert;
+import com.labotec.traccar.domain.web.labotec.response.ResponseAlert;
 import lombok.AllArgsConstructor;
 
 import java.util.List;

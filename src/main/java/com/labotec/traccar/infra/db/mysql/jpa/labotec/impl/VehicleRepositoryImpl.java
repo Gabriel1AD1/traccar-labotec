@@ -2,12 +2,12 @@ package com.labotec.traccar.infra.db.mysql.jpa.labotec.impl;
 
 import com.labotec.traccar.app.ports.input.repository.VehicleRepository;
 import com.labotec.traccar.domain.database.models.Vehicle;
-import com.labotec.traccar.domain.web.dto.labotec.response.ResponseVehicle;
+import com.labotec.traccar.domain.web.labotec.response.ResponseVehicle;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.VehicleEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.VehicleMapper;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.ResponseVehicleProjection;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.VehicleRepositoryJpa;
-import com.labotec.traccar.infra.exception.EntityNotFoundException;
+import com.labotec.traccar.app.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

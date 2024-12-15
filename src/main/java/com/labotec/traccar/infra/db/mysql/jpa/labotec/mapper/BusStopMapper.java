@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@Mapper(componentModel = "spring", uses = {CompanyMapper.class})
+@Mapper(componentModel = "spring", uses = {UserMapper.class,CompanyMapper.class})
 public interface BusStopMapper {
 
     BusStop toModel(BusStopEntity entity);

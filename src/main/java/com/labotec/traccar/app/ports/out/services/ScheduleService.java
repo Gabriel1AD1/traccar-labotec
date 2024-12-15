@@ -3,10 +3,10 @@ package com.labotec.traccar.app.ports.out.services;
 import com.labotec.traccar.app.utils.common.repository.GenericCrudService;
 import com.labotec.traccar.domain.database.models.Schedule;
 import com.labotec.traccar.domain.enums.STATE;
-import com.labotec.traccar.domain.web.dto.labotec.request.ReportDelayDTO;
-import com.labotec.traccar.domain.web.dto.labotec.request.create.ScheduleDTO;
-import com.labotec.traccar.domain.web.dto.labotec.request.update.UpdateScheduleDTO;
-import com.labotec.traccar.domain.web.dto.labotec.response.ResponseSuggestTimeSchedule;
+import com.labotec.traccar.domain.web.labotec.request.ReportDelayDTO;
+import com.labotec.traccar.domain.web.labotec.request.create.ScheduleDTO;
+import com.labotec.traccar.domain.web.labotec.request.update.UpdateScheduleDTO;
+import com.labotec.traccar.domain.web.labotec.response.ResponseSuggestTimeSchedule;
 
 import java.time.Instant;
 import java.util.List;

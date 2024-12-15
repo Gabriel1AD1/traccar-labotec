@@ -1,8 +1,8 @@
 package com.labotec.traccar.app.mapper.model;
 
 import com.labotec.traccar.domain.database.models.Driver;
-import com.labotec.traccar.domain.web.dto.labotec.request.create.DriverDTO;
-import com.labotec.traccar.domain.web.dto.labotec.request.update.DriverUpdateDTO;
+import com.labotec.traccar.domain.web.labotec.request.create.DriverDTO;
+import com.labotec.traccar.domain.web.labotec.request.update.DriverUpdateDTO;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

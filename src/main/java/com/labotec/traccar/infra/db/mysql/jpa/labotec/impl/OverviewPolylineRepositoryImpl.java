@@ -5,7 +5,7 @@ import com.labotec.traccar.domain.database.models.BusStop;
 import com.labotec.traccar.domain.database.models.OverviewPolyline;
 import com.labotec.traccar.domain.database.models.RouteBusStop;
 import com.labotec.traccar.domain.query.OptimizedOverviewPolyline;
-import com.labotec.traccar.domain.web.dto.labotec.response.ResponseOverviewPolyline;
+import com.labotec.traccar.domain.web.labotec.response.ResponseOverviewPolyline;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.OverviewPolylineEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.entity.RouteBusStopEntity;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.OverviewPolylineMapper;
@@ -13,7 +13,7 @@ import com.labotec.traccar.infra.db.mysql.jpa.labotec.mapper.RouteBusStopMapper;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.OptimizedOverviewPolylineProjection;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.projection.OverviewPolylineProjection;
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.OverviewPolylineRepositoryJpa;
-import com.labotec.traccar.infra.exception.EntityNotFoundException;
+import com.labotec.traccar.app.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
