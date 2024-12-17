@@ -58,12 +58,14 @@ public class RouteProcess {
     private final TraccarApplication traccarApplication;
 
     public void validateRoute(DeviceRequestDTO deviceRequestDTO) {
-        int engine = (int) deviceRequestDTO.getAttributes().get(ENGINE);
+        Map<String, Object> map = deviceRequestDTO.getAttributes();
+        int engine = Integer.parseInt((String) deviceRequestDTO.getAttributes().get(ENGINE));
         boolean onEngine = engine == 1;
         if (!onEngine){
             return;
         }
         Double validateRadiusBusStopRoute = configurationRouteProcessServerRepository.getConfiguration().getRadiusValidateBusStop();
+
         // Obtenemos la Velocidad del vehiculo
         double speed = deviceRequestDTO.getSpeed();
         boolean isNotMoving = speed == 0.0;
@@ -329,7 +331,7 @@ public class RouteProcess {
         logger.info("TIEMPO COMPLETADO :D");
     }
     private NotificationDTO createNotificationDTO(Long userId, String title , String description){
-        return NotificationDTO.builder()
+        return  NotificationDTO.builder()
                 .userId(userId)
                 .title(title)
                 .message(description).build();
@@ -378,7 +380,7 @@ public class RouteProcess {
                 .orElse(null);  // Devuelve null si no se encuentra
     }
     // Método para obtener la lista de BusStopResponse a partir de los BusStopIds
-    public List<BusStopResponse> getBusStops(List<ResponseRouteBusStopSegment> busStopSegments) {
+    private List<BusStopResponse> getBusStops(List<ResponseRouteBusStopSegment> busStopSegments) {
         List<BusStopResponse> busStopList = new ArrayList<>();
 
         busStopSegments.forEach(s -> {
@@ -416,7 +418,6 @@ public class RouteProcess {
         String description = "El vehiculo con matricula "+licencePlate+" ha estado mas tiempo  en el paradero paradero el total fue : " + timeStopped;
         Alert alert = createAlert(TIME_NOT_COMPLETED , description,deviceId,userId,latitude,longitude);
         ResponseAlert responseAlert = responseAlert(alert);
-
         alertRepository.create(alert);
         String informationJson = JsonUtils.toJson(responseAlert);
         notificationTraccar.sendNotification(createNotificationDTO(userId, String.valueOf(TIME_NOT_COMPLETED), informationJson));
@@ -465,7 +466,7 @@ public class RouteProcess {
         // TODO: Implementar manejo de geocerca poligonal
     }
     // Método para obtener el primer ID de paradero por el campo 'order'
-    public static Long getFirstBusStopId(List<ResponseRouteBusStopSegment> routeBusStops) {
+    private static Long getFirstBusStopId(List<ResponseRouteBusStopSegment> routeBusStops) {
         // Verificar si la lista no está vacía
         if (routeBusStops != null && !routeBusStops.isEmpty()) {
             // Ordenar la lista por el campo 'order' (de menor a mayor)
@@ -475,12 +476,12 @@ public class RouteProcess {
             ResponseRouteBusStopSegment firstBusStop = routeBusStops.get(0);
             return firstBusStop.getBusStopId(); // Devuelve el ID del primer paradero
         } else {
-            logger.warn("La lista de paraderos está vacía.");
+            logger.warn("La lista iniciales de paraderos está vacía.");
             return null;
         }
     }
     // Método para obtener el último ID de paradero por el campo 'order'
-    public static Long getLastBusStopId(List<ResponseRouteBusStopSegment> routeBusStops) {
+    private static Long getLastBusStopId(List<ResponseRouteBusStopSegment> routeBusStops) {
         // Verificar si la lista no está vacía
         if (routeBusStops != null && !routeBusStops.isEmpty()) {
             // Ordenar la lista por el campo 'order' (de menor a mayor)
@@ -490,11 +491,11 @@ public class RouteProcess {
             ResponseRouteBusStopSegment lastBusStop = routeBusStops.get(routeBusStops.size() - 1);
             return lastBusStop.getBusStopId(); // Devuelve el ID del último paradero
         } else {
-            logger.warn("La lista de paraderos está vacía.");
+            logger.warn("La lista finales de paraderos está vacía.");
             return null;
         }
     }
-    public ScheduleRouteBusStopProjection findSegmentByOrder(List<ScheduleRouteBusStopProjection> segments, Long order) {
+    private ScheduleRouteBusStopProjection findSegmentByOrder(List<ScheduleRouteBusStopProjection> segments, Long order) {
         // Buscar el segmento por el orden
         return segments.stream()
                 .filter(segment -> segment.getOrder() != null && segment.getOrder().equals(order))
@@ -530,11 +531,11 @@ public class RouteProcess {
                 nextMinBusStopTimeBusStop,
                 id);
     }
-    public static boolean checkMaxWaitTime(Integer maxWaitTime , Integer timeWaited) {
+    private static boolean checkMaxWaitTime(Integer maxWaitTime , Integer timeWaited) {
         // Verificar si está dentro del rango
         return timeWaited > maxWaitTime;
     }
-    public ResponseAlert responseAlert(Alert alert){
+    private ResponseAlert responseAlert(Alert alert){
         return ResponseAlert.builder()
                 .alertType(alert.getAlertType())
                 .latitude(alert.getLatitude())
@@ -544,11 +545,11 @@ public class RouteProcess {
 
                 .build();
     }
-    public static int getTimeExceded(Instant arrivalTime){
+    private static int getTimeExceded(Instant arrivalTime){
         Instant currentTime = Instant.now();
         return (int) ChronoUnit.MINUTES.between(arrivalTime, currentTime);
     }
-    public static boolean checkMinWaitTime(Integer minWaitTime , int timeWaited) {
+    private static boolean checkMinWaitTime(Integer minWaitTime , int timeWaited) {
         return timeWaited < minWaitTime;
     }
 }

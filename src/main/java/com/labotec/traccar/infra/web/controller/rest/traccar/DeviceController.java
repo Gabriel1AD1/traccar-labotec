@@ -30,7 +30,7 @@ public class DeviceController {
     public String getList(@RequestBody DeviceRequestDTO deviceRequestDTO) {
         vehicleMonitor.processPositionData(deviceRequestDTO);
         vehicleMonitor.processDoorStatus(deviceRequestDTO);
-        System.out.println(deviceRequestDTO.toString());
+        System.out.println(deviceRequestDTO);
 
         return "Ok";
     }

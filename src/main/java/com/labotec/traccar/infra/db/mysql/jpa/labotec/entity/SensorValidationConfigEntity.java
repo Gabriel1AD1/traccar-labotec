@@ -8,8 +8,21 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "tbl_validacion_sensor" , schema = "traccar_db")
-public class SensorValidationConfigEntity {
+@Table(name = "tbl_validacion_sensor", schema = "traccar_db",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        columnNames = {
+                        "usuario_id",
+                        "dispositivo_id",
+                        "nombre_sensor",
+                        "operador",
+                        "valor",
+                        "tipo_sensor",
+                        "tipo_validacion",
+                        "tipo_dato"
+                })
+        }
+)public class SensorValidationConfigEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,6 +43,7 @@ public class SensorValidationConfigEntity {
     @Column(name = "valor")
     private String value;
     @Column(name = "tipo_sensor")
+    @Enumerated(EnumType.STRING)
     private TypeSensor typeSensor;
     @Column(name = "mensaje_alerta")
     private String messageAlert;

@@ -13,6 +13,8 @@ import com.labotec.traccar.app.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -25,18 +27,21 @@ public class SensorValidatorRepositoryImpl implements SensorValidatorRepository 
     private final SensorValidationMapper sensorValidationMapper;
     private final Logger logger = LoggerFactory.getLogger(SensorValidatorRepositoryImpl.class);
     @Override
+    @CacheEvict(value = "optimizedSensorCache", key = "#model.deviceId")
     public SensorValidationConfig create(SensorValidationConfig model) {
         SensorValidationConfigEntity entity = repositoryJpa.save(sensorValidationMapper.toEntity(model));
         return sensorValidationMapper.toModel(entity);
     }
 
     @Override
+    @CacheEvict(value = "optimizedSensorCache", key = "#model.deviceId")
     public SensorValidationConfig update(SensorValidationConfig model) {
         SensorValidationConfigEntity entity = repositoryJpa.save(sensorValidationMapper.toEntity(model));
         return sensorValidationMapper.toModel(entity);
     }
 
     @Override
+    @CacheEvict(value = "optimizedSensorCache", key = "#deviceId")
     public void deleteByDeviceId(Long deviceId) {
         int arrowAffected = repositoryJpa.deleteByDeviceId(deviceId);
         if (arrowAffected > 0 ){
@@ -45,6 +50,7 @@ public class SensorValidatorRepositoryImpl implements SensorValidatorRepository 
     }
 
     @Override
+    @CacheEvict(value = "optimizedSensorCache", allEntries = true)
     public void deleteResourceId(Long resourceId, Long userId) {
         int arrowAffected = repositoryJpa.deleteByIdAndUserId(resourceId,userId);
         if (arrowAffected > 0 ){
@@ -78,6 +84,7 @@ public class SensorValidatorRepositoryImpl implements SensorValidatorRepository 
     }
 
     @Override
+    @Cacheable(value = "optimizedSensorCache", key = "#deviceId")
     public List<OptimizedSensorValidationConfig> findAllByDeviceId(Long deviceId) {
         List<SensorValidationConfigProjection> listConfig = repositoryJpa.findValidationConfigsByDeviceId(deviceId);
         return listConfig.stream()

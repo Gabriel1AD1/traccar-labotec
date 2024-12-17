@@ -21,15 +21,15 @@ public class IntegrationTraccar {
     private final IntegrationTraccarService traccarService;
     private final RouteProcess routeProcess;
     private final ValidateParams validateParams;
-    @PostMapping("/device")
-    public ResponseEntity<String> getInformationDevice(@RequestBody LastedInformationVehicle informationVehicle){
-        traccarService.processPosition(informationVehicle);
+    @PostMapping("/process-position")
+    public ResponseEntity<String> processesPosition(@RequestBody DeviceRequestDTO informationVehicle){
+        routeProcess.validateRoute(informationVehicle);
         return ResponseEntity.ok("Ok");
     }
-    @PostMapping("/process-route")
-    public ResponseEntity<Void> processesPosition(@RequestBody DeviceRequestDTO deviceRequestDTO){
-        //routeProcess.validateRoute(deviceRequestDTO);
+    @PostMapping("/process-params")
+    public ResponseEntity<Void> processesValidateParams(@RequestBody DeviceRequestDTO deviceRequestDTO){
         validateParams.validateParams(deviceRequestDTO);
         return ResponseEntity.ok().build();
     }
+
 }

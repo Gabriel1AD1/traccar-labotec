@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public interface SensorValidationConfigEntityRepositoryJpa extends JpaRepository<SensorValidationConfigEntity, Long> {
 
-    @Query("SELECT s.id, s.userId, s.nameSensor AS nameSensor, s.dataType as dataType, s.operator AS operator, s.value AS value ,s.typeValidation as typeValidation ,s.messageAlert as messageAlert " +
+    @Query("SELECT s.id as id, s.userId as userId, s.nameSensor AS nameSensor, s.dataType as dataType, s.operator AS operator, s.value AS value ,s.typeValidation as typeValidation ,s.messageAlert as messageAlert " +
             "FROM SensorValidationConfigEntity s WHERE  s.state = true AND s.deviceId  = :deviceId")
     List<SensorValidationConfigProjection> findValidationConfigsByDeviceId(@Param("deviceId") Long deviceId);
 

@@ -7,9 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,7 +16,9 @@ public class RequestBodyLoggingFilter extends GenericFilterBean {
 
     // Lista de endpoints que se deben excluir
     private static final List<String> EXCLUDED_ENDPOINTS = List.of(
-            "/api/v1/integration-traccar"
+            "/api/v1/integration-traccar",
+            "/ws" // Excluir el endpoint de WebSocket
+
     );
 
     @Override
@@ -32,12 +32,18 @@ public class RequestBodyLoggingFilter extends GenericFilterBean {
                 return;
             }
 
-            // Capturar el cuerpo si el endpoint no está excluido
-            BufferedReader reader = httpServletRequest.getReader();
-            String body = reader.lines().collect(Collectors.joining(System.lineSeparator()));
-            request.setAttribute("body", body);
+            // Envolver la solicitud para permitir múltiples lecturas
+            CachedBodyHttpServletRequest cachedRequest = new CachedBodyHttpServletRequest(httpServletRequest);
+
+            // Leer y almacenar el cuerpo
+            String body = cachedRequest.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+            cachedRequest.setAttribute("body", body);
+
+            // Pasar la solicitud envuelta a la cadena de filtros
+            chain.doFilter(cachedRequest, response);
+        } else {
+            chain.doFilter(request, response);
         }
-        chain.doFilter(request, response);
     }
 
     // Verificar si el endpoint está en la lista de excluidos

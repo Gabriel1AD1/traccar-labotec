@@ -31,4 +31,6 @@ public interface SensorDeviceEntityRepositoryJpa extends JpaRepository<SensorDev
     List<ResponseSensorDeviceProjection> findByDeviceId(@Param("deviceId") Long deviceId);
 
     int deleteByDeviceIdAndId(@Param("deviceId") Long deviceId,@Param("resourceId") Long resourceId);
+
+    boolean existsByDeviceIdAndSensorName(Long deviceId, String sensorName);
 }

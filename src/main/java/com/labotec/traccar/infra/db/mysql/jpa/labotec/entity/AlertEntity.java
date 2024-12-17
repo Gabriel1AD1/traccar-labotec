@@ -2,13 +2,12 @@ package com.labotec.traccar.infra.db.mysql.jpa.labotec.entity;
 
 import com.labotec.traccar.domain.enums.AlertType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.proxy.HibernateProxy;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.Instant;
+import java.util.Objects;
 
 @Data
 @Builder
@@ -44,4 +43,5 @@ public class AlertEntity {
     @CreatedDate
     @Column(name = "created_at", updatable = false)
     private Instant createdAt;
+
 }

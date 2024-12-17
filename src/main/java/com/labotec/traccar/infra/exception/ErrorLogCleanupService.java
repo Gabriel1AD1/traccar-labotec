@@ -1,19 +1,22 @@
 package com.labotec.traccar.infra.exception;
 
 import com.labotec.traccar.infra.db.mysql.jpa.labotec.repository.ErrorLogEntityRepository;
+import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
+
 @Service
+@AllArgsConstructor
 public class ErrorLogCleanupService {
 
     private final ErrorLogEntityRepository errorLogRepository;
+    private final Logger logger = LoggerFactory.getLogger(ErrorLogCleanupService.class);
 
-    public ErrorLogCleanupService(ErrorLogEntityRepository errorLogRepository) {
-        this.errorLogRepository = errorLogRepository;
-    }
 
     /**
      * Tarea programada para eliminar errores antiguos todos los días a las 3:00 AM.
@@ -22,6 +25,6 @@ public class ErrorLogCleanupService {
     public void cleanupOldErrors() {
         LocalDateTime oneWeekAgo = LocalDateTime.now().minusWeeks(1); // Ejemplo: eliminar errores más antiguos de una semana
         int deletedRecords = errorLogRepository.deleteByTimestampBefore(oneWeekAgo);
-        System.out.println("Deleted " + deletedRecords + " old error logs.");
+        logger.info("Deleted {} old error logs.", deletedRecords);
     }
 }

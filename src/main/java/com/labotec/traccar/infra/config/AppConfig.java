@@ -104,8 +104,6 @@
                     driverRepository,
                     locationRepository,
                     routeRepository,
-                    companyRepository,
-                    geofenceCircularRepository,
                     scheduleModelMapper,
                     driverScheduleRepository,
                     userRepository,

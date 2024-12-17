@@ -15,6 +15,7 @@ import com.labotec.traccar.domain.web.labotec.response.ResponseRouteBusStopSegme
 import com.labotec.traccar.domain.web.labotec.response.ResponseSuggestTimeSchedule;
 import com.labotec.traccar.app.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -24,15 +25,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
-
 public class ScheduleServiceI implements ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final VehicleRepository vehicleRepository;
     private final DriverRepository driverRepository;
     private final LocationRepository locationRepository;
     private final RouteRepository routeRepository;
-    private final CompanyRepository companyRepository;
-    private final GeofenceCircularRepository overviewPolylineRepository;
     private final ScheduleModelMapper scheduleModelMapper;
     private final DriverScheduleRepository driverScheduleRepository;
     private final UserRepository userRepository;
@@ -40,6 +38,8 @@ public class ScheduleServiceI implements ScheduleService {
     private final VehiclePositionRepository vehiclePositionRepository;
     private final StopRegisterRepository stopRegisterRepository;
     @Override
+    @Transactional
+
     public Schedule create(ScheduleDTO scheduleDTO, Long userId) {
         Instant departureTimeUTC = scheduleDTO.getZoneEstimatedDepartureTime().withZoneSameInstant(ZoneOffset.UTC).toInstant();
         Instant arrivalTimeUTC = scheduleDTO.getZoneEstimatedArrivalTime().withZoneSameInstant(ZoneOffset.UTC).toInstant();
@@ -64,7 +64,8 @@ public class ScheduleServiceI implements ScheduleService {
         scheduleMap.setEstimatedDepartureTime(departureTimeUTC);
         scheduleMap.setEstimatedArrivalTime(arrivalTimeUTC);
         Schedule scheduleSaved = scheduleRepository.create(scheduleMap);
-        VehiclePosition vehiclePosition = getPosition(scheduleSaved.getId(),vehicle.getTraccarDeviceId());
+        VehiclePosition vehiclePosition = getPosition(scheduleSaved.getId(),vehicle.getDeviceId());
+        System.out.println(scheduleSaved);
         vehiclePositionRepository.save(vehiclePosition);
         for (DriverRolScheduleCreateDTO driverListAssigment : scheduleDTO.getDriverAssignmentRoute()){
             Driver driver = driverRepository.findById(driverListAssigment.getDriverId(),userId);
@@ -87,7 +88,7 @@ public class ScheduleServiceI implements ScheduleService {
                         .estimatedTime(getBusStopSegments.getEstimatedTravelTime())
                         .scheduledTime(Instant.now().getNano())
                         .timeExceeded(false)
-                        .vehicleId(vehicle.getTraccarDeviceId())
+                        .vehicleId(vehicle.getDeviceId())
                         .build()
                 )
         );
@@ -189,7 +190,7 @@ public class ScheduleServiceI implements ScheduleService {
         String licencePlate = reportDelayDTO.getPlate();
         Vehicle vehicle = vehicleRepository.findByLicencePlate(licencePlate);
         Instant newArrivalTime = reportDelayDTO.getNewETA().toInstant();
-        Long vehicleId = vehicle.getTraccarDeviceId();
+        Long vehicleId = vehicle.getDeviceId();
         Instant currentTime = Instant.now();
         InformationRoute result = getSchedule(vehicleId,currentTime);
         Long scheduleId = result.getScheduleId();

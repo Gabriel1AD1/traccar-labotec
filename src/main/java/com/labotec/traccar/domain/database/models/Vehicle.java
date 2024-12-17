@@ -15,7 +15,7 @@ import java.time.Instant;
 @AllArgsConstructor
 
 public class Vehicle {
-    private Long traccarDeviceId;
+    private Long deviceId;
     @JsonIgnore
     private User userId;
     @JsonIgnore
@@ -31,4 +31,7 @@ public class Vehicle {
     @JsonIgnore
     private Instant createdDate;
 
+    public Vehicle(Long deviceId) {
+        this.setDeviceId(deviceId);
+    }
 }

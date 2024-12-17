@@ -70,4 +70,9 @@ public class SensorDeviceRepositoryImpl implements SensorDeviceRepository {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public boolean existSensorByDeviceIdAndSensorId(Long deviceId, String sensorName) {
+        return sensorDeviceRepositoryJpa.existsByDeviceIdAndSensorName(deviceId,sensorName);
+    }
+
 }

@@ -21,6 +21,7 @@ import com.labotec.traccar.app.exception.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
@@ -35,15 +36,13 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
 
     private final ScheduleRepositoryJpa scheduleRepositoryJpa;
     private final ScheduleMapper scheduleMapper;
-    private final VehicleMapper vehicleMapper;
-    private final RouteMapper routeMapper;
     private final ScheduleProjectionMapper scheduleProjectionMapper;
     private static final Logger logger = LoggerFactory.getLogger(ScheduleRepositoryImpl.class);
     @Override
     public Schedule create(Schedule entity) {
         ScheduleEntity schedule = scheduleMapper.toEntity(entity);
         ScheduleEntity scheduleEntitySaved = scheduleRepositoryJpa.save(schedule);
-        System.out.println(scheduleEntitySaved.toString());
+        System.out.println(scheduleEntitySaved);
         return scheduleMapper.toModel(scheduleEntitySaved);
     }
 
@@ -135,11 +134,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     @Override
     @Cacheable(value = "scheduleCache", key = "#deviceId", sync = true)
     public Optional<ScheduleProcessPosition> findByScheduleProjectionVehicleIdAndInstantNow(long deviceId, Instant now) {
-        ScheduleProjection scheduleProjection = scheduleRepositoryJpa.findScheduleProjectionViewByVehicleAndCurrentTime(deviceId,now).orElseThrow(
-                ()-> new EntityNotFoundException("No hay rutas disponibles para este auto"));
-        if (scheduleProjection == null){
-            return Optional.empty();
-        }
+        ScheduleProjection scheduleProjection = scheduleRepositoryJpa.findScheduleProjectionViewByVehicleAndCurrentTime(deviceId,now).orElse(null);
         ScheduleProcessPosition scheduleProcessPosition;
         scheduleProcessPosition  = scheduleProjectionMapper.toScheduleProcessPosition(scheduleProjection);
         return Optional.of(scheduleProcessPosition);

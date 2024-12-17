@@ -27,7 +27,7 @@ public class VehicleServiceI implements VehicleService {
         User user = userRepository.findByUserId(userId);
         Vehicle vehicleMap = vehicleModelMapper.toVehicleModel(vehicleDTO);
         VehicleType vehicleType = vehicleTypeRepository.findById(vehicleDTO.getTypeVehicleId(),userId);
-        vehicleMap.setTraccarDeviceId(deviceTraccarRepository.createDevice(vehicleDTO.getImei(),vehicleDTO.getNameDevice()));
+        vehicleMap.setDeviceId(deviceTraccarRepository.createDevice(vehicleDTO.getImei(),vehicleDTO.getNameDevice()));
         vehicleMap.setUserId(user);
         vehicleMap.setCompanyId(user.getCompanyId());
         vehicleMap.setTypeVehicle(vehicleType);

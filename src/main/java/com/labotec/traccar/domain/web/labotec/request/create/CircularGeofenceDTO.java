@@ -1,5 +1,6 @@
 package com.labotec.traccar.domain.web.labotec.request.create;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
@@ -23,6 +24,8 @@ public class CircularGeofenceDTO {
     @Max(value = 180, message = "La longitud máxima es 180")
     private Double longitude;
 
+    @NotNull
+    @JsonProperty("radius")
     private Double radius;
 
 

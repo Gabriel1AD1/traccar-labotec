@@ -1,13 +1,11 @@
 package com.labotec.traccar.app.implementation;
 
 import com.labotec.traccar.app.exception.BadRequestValidateValueException;
-import com.labotec.traccar.app.ports.input.repository.ExpectedSensorsRepository;
-import com.labotec.traccar.app.ports.input.repository.SensorValidatorRepository;
-import com.labotec.traccar.app.ports.input.repository.UserRepository;
-import com.labotec.traccar.app.ports.input.repository.VehicleRepository;
+import com.labotec.traccar.app.ports.input.repository.*;
 import com.labotec.traccar.app.ports.out.services.SensorValidatorService;
 import com.labotec.traccar.app.utils.JsonUtils;
 import com.labotec.traccar.domain.database.models.ExpectedSensors;
+import com.labotec.traccar.domain.database.models.SensorDevice;
 import com.labotec.traccar.domain.database.models.SensorValidationConfig;
 import com.labotec.traccar.domain.database.models.User;
 import com.labotec.traccar.domain.database.models.optimized.TypeValidation;
@@ -26,6 +24,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.List;
 
 @AllArgsConstructor
@@ -35,6 +34,7 @@ public class SensorValidatorServiceI implements SensorValidatorService {
     private final VehicleRepository vehicleRepository;
     private final UserRepository userRepository;
     private final ExpectedSensorsRepository expectedSensorsRepository;
+    private final SensorDeviceRepository sensorDeviceRepository;
     @Override
     public SensorValidationConfig createValidatorStatic(Long userId, CreateSensorStaticValidationConfigDTO sensorValidationConfig) {
         User user = userRepository.findByUserId(userId);
@@ -84,13 +84,31 @@ public class SensorValidatorServiceI implements SensorValidatorService {
 
     @Override
     public SensorValidationConfig createValidatorTime(Long userId, CreateSensorTimeValidationConfigDTO sensorValidationConfig) {
+
         User user = userRepository.findByUserId(userId);
         Long companyId = user.getCompanyId().getCompanyId();
         Long deviceId = sensorValidationConfig.getDeviceId();
         Long sensorId = sensorValidationConfig.getSensorId();
         ExpectedSensors sensors = expectedSensorsRepository.findByDeviceIdAndSensorId(deviceId,sensorId);
         if (!vehicleRepository.checkPermission(userId,deviceId)){handlerNotAccess(deviceId);}
-        if (!validateDataType(sensors.getDataType(), sensorValidationConfig.getValidatorTime().getStateValidation())){handlerValidateError(sensors.getDataType(),sensorValidationConfig.getValidatorTime().getStateValidation());}
+        if (validateDataType(sensors.getDataType(), sensorValidationConfig.getValidatorTime().getStateValidation())){handlerValidateError(sensors.getDataType(),sensorValidationConfig.getValidatorTime().getStateValidation());}
+        if(!sensorDeviceRepository.existSensorByDeviceIdAndSensorId(sensorValidationConfig.getDeviceId(),sensors.getNameSensor())){
+            String stateCurrent = "";
+            switch (sensors.getDataType()){
+                case INT -> stateCurrent = "0";
+                case TEXT -> stateCurrent = "";
+                case DOUBLE -> stateCurrent= "0.0";
+            }
+            sensorDeviceRepository.create(SensorDevice.builder()
+                            .deviceId(deviceId)
+                            .timeAcumulated(0L)
+                            .initStateCurrent(Instant.now())
+                            .sensorName(sensors.getNameSensor())
+                            .stateCurrent(stateCurrent)
+                            .dataType(sensors.getDataType())
+                            .typeSensor(sensors.getTypeSensor())
+                    .build());
+        }
         String value = JsonUtils.toJson(sensorValidationConfig.getValidatorTime());
         return sensorValidatorRepository.create(SensorValidationConfig.builder()
                 .typeSensor(sensors.getTypeSensor())

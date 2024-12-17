@@ -5,6 +5,7 @@ import com.labotec.traccar.app.ports.input.repository.AlertValidParamsRepository
 import com.labotec.traccar.app.ports.input.repository.SensorDeviceRepository;
 import com.labotec.traccar.app.ports.input.repository.SensorValidatorRepository;
 import com.labotec.traccar.app.ports.input.repository.VehicleRepository;
+import com.labotec.traccar.domain.database.models.AlertValidParams;
 import com.labotec.traccar.domain.database.models.optimized.OptimizedSensorValidationConfig;
 import com.labotec.traccar.domain.database.models.optimized.TypeValidation;
 import com.labotec.traccar.domain.embebed.RangeValue;
@@ -17,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -65,7 +67,10 @@ public class ValidateParams {
 
             // Obtener el valor del sensor desde el mapa de atributos
             Object sensorValue = deviceRequestDTO.getAttributes().get(sensorName);
-
+            if (sensorValue== null){
+                sendAlert(createNotificationDTO(userId,"Sensor no encontrado " , "El sensor " + config.getNameSensor() + "No ha sido encontrado"));
+                continue;
+            }
             TypeValidation typeValidation = config.getTypeValidation();
 
             switch (typeValidation) {
@@ -77,12 +82,18 @@ public class ValidateParams {
                     ValidatorTime validatorTimeConfig = config.getValidatorTime();
                     String sateVerify = validatorTimeConfig.getStateValidation();
                     Long valueVerify = validatorTimeConfig.getValueEvaluation();
+                    //Verificar si ya se ha enviado una solicitud de websocket
+                    boolean sendAlert =  timeAcumulated >= valueVerify;
+                    if (sendAlert){
+                        break;
+                    }
                     if (Objects.equals(currentState, sateVerify)){
                         boolean isValidTime = validateSensor(timeAcumulated, operator, valueVerify.toString(), DataType.INT);
-                        if (!isValidTime) {
+                        if (!isValidTime ) {
                             sendAlert(createNotificationDTO(userId,title,messageError));
                         }
                     }
+                    alertValidParamsRepository.save(createAlert(typeValidation, deviceRequestDTO.getDeviceId(),config.getId(),sensorValue.toString()));
                     break;
                 case STATIC:
                     // Realizar la validación
@@ -91,21 +102,24 @@ public class ValidateParams {
                     if (!isValidStatic) {
                         sendAlert(createNotificationDTO(userId,title,messageError));
                     }
+                    alertValidParamsRepository.save(createAlert(typeValidation, deviceRequestDTO.getDeviceId(),config.getId(),sensorValue.toString()));
                     break;
                 case EXIST:
                     boolean isValidParams= validateAttributeExistenceAndType(attributes, sensorName, dataType);
                     if (!isValidParams){
                         sendAlert(createNotificationDTO(userId,title,messageError));
                     }
+                    alertValidParamsRepository.save(createAlert(typeValidation, deviceRequestDTO.getDeviceId(),config.getId(),sensorValue.toString()));
                     break;
                 case RANGE:
                     RangeValue rangeValue = config.getRangeValue();
                     Double initValue = rangeValue.getRangeA();
                     Double finishValue = rangeValue.getRangeB();
-                    Double value = (Double) sensorValue;
+                    Double value =  Double.parseDouble(String.valueOf(sensorValue));
                     if (initValue < value && value > finishValue) {
                         sendAlert(createNotificationDTO(userId,title,messageError));
                     }
+                    alertValidParamsRepository.save(createAlert(typeValidation, deviceRequestDTO.getDeviceId(),config.getId(),sensorValue.toString()));
                     break;
                 default:
                     throw new IllegalArgumentException("Tipo de validación no soportado: " + typeValidation);
@@ -137,6 +151,18 @@ public class ValidateParams {
         };
     }
 
+    private AlertValidParams createAlert(TypeValidation typeValidation,
+     Long deviceId,
+     Long idValidation,
+     String currentValue){
+        return AlertValidParams.builder()
+                .createAt(Instant.now())
+                .idValidation(idValidation)
+                .typeValidation(typeValidation)
+                .deviceId(deviceId)
+                .currentValue(currentValue)
+                .build();
+    }
     /**
      * Valida un sensor específico basado en el tipo de dato, operador y valor esperado.
      *

@@ -47,7 +47,7 @@ public class OverviewPolylineRepositoryImpl implements OverviewPolylineRepositor
         OverviewPolylineEntity overviewPolyline = overviewPolylineMapper.toEntity(entity);
         System.out.println(entity.toString());
         OverviewPolylineEntity overviewPolylineSave = overviewPolylineRepositoryJpa.save(overviewPolyline);
-        System.out.println(overviewPolylineSave.toString());
+        System.out.println(overviewPolylineSave);
 
         return overviewPolylineMapper.toModel(overviewPolylineSave);
     }

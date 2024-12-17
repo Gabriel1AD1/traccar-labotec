@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GpsUtil {
-    private List<double[]> coordinates;        // Coordenadas decodificadas de la polilínea
-    private List<double[]> interpolatedRoute;  // Ruta interpolada a una densidad específica
-    private double[] currentPoint;             // Ubicación actual del vehículo
-    private double tolerance;                  // Tolerancia para verificar desviación de la ruta
-    private double maxInterpolationDistance;   // Máxima distancia entre puntos interpolados
+    private final List<double[]> coordinates;        // Coordenadas decodificadas de la polilínea
+    private final List<double[]> interpolatedRoute;  // Ruta interpolada a una densidad específica
+    private final double[] currentPoint;             // Ubicación actual del vehículo
+    private final double tolerance;                  // Tolerancia para verificar desviación de la ruta
+    private final double maxInterpolationDistance;   // Máxima distancia entre puntos interpolados
 
     public GpsUtil(List<String> polylines, double[] currentPoint, double tolerance, double maxInterpolationDistance) {
         this.coordinates = new ArrayList<>();

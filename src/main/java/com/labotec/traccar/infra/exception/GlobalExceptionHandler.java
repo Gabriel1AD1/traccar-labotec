@@ -39,9 +39,12 @@ public class GlobalExceptionHandler {
     // Leer la propiedad desde application.properties
     @Value("${app.debug.enabled:false}")
     private boolean debugEnabled;
-    @Autowired
-    private ErrorLogEntityRepository errorLogRepository;
+    private final ErrorLogEntityRepository errorLogRepository;
     private static final String NO_DEBUG_MESSAGE = "Details not available";
+
+    public GlobalExceptionHandler(ErrorLogEntityRepository errorLogRepository) {
+        this.errorLogRepository = errorLogRepository;
+    }
 
     // Maneja la excepción personalizada EntityNotFoundException
     @ExceptionHandler(EntityNotFoundException.class)
